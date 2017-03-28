@@ -46,17 +46,17 @@ public class Simple2{  public static void main(String args [])  {    System.
 /* Gramática , falta alterar algumas pequenas coisas para adaptar a portugues
 Module::= <MODULE> <ID> <LCHAVETA> (Declaration)* (Function)* <RCHAVETA>
 Declaration::= (ArrayElement | ScalarElement) (<ASSIGN> (("["ArraySize"]") | (<ADDSUB_OP>)? <INTEGER>))? <PVIRG>
-Function::= ((<FUNCTION> (ArrayElement | ScalarElement) <ASSIGN> <ID> <LPAR> (Varlist)? <RPAR>) | (<FUNCTION> <ID> <LPAR> (Varlist)? <RPAR>)) <LCHAVETA>Stmtlst<RCHAVETA>
+Function::= ((<FUNCTION> (ArrayElement | ScalarElement) <ASSIGN> <ID> <LPAR> (Varlist)? <RPAR>) | (<FUNCTION> <ID> <LPAR> (Varlist)? <RPAR>)) <LCHAVETA>Stmtlst<RCHAVETA>  *conflito em FUNCTION
 Varlist::= (ArrayElement | ScalarElement) (<VIRG> (ArrayElement| ScalarElement))*
 ArrayElement::= <ID> "[" "]"
 ScalarElement::= <ID>
 Stmtlst::= (Stmt)*
-Stmt::= While | If | Assign | Call<PVIRG>
+Stmt::= While | If | Assign | Call<PVIRG> *conflito de ID
 Assign::= Lhs<ASSIGN>Rhs<PVIRG>
 Lhs::= ArrayAccess | ScalarAccess
 Rhs::=(Term ((<ARITH_OP> | <BITWISE_OP> | <ADDSUB_OP>) Term)?) | "["ArraySize"]"
 ArraySize::= ScalarAccess | <INTEGER>
-Term::= (<ADDSUB_OP>)? (<INTEGER> | Call | ArrayAccess | ScalarAccess)
+Term::= (<ADDSUB_OP>)? (<INTEGER> | Call | ArrayAccess | ScalarAccess) * conflito de ID
 Exprtest::= <LPAR>Lhs<RELA_OP>Rhs<RPAR>
 While::= <WHILE> Exprtest <LCHAVETA> Stmtlst <RCHAVETA>
 If::= <IF> Exprtest <LCHAVETA> Stmtlst <RCHAVETA> (<ELSE> <LCHAVETA> Stmtlst <RCHAVETA>)?
@@ -66,4 +66,29 @@ Argument::= (<ID> | <STRING> | <INTEGER>)
 ArrayAccess::= <ID> "["Index"]"
 ScalarAccess::= <ID> ("." <SIZE>)?
 Index::= <ID> | <INTEGER>
+*/
+
+/* Gramatica simplificada
+Module-> a b c (Declaration)* (Function)* d.
+Declaration-> (ArrayElement | ScalarElement) (e (([ArraySize]) | (f)? n))? g.
+Function-> ((h (ArrayElement | ScalarElement) e b i (Varlist)? j) | (h b i (Varlist)? j)) c Stmtlst d.
+Varlist-> (ArrayElement | ScalarElement) (k (ArrayElement| ScalarElement))*.
+ArrayElement-> b [ ].
+ScalarElement-> b.
+Stmtlst-> (Stmt)*.
+Stmt-> While | If | Assign | Call g.
+Assign-> Lhs e Rhs g.
+Lhs-> ArrayAccess | ScalarAccess.
+Rhs->(Term ((l | m | f) Term)?) | [ArraySize].
+ArraySize-> ScalarAccess | n.
+Term-> (f)? (n | Call | ArrayAccess | ScalarAccess).
+Exprtest-> i Lhs z Rhs j.
+While-> x Exprtest c Stmtlst d.
+If-> r Exprtest c Stmtlst d (p c Stmtlst d)?.
+Call->b (.b)? i (ArgumentList)? j.
+ArgumentList-> Argument(k Argument)*.
+Argument-> (b | o | n).
+ArrayAccess-> b [Index].
+ScalarAccess-> b (. q)?.
+Index-> b | n.
 */
