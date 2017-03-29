@@ -1,6 +1,6 @@
 /**
  * JJTree template file created by SF JavaCC plugin 1.5.28+ wizard for JavaCC 1.5.0+
- */options{  static = true;}PARSER_BEGIN(Simple2)
+ */options{  static = true;  LOOKAHEAD = 1;}PARSER_BEGIN(Simple2)
 public class Simple2{  public static void main(String args [])  {    System.out.println("Reading from standard input...");    System.out.print("Enter an expression like \"1+(2+3)*var;\" :");    new Simple2(System.in);    try    {      SimpleNode n = Simple2.Start();      n.dump("");      System.out.println("Thank you.");    }    catch (Exception e)    {      System.out.println("Oops.");      System.out.println(e.getMessage());    }  }}PARSER_END(Simple2)<DEFAULT> SKIP : {
 " "
 | "\t"
@@ -41,9 +41,158 @@ public class Simple2{  public static void main(String args [])  {    System.
 | <STRING: "\"" (["a"-"z","A"-"Z","0"-"9",":"," ","="])+ "\"">
 }
 
-//void Start() : { } { }
+SimpleNode Start() : { }
+{
+  Module()
+  {return jjtThis;}
+}
 
-/* Gramática , falta alterar algumas pequenas coisas para adaptar a portugues
+void Module() : {}
+{
+  <MODULE> <ID> <LCHAVETA> (Declaration())* (Function())* <RCHAVETA>
+}
+
+void Declaration() : {} //FIRST: First(ArrayElement, ScalarElement) <ASSIGN> <PVIRG>
+{
+  (Element()) (<ASSIGN> ( ( "[" ArraySize() "]" ) | (<ADDSUB_OP>)? <INTEGER>))? <PVIRG>
+}
+
+void Function() : {} //Fisrt FUNCTION!
+{
+  ((<FUNCTION> (Element()) <ASSIGN> <ID> <LPAR> (Varlist())? <RPAR>) | (<FUNCTION> <ID> <LPAR> (Varlist())? <RPAR>)) <LCHAVETA>Stmtlst()<RCHAVETA>
+}
+
+void Varlist() : {}
+{
+  (Element()) (<VIRG> (Element()))*
+}
+
+void Element():{}
+{
+  <ID> (ElementArray())?
+}
+
+void ElementArray():{}
+{
+  "[" "]"
+}
+
+void ArrayElement() : {}
+{
+  <ID> "[" "]"
+}
+
+void ScalarElement() : {}
+{
+  <ID>
+}
+
+void Stmtlst() : {}
+{
+  (Stmt())*
+}
+
+void Stmt() : {}
+{
+  While() | If() | Assign() | Call() <PVIRG>
+}
+
+void Assign() : {}
+{
+  Lhs() <ASSIGN> Rhs() <PVIRG>
+}
+
+void Lhs() : {}
+{
+  Array()
+}
+
+void Rhs() : {}
+{
+  (Term() ((<ARITH_OP> | <BITWISE_OP> | <ADDSUB_OP>) Term())?) | "[" ArraySize() "]"
+}
+
+void ArraySize() : {}
+{
+  ScalarAccess() | <INTEGER>
+}
+
+void Term() : {}
+{
+  (<ADDSUB_OP>)? (<INTEGER> |  CallArray()) //CallArray -> Call() | Array()
+}
+
+void CallArray() : {}
+{
+  <ID> CallArray2()
+}
+
+void CallArray2() : {}
+{
+  ("." <ID> | <SIZE>)? | "[" Index() "]"
+}
+
+void Exprtest() : {}
+{
+  <LPAR> Lhs() <RELA_OP> Rhs() <RPAR>
+}
+
+void While() : {}
+{
+  <WHILE> Exprtest() <LCHAVETA> Stmtlst() <RCHAVETA>
+}
+
+void If() : {}
+{
+  <IF> Exprtest() <LCHAVETA> Stmtlst() <RCHAVETA> (<ELSE> <LCHAVETA> Stmtlst() <RCHAVETA>)?
+}
+
+void Call() : {}
+{
+  <ID> ("." <ID>)? <LPAR> (ArgumentList())? <RPAR>
+}
+
+void ArgumentList() : {}
+{
+  Argument() (<VIRG> Argument())*
+}
+
+void Argument() : {}
+{
+  (<ID> | <STRING> | <INTEGER>)
+}
+
+void Array() : {}
+{
+  <ID> (ArrayXAccess() | ArrayScalar())
+}
+
+void ArrayXAccess(): {}
+{
+  "[" Index() "]"
+}
+
+void ArrayScalar(): {}
+{
+  ("." <SIZE>)?
+}
+
+void ArrayAccess() : {}
+{
+  <ID> "[" Index() "]"
+}
+
+void ScalarAccess() : {}
+{
+  <ID> ("." <SIZE>)?
+}
+
+void Index() : {}
+{
+  <ID> | <INTEGER>
+}
+
+/* Gramï¿½tica , falta alterar algumas pequenas coisas para adaptar a portugues
 Module::= <MODULE> <ID> <LCHAVETA> (Declaration)* (Function)* <RCHAVETA>
 Declaration::= (ArrayElement | ScalarElement) (<ASSIGN> (("["ArraySize"]") | (<ADDSUB_OP>)? <INTEGER>))? <PVIRG>
 Function::= ((<FUNCTION> (ArrayElement | ScalarElement) <ASSIGN> <ID> <LPAR> (Varlist)? <RPAR>) | (<FUNCTION> <ID> <LPAR> (Varlist)? <RPAR>)) <LCHAVETA>Stmtlst<RCHAVETA>  *conflito em FUNCTION
