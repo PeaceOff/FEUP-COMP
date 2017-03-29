@@ -69,26 +69,49 @@ Index::= <ID> | <INTEGER>
 */
 
 /* Gramatica simplificada
-Module-> a b c (Declaration)* (Function)* d.
-Declaration-> (ArrayElement | ScalarElement) (e (([ArraySize]) | (f)? n))? g.
-Function-> ((h (ArrayElement | ScalarElement) e b i (Varlist)? j) | (h b i (Varlist)? j)) c Stmtlst d.
-Varlist-> (ArrayElement | ScalarElement) (k (ArrayElement| ScalarElement))*.
-ArrayElement-> b [ ].
-ScalarElement-> b.
-Stmtlst-> (Stmt)*.
-Stmt-> While | If | Assign | Call g.
-Assign-> Lhs e Rhs g.
-Lhs-> ArrayAccess | ScalarAccess.
-Rhs->(Term ((l | m | f) Term)?) | [ArraySize].
-ArraySize-> ScalarAccess | n.
-Term-> (f)? (n | Call | ArrayAccess | ScalarAccess).
-Exprtest-> i Lhs z Rhs j.
-While-> x Exprtest c Stmtlst d.
-If-> r Exprtest c Stmtlst d (p c Stmtlst d)?.
-Call->b (.b)? i (ArgumentList)? j.
-ArgumentList-> Argument(k Argument)*.
-Argument-> (b | o | n).
-ArrayAccess-> b [Index].
-ScalarAccess-> b (. q)?.
-Index-> b | n.
+Module -> a b c DeclarationK FunctionK d.
+DeclarationK -> Declaration DeclarationK | .
+FunctionK -> Function FunctionK | .
+Declaration -> (ArrayElement | ScalarElement) (e ((ArraySize) | (f)? n))? g.
+Function -> ((h (ArrayElement | ScalarElement) e b i (Varlist)? j) | (h b i (Varlist)? j)) c Stmtlst d.
+Varlist -> (ArrayElement | ScalarElement) KleeneStar1.
+KleeneStar1 -> k (ArrayElement | ScalarElement) KleeneStar1 | .
+ArrayElement -> b  .
+ScalarElement -> b.
+Stmtlst -> StmtK.
+StmtK -> Stmt StmtK | .
+Stmt -> While | If | Assign | Call g.
+Assign -> Lhs e Rhs g.
+Lhs -> ArrayAccess | ScalarAccess.
+Rhs ->(Term ((l | m | f) Term)?) | ArraySize.
+ArraySize -> ScalarAccess | n.
+Term -> (f)? (n | Call | ArrayAccess | ScalarAccess).
+Exprtest -> i Lhs z Rhs j.
+While -> x Exprtest c Stmtlst d.
+If -> r Exprtest c Stmtlst d (p c Stmtlst d)?.
+Call -> b (b)? i (ArgumentList)? j.
+ArgumentList -> Argument KleeneStar2.
+KleeneStar2 -> k Argument KleeneStar2 | .
+Argument -> (b | o | n).
+ArrayAccess -> b Index.
+ScalarAccess -> b (q)?.
+Index -> b | n.
+
+CONFLITOS : Stmt Lhs Term
+*/
+
+/*CHECK POINT 1
+1.Develop a parser for yal using JavaCC and taking as starting point the yal grammar
+furnished (note that the original grammar may originate conflicts when implemented
+with parsers of LL(1) type and in that case you need to modify the grammar in order
+to eliminate those conflicts);
+
+2. Proceed with the specification of the file jjt to generate , using JJTree, a new
+version of the parser including in this case the generation of the syntax tree (the
+generated tree should be an AST ), annotating the nodes and leafs of the tree with
+the information (including tokens) necessary to perform the subsequent compiler steps ;
+
+3. Include the necessary symbol tables;
+
+4. Semantic Analysis;
 */
