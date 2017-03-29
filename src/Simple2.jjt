@@ -94,7 +94,22 @@ void Stmtlst() : {}
 
 void Stmt() : {}
 {
-  While() | If() | Assign() | Call() <PVIRG>
+  While() | If() | AssignCall() <PVIRG> //AssignCall -> Assign() Call()
+}
+
+void AssignCall() : {}
+{
+  <ID> AssignCall2()
+}
+
+void AssignCall2() : {}
+{
+  "[" Index() "]"  Assign2()  | Call2() | ("." (<ID> Call2()) | <SIZE> Assign2() )?
+}
+
+void Assign2() : {}
+{
+  <ASSIGN> Rhs() <PVIRG>
 }
 
 void Assign() : {}
@@ -129,7 +144,7 @@ void CallArray() : {}
 
 void CallArray2() : {}
 {
-  ("." <ID> | <SIZE>)? | "[" Index() "]"
+  "[" Index() "]" | Call2() | ("." (<ID> Call2()) | <SIZE>)?
 }
 
 void Exprtest() : {}
@@ -150,6 +165,11 @@ void If() : {}
 void Call() : {}
 {
   <ID> ("." <ID>)? <LPAR> (ArgumentList())? <RPAR>
+}
+
+void Call2() : {}
+{
+  <LPAR> (ArgumentList())? <RPAR>
 }
 
 void ArgumentList() : {}
