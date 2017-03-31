@@ -134,7 +134,7 @@ void Assign() : {}
 
 void Lhs() : {}
 {
-  Array()
+  ArrayOrScalar()
 }
 
 void Rhs() : {}
@@ -149,7 +149,7 @@ void ArraySize() : {}
 
 void Term() : {}
 {
-  (<ADDSUB_OP>)? (<INTEGER> |  CallArray()) //CallArray -> Call() | Array()
+  (<ADDSUB_OP>)? (<INTEGER> |  CallArray()) //CallArray -> Call() | ArrayOrScalar()
 }
 
 void CallArray() : {}
@@ -159,7 +159,7 @@ void CallArray() : {}
 
 void CallArray2() : {}
 {
-  "[" Index() "]" | Call2() | ("." (<ID> Call2()) | <SIZE>)?
+  (ArrayXAccess()) | Call2() | ("." (<ID> Call2()) | <SIZE>)?
 }
 
 void Exprtest() : {}
@@ -197,9 +197,9 @@ void Argument() : {}
   (<ID> | <STRING> | <INTEGER>)
 }
 
-void Array() : {}
+void ArrayOrScalar() : {}
 {
-  <ID> (ArrayXAccess() | ArrayScalar())
+  <ID> (ArrayXAccess() | ScalarAccess2())
 }
 
 void ArrayXAccess(): {}
@@ -212,7 +212,7 @@ void ArrayScalar(): {}
   ("." <SIZE>)?
 }
 
-void ArrayAccess() : {}
+void ScalarAccess2() : {}
 {
   <ID> "[" Index() "]"
 }
