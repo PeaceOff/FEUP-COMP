@@ -12,3 +12,7 @@
 /JJTSimple2State.java
 /Simple2Constants.java
 /Simple2TreeConstants.java
+/AST*.java
+/Simple2DefaultVisitor.java
+/Simple2Visitor.java
+/output/

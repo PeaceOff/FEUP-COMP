@@ -1,7 +1,13 @@
 /**
  * JJTree template file created by SF JavaCC plugin 1.5.28+ wizard for JavaCC 1.5.0+
- */options{  static = true;  LOOKAHEAD = 1;}PARSER_BEGIN(Simple2)
-public class Simple2{  public static void main(String args [])  {    System.out.println("Reading from standard input...");    System.out.print("Enter an expression like \"1+(2+3)*var;\" :");    new Simple2(System.in);    try    {      SimpleNode n = Simple2.Start();      n.dump("");      System.out.println("Thank you.");    }    catch (Exception e)    {      System.out.println("Oops.");      System.out.println(e.getMessage());    }  }}PARSER_END(Simple2)<DEFAULT> SKIP : {
+ * Tabela de simbolos
+ * Array? Tamanho
+ *
+ */options{  static = true;  LOOKAHEAD = 1;  IGNORE_CASE = true;  MULTI = true;  VISITOR = true;}PARSER_BEGIN(Simple2)
+import java.io.*;
+import java.util.*;
+
+public class Simple2{  public static void main(String args []) throws FileNotFoundException  {    if(args.length < 1){      System.out.println("Pease Feed me with a filename.");      System.exit(1);    }    System.out.println("Reading from standard input...");    System.out.print("Enter an expression like \"1+(2+3)*var;\" :");    Simple2 parser = new Simple2(new FileInputStream(args[0])); //Feed me with one file :3    try    {      SimpleNode n = parser.Start();      n.dump("");      System.out.println("Thank you.");    }    catch (Exception e)    {      System.out.println("Oops.");      System.out.println(e.getMessage());    }  }}PARSER_END(Simple2)<DEFAULT> SKIP : {
 " "
 | "\t"
 | "\n"
@@ -47,29 +53,56 @@ SimpleNode Start() : { }
   {return jjtThis;}
 }
 
-void Module() : {}
+void Module() : {Token t1;}
 {
-  <MODULE> <ID> <LCHAVETA> (Declaration())* (Function())* <RCHAVETA>
+  <MODULE> t1 = <ID> <LCHAVETA> (Declaration())* (Function())* <RCHAVETA>
+  {jjtThis.value = t1.image;}
 }
 
 void Declaration() : {} //FIRST: First(ArrayElement, ScalarElement) <ASSIGN> <PVIRG>
 {
-  (Element()) (<ASSIGN> ( ( "[" ArraySize() "]" ) | (<ADDSUB_OP>)? <INTEGER>))? <PVIRG>
+  (Element()) (<ASSIGN> ( ArrayDeclaration() | NumericDeclaration()))? <PVIRG> // E (= ([100] | -? Integer)   )?  E[] = [100]
 }
 
-void Function() : {} //Fisrt FUNCTION!
+void NumericDeclaration() : {Token t1, sign;}
 {
-  <FUNCTION> <ID> (FunctionReturnV() | FunctionReturn())? FunctionParameters() <LCHAVETA>Stmtlst()<RCHAVETA>
+  ((sign = <ADDSUB_OP>)? t1 = <INTEGER>) //MarkSignal
+  {jjtThis.value = t1.image;}
 }
+
+void ArrayDeclaration() : {}
+{
+  ( "[" ArraySize() "]" )
+}
+
+void Function() : {Token t1;} //Fisrt FUNCTION!
+{
+  <FUNCTION> t1 = FunctionDecl() FunctionParameters() <LCHAVETA>Stmtlst()<RCHAVETA> // (ElementArray()? t1=FunctionReturn(t1))?
+  {jjtThis.value = t1.image;}
+}
+
+Token FunctionDecl() : {Token t1, t2 = null;}
+{
+t1 = <ID> ( (ElementArray() {/*Mark as array*/})? (t2 = FunctionReturn()))? //Mark as array
+  {if(t2 != null){
+    jjtThis.value = t1;
+    return t2;
+  }else{
+    jjtThis.value = null;
+    return t1;
+  }}
+}
+
 
 void FunctionReturnV() : { }
 {
 	ElementArray() FunctionReturn()
 }
 
-void FunctionReturn() : { }
+Token FunctionReturn()#void : {Token t;}
 {
-	<ASSIGN> <ID>
+	<ASSIGN> t = <ID>
+  {return t;}
 }
 
 void FunctionParameters() : { }
@@ -77,17 +110,18 @@ void FunctionParameters() : { }
 	<LPAR> (Varlist())? <RPAR>
 }
 
-void Varlist() : {}
+void Varlist()#void : {}
 {
   (Element()) (<VIRG> (Element()))*
 }
 
-void Element():{}
+void Element():{Token t1;}
 {
-  <ID> (ElementArray())?
+  t1 = <ID> (ElementArray() {/*mark as array    */})? //A ou A[]    A->ElementArray
+  {jjtThis.value = t1.image;}
 }
 
-void ElementArray():{}
+void ElementArray()#void:{}
 {
   "[" "]"
 }
@@ -107,14 +141,14 @@ void Stmtlst() : {}
   (Stmt())*
 }
 
-void Stmt() : {}
+void Stmt()#void : {}
 {
-  While() | If() | AssignCall() <PVIRG> //AssignCall -> Assign() Call()
+  While() | If() | AssignCall() <PVIRG> //AssignCall -> Assign() Call() =
 }
 
 void AssignCall() : {}
 {
-  <ID> AssignCall2()
+  <ID> AssignCall2() // a[1] funcao(2) modulo.funcao() array.size
 }
 
 void AssignCall2() : {}
@@ -132,19 +166,25 @@ void Assign() : {}
   Lhs() <ASSIGN> Rhs() <PVIRG>
 }
 
-void Lhs() : {}
+void Lhs()#void : {}
 {
   ArrayOrScalar()
 }
 
-void Rhs() : {}
+void Rhs()#ADefiniteNode(2) : {Token t1;}
 {
-  (Term() ((<ARITH_OP> | <BITWISE_OP> | <ADDSUB_OP>) Term())?) | "[" ArraySize() "]"
+  (Term() (( (t1 = <ARITH_OP>) | (t1 = <BITWISE_OP>) | (t1 = <ADDSUB_OP>) ) Term()
+            {
+              jjtThis.value = t1.image;
+            }
+          )?)
+  | ArrayDeclaration()
 }
 
-void ArraySize() : {}
+void ArraySize() : {Token t1;}
 {
-  ScalarAccess() | <INTEGER>
+ (t1 = <ID> ScalarAccess2()) | (t1 = <INTEGER>)
+ {jjtThis.value = t1.image;}
 }
 
 void Term() : {}
@@ -162,9 +202,12 @@ void CallArray2() : {}
   (ArrayXAccess()) | Call2() | ("." (<ID> Call2()) | <SIZE>)?
 }
 
-void Exprtest() : {}
+void Exprtest() : {Token t1;}
 {
-  <LPAR> Lhs() <RELA_OP> Rhs() <RPAR>
+  <LPAR> Lhs() t1 = <RELA_OP> Rhs() <RPAR>
+  {
+    jjtThis.value = t1.image;
+  }
 }
 
 void While() : {}
@@ -192,9 +235,10 @@ void ArgumentList() : {}
   Argument() (<VIRG> Argument())*
 }
 
-void Argument() : {}
+void Argument() : {Token t1;}
 {
-  (<ID> | <STRING> | <INTEGER>)
+  ( (t1 = <ID>) | (t1 = <STRING>) | (t1 = <INTEGER>) )
+  {jjtThis.value = t1;}
 }
 
 void ArrayOrScalar() : {}
@@ -207,14 +251,9 @@ void ArrayXAccess(): {}
   "[" Index() "]"
 }
 
-void ArrayScalar(): {}
+void ScalarAccess2(): {}
 {
   ("." <SIZE>)?
-}
-
-void ScalarAccess2() : {}
-{
-  <ID> "[" Index() "]"
 }
 
 void ScalarAccess() : {}
@@ -222,9 +261,9 @@ void ScalarAccess() : {}
   <ID> ("." <SIZE>)?
 }
 
-void Index() : {}
+void Index() : { Token t1;}
 {
-  <ID> | <INTEGER>
+  (t1 = <ID> #Variable) | ( t1 = <INTEGER>#Constant) { jjtThis.value = t1.image;}
 }
 
 /* Gram�tica , falta alterar algumas pequenas coisas para adaptar a portugues
