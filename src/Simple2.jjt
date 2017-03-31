@@ -59,7 +59,22 @@ void Declaration() : {} //FIRST: First(ArrayElement, ScalarElement) <ASSIGN> <PV
 
 void Function() : {} //Fisrt FUNCTION!
 {
-  ((<FUNCTION> (Element()) <ASSIGN> <ID> <LPAR> (Varlist())? <RPAR>) | (<FUNCTION> <ID> <LPAR> (Varlist())? <RPAR>)) <LCHAVETA>Stmtlst()<RCHAVETA>
+  <FUNCTION> <ID> (FunctionReturnV() | FunctionReturn())? FunctionParameters() <LCHAVETA>Stmtlst()<RCHAVETA>
+}
+
+void FunctionReturnV() : { }
+{
+	ElementArray() FunctionReturn()
+}
+
+void FunctionReturn() : { }
+{
+	<ASSIGN> <ID>
+}
+
+void FunctionParameters() : { }
+{
+	<LPAR> (Varlist())? <RPAR>
 }
 
 void Varlist() : {}
