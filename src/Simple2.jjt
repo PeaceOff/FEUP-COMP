@@ -1,4 +1,8 @@
 /**
+
+import java.io.*;
+import java.io.FileNotFoundException;
+import java.util.*;
  * JJTree template file created by SF JavaCC plugin 1.5.28+ wizard for JavaCC 1.5.0+
  * Tabela de simbolos
  * Array? Tamanho
@@ -7,7 +11,8 @@
 import java.io.*;
 import java.util.*;
 
-public class Simple2{  public static void main(String args []) throws FileNotFoundException  {    if(args.length < 1){      System.out.println("Pease Feed me with a filename.");      System.exit(1);    }    System.out.println("Reading from standard input...");    System.out.print("Enter an expression like \"1+(2+3)*var;\" :");    Simple2 parser = new Simple2(new FileInputStream(args[0])); //Feed me with one file :3    try    {      SimpleNode n = parser.Start();      n.dump("");      System.out.println("Thank you.");    }    catch (Exception e)    {      System.out.println("Oops.");      System.out.println(e.getMessage());    }  }}PARSER_END(Simple2)<DEFAULT> SKIP : {
+public class Simple2
+{  public static void main(String args [])  {    if(args.length < 1){      System.out.println("Pease Feed me with a filename.");      System.exit(1);    }     //Feed me with one file :3    try    {      Simple2 parser = new Simple2(new FileInputStream(args[0]));      SimpleNode n = parser.Start();      n.dump("");      System.out.println("Thank you.");    }catch (FileNotFoundException e){      System.out.println("File Error!");      e.printStackTrace();    }    catch (Exception e)    {      e.printStackTrace();      System.out.println("Oops.");      System.out.println(e.getMessage());    }  }}PARSER_END(Simple2)<DEFAULT> SKIP : {
 " "
 | "\t"
 | "\n"
@@ -146,12 +151,33 @@ void Stmt()#void : {}
   While() | If() | AssignCall() <PVIRG> //AssignCall -> Assign() Call() =
 }
 
+void AssignOrCall() : {boolean res;}
+{
+  res = AssignOrCall2() {if(res) return;} Assign2()
+}
+
+boolean AssignOrCall2() : {Token t; boolean res;}
+{
+  t = <ID> res = AssignOrCall3()
+  {
+    jjtThis.value = t.image;
+    return res;
+  }
+}
+
+boolean AssignOrCall3() : {boolean b = false;}
+{
+  (ArrayXAccess())  | (Call2() {return true;} ) | ("." (<ID> Call2() {return true;}) | (<SIZE>))?
+  {return false;}
+}
+
+
 void AssignCall() : {}
 {
   <ID> AssignCall2() // a[1] funcao(2) modulo.funcao() array.size
 }
 
-void AssignCall2() : {}
+void AssignCall2()#ADefiniteNode(2) : {}  // A.Size = bla   A.func() = bla
 {
     (ArrayXAccess()  Assign2())  | Call2() | ("." (<ID> Call2()) | <SIZE> Assign2() )?
 }
@@ -194,7 +220,7 @@ void Term() : {}
 
 void CallArray() : {}
 {
-  <ID> CallArray2()
+  <ID> CallArray2() //ID.Size
 }
 
 void CallArray2() : {}
@@ -289,6 +315,26 @@ Argument::= (<ID> | <STRING> | <INTEGER>)
 ArrayAccess::= <ID> "["Index"]"
 ScalarAccess::= <ID> ("." <SIZE>)?
 Index::= <ID> | <INTEGER>
+
+
+<ID> (ArrayXaccess() | ScalarAccess2())
+
+Lhs::= ArrayOrScalar
+
+ArrayXAccess::= "["Index"]"
+ScalarAccess2::= ("." <SIZE>)?
+
+ArrayOrScalar ::= <ID> (ArrayXAccess() | ScalarAccess2())
+
+Assign::= Lhs<ASSIGN>Rhs<PVIRG>
+Call::=<ID> ("."<ID>)? <LPAR> (ArgumentList)? <RPAR>
+
+
+Assign id asdas  =
+
+Simplificar#Cond(res==true) ::= res = Simplificar <ASSIGN> RHS
+Simplificar2 ::= (<ID>  Diferenca) return false;
+
 */
 
 /* Gramatica simplificada
@@ -312,7 +358,7 @@ Term -> (f)? (n | Call | ArrayAccess | ScalarAccess).
 Exprtest -> i Lhs z Rhs j.
 While -> x Exprtest c Stmtlst d.
 If -> r Exprtest c Stmtlst d (p c Stmtlst d)?.
-Call -> b (b)? i (ArgumentList)? j.
+Call -> b (.b)? i (ArgumentList)? j.
 ArgumentList -> Argument KleeneStar2.
 KleeneStar2 -> k Argument KleeneStar2 | .
 Argument -> (b | o | n).
