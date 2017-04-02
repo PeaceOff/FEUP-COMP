@@ -64,7 +64,7 @@ void Module() : {Token t1;}
   {jjtThis.value = t1.image;}
 }
 
-void Declaration() : {} //FIRST: First(ArrayElement, ScalarElement) <ASSIGN> <PVIRG>
+void Declaration() #Declaration(2): {} //FIRST: First(ArrayElement, ScalarElement) <ASSIGN> <PVIRG>
 {
   (Element()) (<ASSIGN> ( ArrayDeclaration() | NumericDeclaration()))? <PVIRG> // E (= ([100] | -? Integer)   )?  E[] = [100]
 }
@@ -141,12 +141,12 @@ void ScalarElement() : {}
   <ID>
 }
 
-void Stmtlst() : {}
+void Stmtlst() #void: {}
 {
   (Stmt())*
 }
 
-void Stmt()#void : {}
+void Stmt() #void : {}
 {
   While() | If() | AssignOrCall() <PVIRG> //AssignCall -> Assign() Call() =
 }
