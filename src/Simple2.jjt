@@ -148,12 +148,12 @@ void Stmtlst() : {}
 
 void Stmt()#void : {}
 {
-  While() | If() | AssignCall() <PVIRG> //AssignCall -> Assign() Call() =
+  While() | If() | AssignOrCall() <PVIRG> //AssignCall -> Assign() Call() =
 }
 
-void AssignOrCall() : {boolean res;}
+void AssignOrCall()#Assign(>1) : {boolean res;}
 {
-  res = AssignOrCall2() {if(res) return;} Assign2()
+  res = AssignOrCall2() {if(!res) return;} <ASSIGN> Rhs()
 }
 
 boolean AssignOrCall2() : {Token t; boolean res;}
@@ -167,8 +167,9 @@ boolean AssignOrCall2() : {Token t; boolean res;}
 
 boolean AssignOrCall3() : {boolean b = false;}
 {
-  (ArrayXAccess())  | (Call2() {return true;} ) | ("." (<ID> Call2() {return true;}) | (<SIZE>))?
-  {return false;}
+  ((ArrayXAccess(){System.out.println("HERE1"); })  | (Call2(){System.out.println("HERE2"); {return false;}}) | ("." ((<ID> Call2(){System.out.println("HERE3");{return false;}}) | (<SIZE>)))?)
+
+  {return true;}
 }
 
 
@@ -197,7 +198,7 @@ void Lhs()#void : {}
   ArrayOrScalar()
 }
 
-void Rhs()#ADefiniteNode(2) : {Token t1;}
+void Rhs()#Operator(>1): {Token t1;}
 {
   (Term() (( (t1 = <ARITH_OP>) | (t1 = <BITWISE_OP>) | (t1 = <ADDSUB_OP>) ) Term()
             {
@@ -225,7 +226,7 @@ void CallArray() : {}
 
 void CallArray2() : {}
 {
-  (ArrayXAccess()) | Call2() | ("." (<ID> Call2()) | <SIZE>)?
+  (ArrayXAccess()) | Call2() | ("." ((<ID> Call2()) | <SIZE>))?
 }
 
 void Exprtest() : {Token t1;}
@@ -267,9 +268,10 @@ void Argument() : {Token t1;}
   {jjtThis.value = t1;}
 }
 
-void ArrayOrScalar() : {}
+void ArrayOrScalar() : {Token t;}
 {
-  <ID> (ArrayXAccess() | ScalarAccess2())
+  t = <ID> (ArrayXAccess() | ScalarAccess2())
+  {jjtThis.value = t.image;}
 }
 
 void ArrayXAccess(): {}
