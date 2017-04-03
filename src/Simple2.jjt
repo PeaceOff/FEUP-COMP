@@ -81,15 +81,15 @@ void Module() : {Token t1;}
   {jjtThis.value = t1.image;}
 }
 
-void Declaration() #Declaration(2): {} //FIRST: First(ArrayElement, ScalarElement) <ASSIGN> <PVIRG>
+void Declaration(): {} //FIRST: First(ArrayElement, ScalarElement) <ASSIGN> <PVIRG>
 {
   (Element()) (<ASSIGN> ( ArrayDeclaration() | NumericDeclaration()))? <PVIRG> // E (= ([100] | -? Integer)   )?  E[] = [100]
 }
 
 void NumericDeclaration() : {Token t1, sign;}
 {
-  ((sign = <ADDSUB_OP>)? t1 = <INTEGER>) //MarkSignal
-  {jjtThis.value = t1.image;}
+  (sign = <ADDSUB_OP>{jjtThis.value=sign.image;}#Sign)?
+  (t1 = <INTEGER> {jjtThis.value = t1.image;}#Constant)
 }
 
 void ArrayDeclaration() : {}
@@ -103,7 +103,7 @@ void Function() : {Token t1;} //Fisrt FUNCTION!
   {jjtThis.value = t1.image;}
 }
 
-Token FunctionDecl() : {Token t1, t2 = null;}
+Token FunctionDecl()#Return : {Token t1, t2 = null;}
 {
 t1 = <ID> ( (ElementArray() {/*Mark as array*/})? (t2 = FunctionReturn()))? //Mark as array
   {if(t2 != null){
@@ -115,19 +115,13 @@ t1 = <ID> ( (ElementArray() {/*Mark as array*/})? (t2 = FunctionReturn()))? //Ma
   }}
 }
 
-
-void FunctionReturnV() : { }
-{
-	ElementArray() FunctionReturn()
-}
-
 Token FunctionReturn()#void : {Token t;}
 {
 	<ASSIGN> t = <ID>
   {return t;}
 }
 
-void FunctionParameters() : { }
+void FunctionParameters()#Parameters : { }
 {
 	<LPAR> (Varlist())? <RPAR>
 }
@@ -137,17 +131,18 @@ void Varlist()#void : {}
   (Element()) (<VIRG> (Element()))*
 }
 
-void Element():{Token t1;}
+void Element() #Variable :{Token t1;}
 {
   t1 = <ID> (ElementArray() {/*mark as array    */})? //A ou A[]    A->ElementArray
   {jjtThis.value = t1.image;}
 }
 
-void ElementArray()#void:{}
+void ElementArray():{}
 {
   "[" "]"
 }
 
+/*
 void ArrayElement() : {}
 {
   <ID> "[" "]"
@@ -156,9 +151,9 @@ void ArrayElement() : {}
 void ScalarElement() : {}
 {
   <ID>
-}
+}/**/
 
-void Stmtlst() #void: {}
+void Stmtlst() #Statements: {}
 {
   (Stmt())*
 }
@@ -170,9 +165,12 @@ void Stmt() #void : {}
 
 void AssignOrCall()#Assign(>1) : {boolean res;}
 {
-  res = AssignOrCall2() {if(!res) return;} <ASSIGN> Rhs()
+  res = CallArray() {if(res) return;} <ASSIGN> Rhs()
 }
+//--------------------------------------------------------
 
+//#########
+/*
 boolean AssignOrCall2() : {Token t; boolean res;}
 {
   t = <ID> res = AssignOrCall3()
@@ -184,40 +182,25 @@ boolean AssignOrCall2() : {Token t; boolean res;}
 
 boolean AssignOrCall3() : {boolean b = false;}
 {
-  ((ArrayXAccess(){System.out.println("HERE1");} )
-  | (Call2(){System.out.println("HERE2"); {return false;}} )
-  | ("." ((<ID> Call2(){System.out.println("HERE3");{return false;}}) | (<SIZE>)))?)
+  ((ArrayXAccess())
+  | (Call2(){return false;} )
+  | ("." ((<ID> Call2(){return false;}) | (<SIZE>)))?)
 
   {return true;}
-}
+}/**/
+//----------------------------------------------------------
 
-
-void AssignCall() : {}
-{
-  <ID> AssignCall2() // a[1] funcao(2) modulo.funcao() array.size
-}
-
-void AssignCall2()#ADefiniteNode(2) : {}  // A.Size = bla   A.func() = bla
-{
-    (ArrayXAccess()  Assign2())  | Call2() | ("." (<ID> Call2()) | <SIZE> Assign2() )?
-}
-
-void Assign2() : {}
-{
-  <ASSIGN> Rhs() <PVIRG>
-}
-
-void Assign() : {}
+/*void Assign() : {}
 {
   Lhs() <ASSIGN> Rhs() <PVIRG>
-}
+}*/
 
 void Lhs()#void : {}
 {
   ArrayOrScalar()
 }
 
-void Rhs()#Operator(>1): {Token t1;}
+void Rhs()#CalcOP(>1): {Token t1;}
 {
   (Term() (( (t1 = <ARITH_OP>) | (t1 = <BITWISE_OP>) | (t1 = <ADDSUB_OP>) ) Term()
             {
@@ -227,28 +210,48 @@ void Rhs()#Operator(>1): {Token t1;}
   | ArrayDeclaration()
 }
 
-void ArraySize() : {Token t1;}
+void ArraySize()#void : {Token t1;}
 {
- (t1 = <ID> ScalarAccess2()) | (t1 = <INTEGER>)
- {jjtThis.value = t1.image;}
+ ( ArraySizeAux() | (t1 = <INTEGER>{jjtThis.value = t1.image;}#Constant))
+
 }
 
-void Term() : {}
+void ArraySizeAux()#Access : {Token t1;}
 {
-  (<ADDSUB_OP>)? (<INTEGER> |  CallArray()) //CallArray -> Call() | ArrayOrScalar()
+  t1 = <ID> {jjtThis.value = t1.image;}
+  ScalarAccess2()
 }
 
-void CallArray() : {}
+void Term() : {Token s1, t1;}
 {
-  <ID> CallArray2() //ID.Size
+  (s1 = <ADDSUB_OP> {jjtThis.value = s1.image;} #Sign)? (t1 = <INTEGER> {jjtThis.value = t1.image;} #Integer |  CallArray()) //CallArray -> Call() | ArrayOrScalar()
 }
 
-void CallArray2() : {}
+boolean CallArray()#Access : {Token t1; boolean call;}
 {
-  (ArrayXAccess()) | Call2() | ("." ((<ID> Call2()) | <SIZE>))?
+  t1 = <ID> {jjtThis.value = t1;}
+  call = CallArray2() //ID.Size
+  {
+    if(call){
+    jjtThis.id = Simple2TreeConstants.JJTCALL;
+    }else{
+      jjtThis.id = Simple2TreeConstants.JJTACCESS;
+    }
+    return call;
+  }
 }
 
-void Exprtest() : {Token t1;}
+boolean CallArray2()#void : {Token t;}
+{
+  (
+  (ArrayXAccess())
+  | Call2(){return true;}
+  | ("." ((t = <ID>{jjtThis.value = t.image;}#CallName Call2(){return true;}) | (<SIZE>)#Size))?
+  )
+  {return false;}
+}
+
+void Exprtest() #ConditionOP : {Token t1;}
 {
   <LPAR> Lhs() t1 = <RELA_OP> Rhs() <RPAR>
   {
@@ -266,12 +269,12 @@ void If() : {}
   <IF> Exprtest() <LCHAVETA> Stmtlst() <RCHAVETA> (<ELSE> <LCHAVETA> Stmtlst() <RCHAVETA>)?
 }
 
-void Call() : {}
+void Call()#Call : {}
 {
   <ID> ("." <ID>)? <LPAR> (ArgumentList())? <RPAR>
 }
 
-void Call2() : {}
+void Call2()#void : {}
 {
   <LPAR> (ArgumentList())? <RPAR>
 }
@@ -281,36 +284,39 @@ void ArgumentList() : {}
   Argument() (<VIRG> Argument())*
 }
 
-void Argument() : {Token t1;}
+void Argument()#void : {Token t1;}
 {
-  ( (t1 = <ID>) | (t1 = <STRING>) | (t1 = <INTEGER>) )
-  {jjtThis.value = t1;}
+  ( (t1 = <ID>{jjtThis.value = t1;}#Variable)
+  | (t1 = <STRING>{jjtThis.value = t1;}#String)
+  | (t1 = <INTEGER>{jjtThis.value = t1;}#Constant) )
+
 }
 
-void ArrayOrScalar() : {Token t;}
+void ArrayOrScalar()#Access : {Token t;}
 {
   t = <ID> (ArrayXAccess() | ScalarAccess2())
   {jjtThis.value = t.image;}
 }
 
-void ArrayXAccess(): {}
+void ArrayXAccess()#void: {}
 {
   "[" Index() "]"
 }
 
-void ScalarAccess2(): {}
+void ScalarAccess2()#Size: {}
 {
   ("." <SIZE>)?
 }
 
+/*
 void ScalarAccess() : {}
 {
   <ID> ("." <SIZE>)?
-}
+}/**/
 
-void Index() : { Token t1;}
+void Index() #void : { Token t1;}
 {
-  (t1 = <ID> #Variable) | ( t1 = <INTEGER>#Constant) { jjtThis.value = t1.image;}
+  (t1 = <ID>{ jjtThis.value = t1.image;}#Variable) | ( t1 = <INTEGER>{ jjtThis.value = t1.image;}#Constant)
 }
 
 /* Gram�tica , falta alterar algumas pequenas coisas para adaptar a portugues

@@ -1,0 +1,53 @@
+
+Estrutura AST
+
+Module <Identificador>
+  Declaration
+  Function
+
+Declaration
+  Variable
+  ArrayDeclaration | NumericDeclaration
+
+NumericDeclaration
+  Sign
+  Constant
+
+Function <ID>
+  Return
+  Parameters
+  Statements
+
+Parameters
+  Variable*
+
+Statements
+  While | If | Call | Assign
+
+
+While
+  ConditionOP
+  Statements
+
+If
+  ConditionOP
+  Statements
+  Statements?
+
+ConditionOP
+  Access
+  CalcOP | Term | ArrayDeclaration
+
+ArrayDeclaration
+  Access(size) | Constant
+
+Term
+  Sign?
+  Integer | Call | Access
+
+Call <ID>
+  CallName?
+  ArgumentList
+
+Access <ID>
+  (Variable|Constant) | Size
