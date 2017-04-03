@@ -21,6 +21,9 @@ Function <ID>
 Parameters
   Variable*
 
+Variable
+  ElementArray
+
 Statements
   While | If | Call | Assign
 
