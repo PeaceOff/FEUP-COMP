@@ -28,6 +28,14 @@ Statements
   While | If | Call | Assign
 
 
+CalcOP
+  Term
+  Term
+
+Assign
+  Access
+  CalcOP | Term | ArrayDeclaration
+
 While
   ConditionOP
   Statements
@@ -43,6 +51,9 @@ ConditionOP
 
 ArrayDeclaration
   Access(size) | Constant
+
+Variable
+  ElementArray
 
 Term
   Sign?
