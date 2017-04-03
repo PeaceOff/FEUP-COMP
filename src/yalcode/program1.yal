@@ -2,7 +2,7 @@ module program1{
 	
 	data=[100]; //vector of 100 integers
 	mx; //attribute mx
-	mn; //tribute mn
+	mn; //attribute mn
 	
 	function det(d[]){
 		i=0;

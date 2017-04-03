@@ -12,7 +12,24 @@ import java.io.*;
 import java.util.*;
 
 public class Simple2
-{  public static void main(String args [])  {    if(args.length < 1){      System.out.println("Pease Feed me with a filename.");      System.exit(1);    }     //Feed me with one file :3    try    {      Simple2 parser = new Simple2(new FileInputStream(args[0]));      SimpleNode n = parser.Start();      n.dump("");      System.out.println("Thank you.");    }catch (FileNotFoundException e){      System.out.println("File Error!");      e.printStackTrace();    }    catch (Exception e)    {      e.printStackTrace();      System.out.println("Oops.");      System.out.println(e.getMessage());    }  }}PARSER_END(Simple2)<DEFAULT> SKIP : {
+{  public static void main(String args [])  {    if(args.length < 1){      System.out.println("Pease Feed me with a filename.");      System.exit(1);    }     //Feed me with one file :3    try    {      Simple2 parser = new Simple2(new FileInputStream(args[0]));      SimpleNode n = parser.Start();      n.dump("");      System.out.println("Thank you.");    }catch (FileNotFoundException e){      System.out.println("File Error!");      e.printStackTrace();    }    catch (Exception e)    {      e.printStackTrace();      System.out.println("Oops.");      System.out.println(e.getMessage());    }  }
+
+/*
+  public void build_symbol_table(SimpleNode node) {
+
+    	if(node.jjtGetNumChildren() == 0) // leaf node with integer value
+			return node.val;
+		else if(node.jjtGetNumChildren() == 1) // only one child
+			return this.eval((SimpleNode) node.jjtGetChild(0));
+
+		SimpleNode lhs = (SimpleNode) node.jjtGetChild(0); //left child
+		SimpleNode rhs = (SimpleNode) node.jjtGetChild(1); // right child
+
+		//Construir a tabela de simbolos
+
+		return 0;
+    }
+ */}PARSER_END(Simple2)<DEFAULT> SKIP : {
 " "
 | "\t"
 | "\n"
@@ -156,7 +173,7 @@ void AssignOrCall()#Assign(>1) : {boolean res;}
   res = AssignOrCall2() {if(!res) return;} <ASSIGN> Rhs()
 }
 
-boolean AssignOrCall2() : {Token t; boolean res;}
+boolean AssignOrCall2() #void : {Token t; boolean res;}
 {
   t = <ID> res = AssignOrCall3()
   {
@@ -167,9 +184,11 @@ boolean AssignOrCall2() : {Token t; boolean res;}
 
 boolean AssignOrCall3() : {boolean b = false;}
 {
-  ((ArrayXAccess(){System.out.println("HERE1"); })  | (Call2(){System.out.println("HERE2"); {return false;}}) | ("." ((<ID> Call2(){System.out.println("HERE3");{return false;}}) | (<SIZE>)))?)
+  ((ArrayXAccess(){System.out.println("HERE1"); } #Variable )
+  | (Call2(){System.out.println("HERE2"); {return false;}} #CallPotato )
+  | ("." ((<ID> Call2(){System.out.println("HERE3");{return false;}} #CallPotato) | (<SIZE>)))?)
 
-  {return true;}
+  {return true;} #Variable
 }
 
 
