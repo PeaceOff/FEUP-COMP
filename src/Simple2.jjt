@@ -173,7 +173,7 @@ void AssignOrCall()#Assign(>1) : {boolean res;}
   res = AssignOrCall2() {if(!res) return;} <ASSIGN> Rhs()
 }
 
-boolean AssignOrCall2() #void : {Token t; boolean res;}
+boolean AssignOrCall2() : {Token t; boolean res;}
 {
   t = <ID> res = AssignOrCall3()
   {
@@ -184,11 +184,11 @@ boolean AssignOrCall2() #void : {Token t; boolean res;}
 
 boolean AssignOrCall3() : {boolean b = false;}
 {
-  ((ArrayXAccess(){System.out.println("HERE1"); } #Variable )
-  | (Call2(){System.out.println("HERE2"); {return false;}} #CallPotato )
-  | ("." ((<ID> Call2(){System.out.println("HERE3");{return false;}} #CallPotato) | (<SIZE>)))?)
+  ((ArrayXAccess(){System.out.println("HERE1");} )
+  | (Call2(){System.out.println("HERE2"); {return false;}} )
+  | ("." ((<ID> Call2(){System.out.println("HERE3");{return false;}}) | (<SIZE>)))?)
 
-  {return true;} #Variable
+  {return true;}
 }
 
 
