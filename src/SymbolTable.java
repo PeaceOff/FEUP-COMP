@@ -19,6 +19,10 @@ public class SymbolTable{
 		symbolTables.push(table);
 	}
 	
+	public static SymbolTable getRootTable(){ //Useful to check functions
+		return symbolTables.getLast();
+	}
+	
 	private String name; //ModuleName || FunctionName
 	private boolean function = false;
 	private HashMap<String, Element> elements = new HashMap<>();
@@ -119,9 +123,11 @@ public class SymbolTable{
 			sb.append("\tReturn: ");
 			sb.append((_return==null)? "void" : _return.toString());
 			sb.append("\n");
-			printMap("Parameters", parameters);
-		}
-		printMap("Locals", elements);
+			sb.append(printMap("Parameters", parameters));
+		}else
+			sb.append("\n");
+		
+		sb.append(printMap("Locals", elements));
 		Utils.tabIndex++;
 		
 		for(SymbolTable s : children){

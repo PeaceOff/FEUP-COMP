@@ -1,34 +1,44 @@
+import java.util.LinkedList;
 
 public class Element {
 	
 	public final String[] type_name = new String[]{"Undefined","Integer","Array","Function"};
 	
-	public final int TYPE_UNDEFINED = 0;
-	public final int TYPE_INT = 1;
-	public final int TYPE_ARRAY = 2;
-	public final int TYPE_FUNCTION = 3;
+	public static final int TYPE_UNDEFINED = 0;
+	public static final int TYPE_INT = 1;
+	public static final int TYPE_ARRAY = 2;
+	public static final int TYPE_FUNCTION = 3;
 	
 	private int type = 0;
 	private String name;
-	private int length = -1; //Not Declared Probably not necessary
-		
-	public void Element(String name, int type){
+	private boolean initialized = false;
+	private LinkedList<Element> arguments = null;
+	
+	public Element(String name, int type){
 		this.name = name;
 		this.type = type;
+		if(type == Element.TYPE_FUNCTION)
+			arguments = new LinkedList<Element>();
 	}
 	
-	public void Element(String name, int type, int length){
-		this.name = name;
-		this.type = type;
-		this.length = length;
+	public void addArgument(Element e){
+		arguments.add(e);
+	}
+	
+	public LinkedList<Element> getArguments(){
+		return arguments;
+	}
+	
+	public void setInitialized(boolean v){
+		initialized = v;
+	}
+	
+	public boolean isInitialized(){
+		return initialized;
 	}
 	
 	public String getName(){
 		return name;
-	}
-	
-	public int getLength(){
-		return length;
 	}
 	
 	public int getType(){
@@ -39,13 +49,14 @@ public class Element {
 	public String toString() {
 		
 		StringBuilder sb = new StringBuilder();
-		sb.append("ELEMENT>");
+		sb.append("[ELEMENT ");
 		sb.append("Name: ");
 		sb.append(name);
 		sb.append("\tType: ");
 		sb.append(type_name[type]);
-		sb.append("\tLength: ");
-		sb.append(length);
+		sb.append("\t Status: ");
+		sb.append((initialized)? "Initialized":"Not Initialized");
+		sb.append(" ]");
 		return sb.toString();
 		
 	}

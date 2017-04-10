@@ -1,0 +1,23 @@
+module program1{
+	banana = 1;
+	data=[banana]; //vector of 100 integers
+	mx = 2; //attribute mx
+	mn = 3; //attribute mn
+	
+	function det(d[]){
+		i=0;
+		M=d.size-1;
+		while(i.size<M.size){
+			a=d[i];i=i+1;b=-d[i];
+			mx= library1.max(a,b);
+			mn= library1.min(a,b);
+		}
+	}
+	
+	function main(){
+		det = 2;
+		det(data);
+		io.println("max:",mx);
+		io.println("min:",mn);
+	}
+}

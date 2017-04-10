@@ -7,7 +7,7 @@ Module <Identificador>
 
 Declaration
   Variable
-  ArrayDeclaration | NumericDeclaration
+  (ArrayDeclaration | NumericDeclaration)?
 
 NumericDeclaration
   Sign

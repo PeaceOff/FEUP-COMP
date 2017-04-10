@@ -12,7 +12,13 @@ import java.io.*;
 import java.util.*;
 
 public class Simple2
-{  public static void main(String args [])  {    if(args.length < 1){      System.out.println("Pease Feed me with a filename.");      System.exit(1);    }     //Feed me with one file :3    try    {      Simple2 parser = new Simple2(new FileInputStream(args[0]));      SimpleNode n = parser.Start();      n.dump("");      System.out.println("Thank you.");    }catch (FileNotFoundException e){      System.out.println("File Error!");      e.printStackTrace();    }    catch (Exception e)    {      e.printStackTrace();      System.out.println("Oops.");      System.out.println(e.getMessage());    }  }
+{  public static void main(String args [])  {    if(args.length < 1){      System.out.println("Please Feed me with a filename.");      System.exit(1);    }     //Feed me with one file :3    try    {      Simple2 parser = new Simple2(new FileInputStream(args[0]));      SimpleNode n = parser.Start();      n.dump("");
+
+	  SymbolTableBuilder stb = new SymbolTableBuilder();
+	  n.jjtAccept(stb,null);
+	  System.out.println(SymbolTable.getTable().toString());
+	  System.out.println(ErrorManager.getString());
+      System.out.println("Thank you.");    }catch (FileNotFoundException e){      System.out.println("File Error!");      e.printStackTrace();    }    catch (Exception e)    {      e.printStackTrace();      System.out.println("Oops.");      System.out.println(e.getMessage());    }  }
 
 /*
   public void build_symbol_table(SimpleNode node) {
@@ -78,18 +84,18 @@ SimpleNode Start() : { }
 void Module() : {Token t1;}
 {
   <MODULE> t1 = <ID> <LCHAVETA> (Declaration())* (Function())* <RCHAVETA>
-  {jjtThis.value = t1.image;}
+  {jjtThis.value = t1.image;jjtThis.line = t1.beginLine;}
 }
 
-void Declaration(): {} //FIRST: First(ArrayElement, ScalarElement) <ASSIGN> <PVIRG>
+void Declaration(): {Token t1;} //FIRST: First(ArrayElement, ScalarElement) <ASSIGN> <PVIRG>
 {
-  (Element()) (<ASSIGN> ( ArrayDeclaration() | NumericDeclaration()))? <PVIRG> // E (= ([100] | -? Integer)   )?  E[] = [100]
+  (Element()) (t1 = <ASSIGN> ( ArrayDeclaration() | NumericDeclaration()) {jjtThis.line = t1.beginLine;})? <PVIRG> // E (= ([100] | -? Integer)   )?  E[] = [100]
 }
 
 void NumericDeclaration() : {Token t1, sign;}
 {
-  (sign = <ADDSUB_OP>{jjtThis.value=sign.image;}#Sign)?
-  (t1 = <INTEGER> {jjtThis.value = t1.image;}#Constant)
+  (sign = <ADDSUB_OP>{jjtThis.value=sign.image;jjtThis.line = sign.beginLine;}#Sign)?
+  (t1 = <INTEGER> {jjtThis.value = t1.image;jjtThis.line = t1.beginLine;}#Constant)
 }
 
 void ArrayDeclaration() : {}
@@ -100,14 +106,15 @@ void ArrayDeclaration() : {}
 void Function() : {Token t1;} //Fisrt FUNCTION!
 {
   <FUNCTION> t1 = FunctionDecl() FunctionParameters() <LCHAVETA>Stmtlst()<RCHAVETA> // (ElementArray()? t1=FunctionReturn(t1))?
-  {jjtThis.value = t1.image;}
+  {jjtThis.value = t1.image;jjtThis.line = t1.beginLine;}
 }
 
 Token FunctionDecl()#Return : {Token t1, t2 = null;}
 {
 t1 = <ID> ( (ElementArray() {/*Mark as array*/})? (t2 = FunctionReturn()))? //Mark as array
   {if(t2 != null){
-    jjtThis.value = t1;
+    jjtThis.value = t1.image;
+    jjtThis.line = t1.beginLine;
     return t2;
   }else{
     jjtThis.value = null;
@@ -134,7 +141,7 @@ void Varlist()#void : {}
 void Element() #Variable :{Token t1;}
 {
   t1 = <ID> (ElementArray() {/*mark as array    */})? //A ou A[]    A->ElementArray
-  {jjtThis.value = t1.image;}
+  {jjtThis.value = t1.image;jjtThis.line = t1.beginLine;}
 }
 
 void ElementArray():{}
@@ -204,7 +211,7 @@ void Rhs()#CalcOP(>1): {Token t1;}
 {
   (Term() (( (t1 = <ARITH_OP>) | (t1 = <BITWISE_OP>) | (t1 = <ADDSUB_OP>) ) Term()
             {
-              jjtThis.value = t1.image;
+              jjtThis.value = t1.image;jjtThis.line = t1.beginLine;
             }
           )?)
   | ArrayDeclaration()
@@ -212,24 +219,24 @@ void Rhs()#CalcOP(>1): {Token t1;}
 
 void ArraySize()#void : {Token t1;}
 {
- ( ArraySizeAux() | (t1 = <INTEGER>{jjtThis.value = t1.image;}#Constant))
+ ( ArraySizeAux() | (t1 = <INTEGER>{jjtThis.value = t1.image;jjtThis.line = t1.beginLine;}#Constant))
 
 }
 
 void ArraySizeAux()#Access : {Token t1;}
 {
-  t1 = <ID> {jjtThis.value = t1.image;}
+  t1 = <ID> {jjtThis.value = t1.image; jjtThis.line = t1.beginLine;}
   ScalarAccess2()
 }
 
 void Term() : {Token s1, t1;}
 {
-  (s1 = <ADDSUB_OP> {jjtThis.value = s1.image;} #Sign)? (t1 = <INTEGER> {jjtThis.value = t1.image;} #Integer |  CallArray()) //CallArray -> Call() | ArrayOrScalar()
+  (s1 = <ADDSUB_OP> {jjtThis.value = s1.image;jjtThis.line = s1.beginLine;} #Sign)? (t1 = <INTEGER> {jjtThis.value = t1.image;jjtThis.line = t1.beginLine;} #Integer |  CallArray()) //CallArray -> Call() | ArrayOrScalar()
 }
 
 boolean CallArray()#Access : {Token t1; boolean call;}
 {
-  t1 = <ID> {jjtThis.value = t1;}
+  t1 = <ID> {jjtThis.value = t1.image;jjtThis.line = t1.beginLine;}
   call = CallArray2() //ID.Size
   {
     if(call){
@@ -246,7 +253,7 @@ boolean CallArray2()#void : {Token t;}
   (
   (ArrayXAccess())
   | Call2(){return true;}
-  | ("." ((t = <ID>{jjtThis.value = t.image;}#CallName Call2(){return true;}) | (<SIZE>)#Size))?
+  | ("." ((t = <ID>{jjtThis.value = t.image;jjtThis.line = t.beginLine;}#CallName Call2(){return true;}) | (<SIZE>)#Size))?
   )
   {return false;}
 }
@@ -256,6 +263,7 @@ void Exprtest() #ConditionOP : {Token t1;}
   <LPAR> Lhs() t1 = <RELA_OP> Rhs() <RPAR>
   {
     jjtThis.value = t1.image;
+    jjtThis.line = t1.beginLine;
   }
 }
 
@@ -286,16 +294,16 @@ void ArgumentList() : {}
 
 void Argument()#void : {Token t1;}
 {
-  ( (t1 = <ID>{jjtThis.value = t1;}#Variable)
-  | (t1 = <STRING>{jjtThis.value = t1;}#String)
-  | (t1 = <INTEGER>{jjtThis.value = t1;}#Constant) )
+  ( (t1 = <ID>{jjtThis.value = t1.image;jjtThis.line = t1.beginLine;}#Variable)
+  | (t1 = <STRING>{jjtThis.value = t1.image;jjtThis.line = t1.beginLine;}#String)
+  | (t1 = <INTEGER>{jjtThis.value = t1.image;jjtThis.line = t1.beginLine;}#Constant) )
 
 }
 
 void ArrayOrScalar()#Access : {Token t;}
 {
   t = <ID> (ArrayXAccess() | ScalarAccess2())
-  {jjtThis.value = t.image;}
+  {jjtThis.value = t.image;jjtThis.line = t.beginLine;}
 }
 
 void ArrayXAccess()#void: {}
@@ -303,9 +311,9 @@ void ArrayXAccess()#void: {}
   "[" Index() "]"
 }
 
-void ScalarAccess2()#Size: {}
+void ScalarAccess2()#void: {}
 {
-  ("." <SIZE>)?
+  ("." <SIZE> #Size)?
 }
 
 /*
@@ -316,7 +324,7 @@ void ScalarAccess() : {}
 
 void Index() #void : { Token t1;}
 {
-  (t1 = <ID>{ jjtThis.value = t1.image;}#Variable) | ( t1 = <INTEGER>{ jjtThis.value = t1.image;}#Constant)
+  (t1 = <ID>{ jjtThis.value = t1.image;jjtThis.line = t1.beginLine;}#Variable) | ( t1 = <INTEGER>{ jjtThis.value = t1.image;jjtThis.line = t1.beginLine;}#Constant)
 }
 
 /* Gram�tica , falta alterar algumas pequenas coisas para adaptar a portugues
