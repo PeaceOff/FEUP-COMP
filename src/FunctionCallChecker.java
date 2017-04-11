@@ -1,4 +1,4 @@
-public class AssignChecker implements Simple2Visitor {
+public class FunctionCallChecker implements Simple2Visitor {
 
   public Object visit(SimpleNode node, Object data){
     return null;
