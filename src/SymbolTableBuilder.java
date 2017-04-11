@@ -357,13 +357,19 @@ public class SymbolTableBuilder implements Simple2Visitor {
 		
 		SymbolTable.pushTable(current.getChildTable());
 		
-		
 		node.jjtGetChild(1).jjtAccept(this, data);
 		
-		if(node.jjtGetNumChildren() == 3)
-			node.jjtGetChild(2).jjtAccept(this, data);
-		
 		SymbolTable.popTable();
+		
+		
+		if(node.jjtGetNumChildren() == 3){
+			current.addChildTable(new SymbolTable(null));
+			SymbolTable.pushTable(current.getChildTable());
+			
+			node.jjtGetChild(2).jjtAccept(this, data);
+			
+			SymbolTable.popTable();
+		}
 		
 		return null;
 	}

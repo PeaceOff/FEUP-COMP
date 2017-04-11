@@ -12,6 +12,12 @@ module program1{
 			mx= library1.max(a,b);
 			mn= library1.min(a,b);
 		}
+		
+		if(b<c){
+			z=1;
+		}else{
+			k=0;
+		}
 	}
 	
 	function main(){
