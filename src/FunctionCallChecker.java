@@ -44,10 +44,13 @@ public class FunctionCallChecker implements Simple2Visitor {
 
 	public Object visit(ASTFunction node, Object data) {
 		
-		for(int i = 0; i < node.jjtGetNumChildren(); i++){
-			node.jjtGetChild(i).jjtAccept(this, data);
-		}
+		SymbolTable currentST = SymbolTable.getTable();
+		SymbolTable.pushTable(currentST.getChildTable());
 		
+		node.jjtGetChild(2).jjtAccept(this, data);
+		
+		SymbolTable.popTable();
+	
 		return null;
 	}
 
@@ -122,26 +125,45 @@ public class FunctionCallChecker implements Simple2Visitor {
 
 	public Object visit(ASTConditionOP node, Object data) {
 		
-		for(int i = 0; i < node.jjtGetNumChildren(); i++){
-			node.jjtGetChild(i).jjtAccept(this, data);
-		}
+		node.jjtGetChild(1).jjtAccept(this, data);
 		
 		return null;
 	}
 
 	public Object visit(ASTWhile node, Object data) {
 		
-		for(int i = 0; i < node.jjtGetNumChildren(); i++){
-			node.jjtGetChild(i).jjtAccept(this, data);
-		}
+		node.jjtGetChild(0).jjtAccept(this, data);
+		
+		SymbolTable currentST = SymbolTable.getTable();
+		SymbolTable.pushTable(currentST.getChildTable());
+		
+		node.jjtGetChild(1).jjtAccept(this, data);
+		
+		SymbolTable.popTable();
 		
 		return null;
 	}
 
 	public Object visit(ASTIf node, Object data) {
 		
-		for(int i = 0; i < node.jjtGetNumChildren(); i++){
-			node.jjtGetChild(i).jjtAccept(this, data);
+		SymbolTable current = SymbolTable.getTable();
+		
+		node.jjtGetChild(0).jjtAccept(this, data);
+		
+		SymbolTable.pushTable(current.getChildTable());
+		
+		node.jjtGetChild(1).jjtAccept(this, data);
+		
+		SymbolTable.popTable();
+		
+		
+		if(node.jjtGetNumChildren() == 3){
+			
+			SymbolTable.pushTable(current.getChildTable());
+			
+			node.jjtGetChild(2).jjtAccept(this, data);
+			
+			SymbolTable.popTable();
 		}
 		
 		return null;
@@ -149,16 +171,41 @@ public class FunctionCallChecker implements Simple2Visitor {
 
 	public Object visit(ASTCall node, Object data) {
 
-		if (node.jjtGetNumChildren() == 1) {// Se sim, entao e uma funcao do modulo
+		if (node.jjtGetNumChildren() <= 1) {// Se sim, entao e uma funcao do modulo
 			
 			//Elemento que representa a funcao a ser chamada
 			Element function = SymbolTable.getRootTable().getElement((String)node.jjtGetValue());
 			
-			//Lista de parametros que foi passada ha funcao
-			LinkedList<Element> parameters = (LinkedList<Element>)node.jjtGetChild(0).jjtAccept(this, data); // Retorna a lista de argumentos
+			if(function == null){
+				ErrorManager.addError(node.line,
+						"Wrong function call : Function " + node.jjtGetValue() + " does not exist!");
+				return null;
+			}
+				
 			
 			//Lista de parametros que a funcao recebe
 			LinkedList<Element> arguments = function.getArguments();
+			
+			if(arguments.size() == 0 && node.jjtGetNumChildren() == 0)
+				return null;
+			
+			
+			if(node.jjtGetNumChildren() == 0){
+				ErrorManager.addError(node.line,
+						"Function call on " + node.jjtGetValue() + " has illegal number of arguments! Should be " + arguments.size() + " argument(s).");
+				return null;
+			}
+			
+			//Lista de parametros que foi passada ha funcao
+			LinkedList<Element> parameters = (LinkedList<Element>)node.jjtGetChild(0).jjtAccept(this, data); // Retorna a lista de argumentos
+			
+			
+			
+			if(arguments.size() == 0){
+				ErrorManager.addError(node.line,
+						"Function call on " + node.jjtGetValue() + " has illegal number of arguments! This function does not accept any argument.");
+				return null;
+			}
 			
 			int menor = arguments.size();
 			
@@ -174,6 +221,10 @@ public class FunctionCallChecker implements Simple2Visitor {
 			
 			//verificar para cada um dos argumentos e parametros a sua compatibilidade
  			for(int i = 0; i < menor; i++){
+ 				
+ 				if(parameters.get(i) == null){
+ 					continue;
+ 				}
  				
  				//System.out.println(parameters.get(i).toString() + " | " + arguments.get(i).toString());
  				
