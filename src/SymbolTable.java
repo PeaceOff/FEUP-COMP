@@ -46,8 +46,9 @@ public class SymbolTable{
 	
 	public Element getElement(String name){ //Check Parent
 		if(_return != null)
-			if(_return.equals(name))
-				return _return;
+			if(_return.getName() != null)
+				if(_return.getName().equals(name))
+					return _return;
 		if(elements.containsKey(name)){
 			return elements.get(name);
 		}

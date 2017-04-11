@@ -20,7 +20,8 @@ module program1{
 		
 	}
 	
-	function foo(){
+	function c = foo(){
+		c = 1;
 	}
 	
 	function main(){
