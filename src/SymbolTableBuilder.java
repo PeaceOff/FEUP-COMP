@@ -184,7 +184,7 @@ public class SymbolTableBuilder implements Simple2Visitor {
 		
 		Element e2 = (Element)node.jjtGetChild(1).jjtAccept(this, data);
 		
-		if(e.getType() == Element.TYPE_UNDEFINED){
+		if(e.getType() == Element.TYPE_UNDEFINED && !e.isInitialized()){
 			
 			e.setType(e2.getType());
 			SymbolTable.getTable().addElement(e);
