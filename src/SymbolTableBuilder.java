@@ -87,7 +87,7 @@ public class SymbolTableBuilder implements Simple2Visitor {
 	}
 
 	public Object visit(ASTConstant node, Object data) {
-		return new Element(null, Element.TYPE_INT, true);
+		return new Element("", Element.TYPE_INT, true);
 	}
 
 	public Object visit(ASTArrayDeclaration node, Object data){
@@ -175,20 +175,49 @@ public class SymbolTableBuilder implements Simple2Visitor {
 		
 		
 		Element e = (Element)node.jjtGetChild(0).jjtAccept(this, data);
-		Element e2 = (Element)node.jjtGetChild(0).jjtAccept(this, data);
+		
+		if(e == null){
+			ErrorManager.addError(node.line,
+					"Left side var: Is Undefined!");
+			return null;
+		}
+		
+		Element e2 = (Element)node.jjtGetChild(1).jjtAccept(this, data);
 		
 		if(e.getType() == Element.TYPE_UNDEFINED){
 			
 			e.setType(e2.getType());
+			SymbolTable.getTable().addElement(e);
+		
+		}else if(e.getType() == Element.TYPE_FUNCTION){
 			
+			e = new Element(e.getName(), e2.getType());
+			
+		}
+		
+		if(e2 == null){
+			ErrorManager.addError(node.line,
+					"Error Var: Cannot Assign a variable to Undefined");
+			return null;
 		}
 		
 		if(!e2.isInitialized()){
+			ErrorManager.addError(node.line,
+					"Error Var:"+ e.getName() + " Cannot Assign a variable to Undefined");
+		}else if(e2.getType() == Element.TYPE_UNDEFINED || e.getType() == Element.TYPE_UNDEFINED){
 			
+			if(e.getType() == Element.TYPE_UNDEFINED)
+				e.setType(e2.getType());
+				
+				
+			e.setInitialized(e2.isInitialized());
+			
+		}else if(e2.getType() == e.getType()){
+			e.setInitialized(e2.isInitialized());
+		}else{
+			ErrorManager.addError(node.line,
+					"Right side var of type" + Element.getTypeName(e.getType()) + " Incompatible with " + Element.getTypeName(e2.getType()));
 		}
-		
-		e.setInitialized(e2.isInitialized());
-		
 		
 		return null;
 	}
@@ -203,19 +232,17 @@ public class SymbolTableBuilder implements Simple2Visitor {
 		if(lft.getType() == rght.getType())
 			return new Element("",lft.getType(),true);
 		
-		return null;
+		ErrorManager.addError(node.line,
+				"Right side var of type" + Element.getTypeName(lft.getType()) + " Incompatible with " + Element.getTypeName(rght.getType()));
+		
+		return new Element("",Element.TYPE_UNDEFINED);
 	}
 
 	public Object visit(ASTAccess node, Object data){
-		System.out.println("ACCESS");
-		System.out.println("ID:" + node.getId() + " " + (String)node.jjtGetValue());
 		SymbolTable st = SymbolTable.getTable();
 		Element e = st.getElement((String)node.jjtGetValue());
 		
-		if(e == null){
-			ErrorManager.addError(node.line,
-					"Error Var:" + node.jjtGetValue() + " Not declared!!");
-	
+		if(e == null){	
 			return new Element((String)node.jjtGetValue(), Element.TYPE_UNDEFINED);
 		}
 		
@@ -227,6 +254,7 @@ public class SymbolTableBuilder implements Simple2Visitor {
 		}else if(node.jjtGetNumChildren()== 1){
 			
 			 Element child = (Element)node.jjtGetChild(0).jjtAccept(this, null);
+			 
 			 if(!child.isInitialized()){
 				 Element childTable = st.getElement(child.getName());
 				 if(childTable == null){
@@ -238,7 +266,9 @@ public class SymbolTableBuilder implements Simple2Visitor {
 								"Error Var:" + child.getName() + " Variable Not Initialized!");
 						return null;
 				 }
+				 return childTable;
 			 }
+			 return child;
 		}
 		
 		return e;
@@ -261,7 +291,7 @@ public class SymbolTableBuilder implements Simple2Visitor {
 	}
 
 	public Object visit(ASTSize node, Object data){
-		return null;
+		return new Element("", Element.TYPE_INT ,true);
 	}
 
 	public Object visit(ASTConditionOP node, Object data){
@@ -270,6 +300,7 @@ public class SymbolTableBuilder implements Simple2Visitor {
 		if(lft == null){
 			ErrorManager.addError(node.line,
 					"Left side var: Is Undefined!");
+			return null;
 		}else if(!lft.isInitialized()){
 			ErrorManager.addError(node.line,
 					"Left side var:" + lft.getName() + " Variable Isn't Initialized!");
@@ -277,14 +308,18 @@ public class SymbolTableBuilder implements Simple2Visitor {
 		
 		
 		Element rght = (Element)node.jjtGetChild(1).jjtAccept(this, true);
-		
+		if(rght == null){
+			ErrorManager.addError(node.line,
+					"Right side var: Is Undefined!");
+			return null;
+		}
 		if(!rght.isInitialized()){
 			ErrorManager.addError(node.line,
 					"Left side var:" + lft.getName() + " Variable Isn't Initialized!");
 		}else if(rght.getType() != Element.TYPE_UNDEFINED){
 			if(lft.getType() != rght.getType())
 				ErrorManager.addError(node.line,
-						"Right side var of type" + Element.getTypeName(lft.getType()) + "Incompatible with" + Element.getTypeName(rght.getType()));
+						"Right side var of type" + Element.getTypeName(lft.getType()) + " Incompatible with " + Element.getTypeName(rght.getType()));
 		}
 		
 		return null;

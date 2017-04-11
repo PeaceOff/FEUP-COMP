@@ -178,9 +178,9 @@ void Stmt() #void : {}
   While() | If() | AssignOrCall() <PVIRG> //AssignCall -> Assign() Call() =
 }
 
-void AssignOrCall()#Assign(>1) : {boolean res;}
+void AssignOrCall()#Assign(>1) : {Token t1; boolean res;}
 {
-  res = CallArray() {if(res) return;} <ASSIGN> Rhs()
+  res = CallArray() {if(res) return;} t1 = <ASSIGN> {jjtThis.value = t1.image; jjtThis.line=t1.beginLine;} Rhs()
 }
 //--------------------------------------------------------
 

@@ -1,14 +1,13 @@
 module program1{
-	banana;
-	data=[banana]; //vector of 100 integers
+	data=[100]; //vector of 100 integers
 	mx = 2; //attribute mx
 	mn = 3; //attribute mn
-	naoInicializadoPah;
 	
 	function det(d[],a){
 		i=0;
 		M=d.size-1;
-		while(i.size<M.size){
+		
+		while(i<M){
 			a=d[i];i=i+1;b=-d[i];
 			mx= library1.max(a,b);
 			mn= library1.min(a,b);

@@ -105,7 +105,7 @@ public class SymbolTable{
 			Element elmnt = entry.getValue();
 			
 			sb.append(Utils.getTab());
-			sb.append("\t");
+			sb.append("|\t");
 			sb.append(identifier);
 			sb.append(" > ");
 			sb.append(elmnt);
