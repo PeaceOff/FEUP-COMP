@@ -1,8 +1,9 @@
 module program1{
-	banana = 1;
+	banana;
 	data=[banana]; //vector of 100 integers
 	mx = 2; //attribute mx
 	mn = 3; //attribute mn
+	naoInicializadoPah;
 	
 	function det(d[],a){
 		i=0;
