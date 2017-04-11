@@ -21,6 +21,12 @@ public class ErrorManager {
 		return sb.toString();
 	}
 	
+	public static int getErrorCount() {
+		return errors.size();
+	}
 	
+	public static void clearErrors() {
+		errors.clear();
+	}
 	
 }

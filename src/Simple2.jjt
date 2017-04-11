@@ -14,11 +14,17 @@ import java.util.*;
 public class Simple2
 {
 	public static boolean split = false;
-	  public static void main(String args [])  {    if(args.length < 1){      System.out.println("Please Feed me with a filename.");      System.exit(1);    }     //Feed me with one file :3    try    {      Simple2 parser = new Simple2(new FileInputStream(args[0]));      SimpleNode n = parser.Start();      n.dump("");
+	  public static void main(String args [])  {    if(args.length < 1){      System.out.println("Please Feed me with a filename.");      System.exit(1);    }     //Feed me with one file :3    try    {      Simple2 parser = new Simple2(new FileInputStream(args[0]));      SimpleNode root = parser.Start();      root.dump("");
 
 	  SymbolTableBuilder stb = new SymbolTableBuilder();
-	  n.jjtAccept(stb,null);
+	  root.jjtAccept(stb,null);
 	  System.out.println(SymbolTable.getTable().toString());
+	  System.out.println(ErrorManager.getString());
+	  
+	  System.out.println("Beginning Function Call Checking!");
+	  ErrorManager.clearErrors();
+	  FunctionCallChecker fcc = new FunctionCallChecker();
+	  root.jjtAccept(fcc,null);
 	  System.out.println(ErrorManager.getString());
       System.out.println("Thank you.");    }catch (FileNotFoundException e){      System.out.println("File Error!");      e.printStackTrace();    }    catch (Exception e)    {      e.printStackTrace();      System.out.println("Oops.");      System.out.println(e.getMessage());    }  }
 

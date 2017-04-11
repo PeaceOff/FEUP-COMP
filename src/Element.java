@@ -30,6 +30,31 @@ public class Element {
 		this.initialized = inialized;
 	}
 	
+	public String get_type_string(){
+		
+		switch(this.type) {
+		case TYPE_UNDEFINED:
+			return "Undefined";
+		case TYPE_INT:
+			return "Integer";
+		case TYPE_ARRAY:
+			return "Array";
+		case TYPE_FUNCTION:
+			return "Function";
+			default:
+				return "No type";
+			}
+		
+	}
+	
+	public boolean compare(Element e){
+		
+		if(this.type == e.type)
+			return true;
+		
+		return false;
+	}
+	
 	public Element getReturn(){
 		return _return;
 	}
