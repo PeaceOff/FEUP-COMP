@@ -225,7 +225,31 @@ public class SymbolTableBuilder implements Simple2Visitor {
 	public Object visit(ASTCalcOP node, Object data){
 		
 		Element lft = (Element)node.jjtGetChild(0).jjtAccept(this, data);
-		Element rght = (Element)node.jjtGetChild(0).jjtAccept(this, data);
+		Element rght = (Element)node.jjtGetChild(1).jjtAccept(this, data);
+		
+		
+		if(!lft.isInitialized()){
+			
+			if(SymbolTable.getTable().getElement(lft.getName()) == null)
+				ErrorManager.addError(node.line,
+						"Left Side Var:" + lft.getName() + " Is Undefined");
+			else
+				ErrorManager.addError(node.line,
+						"Left Side Var:" + lft.getName() + " Not Initialized");
+
+		}
+		
+		if(!rght.isInitialized()){
+			
+			if(SymbolTable.getTable().getElement(rght.getName()) == null)
+				ErrorManager.addError(node.line,
+						"Right Side Var:" + rght.getName() + " Is Undefined");
+			else
+				ErrorManager.addError(node.line,
+						"Right Side Var:" + rght.getName() + " Not Initialized");
+			
+		}
+		
 		if(lft.getType() == Element.TYPE_UNDEFINED || lft.getType() == Element.TYPE_UNDEFINED){
 			return new Element("",Element.TYPE_UNDEFINED,true);
 		}
@@ -303,7 +327,7 @@ public class SymbolTableBuilder implements Simple2Visitor {
 			return null;
 		}else if(!lft.isInitialized()){
 			ErrorManager.addError(node.line,
-					"Left side var:" + lft.getName() + " Variable Isn't Initialized!");
+					"Left side var:" + lft.getName() + " Isn't Initialized!");
 		}
 		
 		
@@ -315,7 +339,7 @@ public class SymbolTableBuilder implements Simple2Visitor {
 		}
 		if(!rght.isInitialized()){
 			ErrorManager.addError(node.line,
-					"Left side var:" + lft.getName() + " Variable Isn't Initialized!");
+					"Right side var:" + rght.getName() + " Isn't Initialized!");
 		}else if(rght.getType() != Element.TYPE_UNDEFINED){
 			if(lft.getType() != rght.getType())
 				ErrorManager.addError(node.line,

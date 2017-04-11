@@ -2,7 +2,7 @@ module program1{
 	data=[100]; //vector of 100 integers
 	mx = 2; //attribute mx
 	mn = 3; //attribute mn
-	
+	k;
 	function det(d[],a){
 		i=0;
 		M=d.size-1;
@@ -12,8 +12,8 @@ module program1{
 			mx= library1.max(a,b);
 			mn= library1.min(a,b);
 		}
-		
-		if(b<c){
+		b=1;
+		if(b<1+2){
 			z=1;
 		}else{
 			k=0;
