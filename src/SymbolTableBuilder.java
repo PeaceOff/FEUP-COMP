@@ -192,7 +192,7 @@ public class SymbolTableBuilder implements Simple2Visitor {
 		}else if(e.getType() == Element.TYPE_FUNCTION){
 			
 			e = new Element(e.getName(), e2.getType());
-			
+			SymbolTable.getTable().addElement(e);
 		}
 		
 		if(e2 == null){
@@ -250,10 +250,10 @@ public class SymbolTableBuilder implements Simple2Visitor {
 			
 		}
 		
-		if(lft.getType() == Element.TYPE_UNDEFINED || lft.getType() == Element.TYPE_UNDEFINED){
+		if(lft.getType() == Element.TYPE_UNDEFINED || rght.getType() == Element.TYPE_UNDEFINED){
 			return new Element("",Element.TYPE_UNDEFINED,true);
 		}
-		if(lft.getType() == rght.getType())
+		if(lft.getType() == rght.getType()) 
 			return new Element("",lft.getType(),true);
 		
 		ErrorManager.addError(node.line,
@@ -399,6 +399,7 @@ public class SymbolTableBuilder implements Simple2Visitor {
 	}
 
 	public Object visit(ASTCall node, Object data){
+		
 		return new Element("",Element.TYPE_UNDEFINED, true);
 	}
 

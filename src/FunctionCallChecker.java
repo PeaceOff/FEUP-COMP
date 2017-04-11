@@ -167,7 +167,7 @@ public class FunctionCallChecker implements Simple2Visitor {
 		}
 		
 		return null;
-	}
+	} 
 
 	public Object visit(ASTCall node, Object data) {
 

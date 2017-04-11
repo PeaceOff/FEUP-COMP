@@ -12,7 +12,7 @@ public class Element {
 	public static String getTypeName(int type){
 		return type_name[type];
 	}
-	
+	 
 	private int type = 0;
 	private String name;
 	private boolean initialized = false;

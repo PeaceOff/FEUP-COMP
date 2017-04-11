@@ -9,7 +9,7 @@ public class SymbolTable{
 	private static LinkedList<SymbolTable> symbolTables = new LinkedList<SymbolTable>();
 	public static SymbolTable popTable(){
 		return symbolTables.removeFirst();
-	}
+	} 
 	
 	public static SymbolTable getTable(){
 		return symbolTables.getFirst();

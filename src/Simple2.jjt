@@ -26,6 +26,12 @@ public class Simple2
 	  FunctionCallChecker fcc = new FunctionCallChecker();
 	  root.jjtAccept(fcc,null);
 	  System.out.println(ErrorManager.getString());
+
+	  System.out.println("Beginning Assign Checking!");
+	  ErrorManager.clearErrors();
+	  AssignChecker acc = new AssignChecker();
+	  root.jjtAccept(acc,null);
+	  System.out.println(ErrorManager.getString()); 
       System.out.println("Thank you.");    }catch (FileNotFoundException e){      System.out.println("File Error!");      e.printStackTrace();    }    catch (Exception e)    {      e.printStackTrace();      System.out.println("Oops.");      System.out.println(e.getMessage());    }  }
 
 /*
