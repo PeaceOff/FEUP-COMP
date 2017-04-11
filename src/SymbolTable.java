@@ -79,6 +79,11 @@ public class SymbolTable{
 		elements.put(e.getName(), e);
 	}
 	
+	public void addParameters(LinkedList<Element> elements){
+		for(Element e : elements)
+			parameters.put(e.getName(), e);
+	}
+	
 	public void addParameter(Element e){
 		parameters.put(e.getName(), e);
 	}
@@ -86,7 +91,7 @@ public class SymbolTable{
 	private String printMap (String name, HashMap<String, Element> map){
 		StringBuilder sb = new StringBuilder();
 		sb.append(Utils.getTab());
-		sb.append("Group: ");
+		sb.append("|");
 		sb.append(name);
 		sb.append("\n");
 		
@@ -115,10 +120,16 @@ public class SymbolTable{
 		
 		StringBuilder sb = new StringBuilder();
 		
+		sb.append(Utils.getTab());
 		
-		sb.append((function)? "Function: " : "Module: ");
-		sb.append(name);
+		if(name != null){
+			sb.append((function)? "Function: " : "Module: ");
+			sb.append(name);
+		}else{
+			sb.append("<->Scope<->\n");
+		}
 		
+		Utils.tabIndex++;
 		if(function){
 			sb.append("\tReturn: ");
 			sb.append((_return==null)? "void" : _return.toString());
@@ -128,7 +139,9 @@ public class SymbolTable{
 			sb.append("\n");
 		
 		sb.append(printMap("Locals", elements));
-		Utils.tabIndex++;
+		sb.append(Utils.getTab());
+		sb.append("------------------------------------\n");
+		
 		
 		for(SymbolTable s : children){
 			sb.append(s.toString());

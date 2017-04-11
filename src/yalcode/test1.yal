@@ -4,7 +4,7 @@ module program1{
 	mx = 2; //attribute mx
 	mn = 3; //attribute mn
 	
-	function det(d[]){
+	function det(d[],a){
 		i=0;
 		M=d.size-1;
 		while(i.size<M.size){

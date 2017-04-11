@@ -25,7 +25,7 @@ Variable
   ElementArray
 
 Statements
-  While | If | Call | Assign
+  (While | If | Call | Assign)*
 
 
 CalcOP

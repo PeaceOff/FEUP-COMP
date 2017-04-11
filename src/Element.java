@@ -13,6 +13,7 @@ public class Element {
 	private String name;
 	private boolean initialized = false;
 	private LinkedList<Element> arguments = null;
+	private Element _return;
 	
 	public Element(String name, int type){
 		this.name = name;
@@ -21,8 +22,27 @@ public class Element {
 			arguments = new LinkedList<Element>();
 	}
 	
+	public Element(String name, int type, boolean inialized){
+		this.name = name;
+		this.type = type;
+		if(type == Element.TYPE_FUNCTION)
+			arguments = new LinkedList<Element>();
+		this.initialized = inialized;
+	}
+	
+	public Element getReturn(){
+		return _return;
+	}
+	
+	public void setReturn(Element e){
+		_return = e;
+	}
 	public void addArgument(Element e){
 		arguments.add(e);
+	}
+	
+	public void addArguments(LinkedList<Element> e){
+		arguments.addAll(e);
 	}
 	
 	public LinkedList<Element> getArguments(){

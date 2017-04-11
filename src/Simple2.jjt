@@ -12,7 +12,9 @@ import java.io.*;
 import java.util.*;
 
 public class Simple2
-{  public static void main(String args [])  {    if(args.length < 1){      System.out.println("Please Feed me with a filename.");      System.exit(1);    }     //Feed me with one file :3    try    {      Simple2 parser = new Simple2(new FileInputStream(args[0]));      SimpleNode n = parser.Start();      n.dump("");
+{
+	public static boolean split = false;
+	  public static void main(String args [])  {    if(args.length < 1){      System.out.println("Please Feed me with a filename.");      System.exit(1);    }     //Feed me with one file :3    try    {      Simple2 parser = new Simple2(new FileInputStream(args[0]));      SimpleNode n = parser.Start();      n.dump("");
 
 	  SymbolTableBuilder stb = new SymbolTableBuilder();
 	  n.jjtAccept(stb,null);
@@ -234,16 +236,23 @@ void Term() : {Token s1, t1;}
   (s1 = <ADDSUB_OP> {jjtThis.value = s1.image;jjtThis.line = s1.beginLine;} #Sign)? (t1 = <INTEGER> {jjtThis.value = t1.image;jjtThis.line = t1.beginLine;} #Integer |  CallArray()) //CallArray -> Call() | ArrayOrScalar()
 }
 
-boolean CallArray()#Access : {Token t1; boolean call;}
+boolean CallArrayT(Token t1)#Call(Simple2.split) : {boolean call;}
+{	
+  	call = CallArray2() //ID.Size
+
+  	{jjtThis.value = t1.image;jjtThis.line = t1.beginLine;}
+  	{
+    	return call;
+  	}
+}
+
+boolean CallArray()#Access(!Simple2.split) : {Token t1; boolean call;}
 {
-  t1 = <ID> {jjtThis.value = t1.image;jjtThis.line = t1.beginLine;}
-  call = CallArray2() //ID.Size
+  t1 = <ID>
+  
+  call = CallArrayT(t1)
   {
-    if(call){
-    jjtThis.id = Simple2TreeConstants.JJTCALL;
-    }else{
-      jjtThis.id = Simple2TreeConstants.JJTACCESS;
-    }
+    jjtThis.value = t1.image;jjtThis.line = t1.beginLine;
     return call;
   }
 }
@@ -252,10 +261,10 @@ boolean CallArray2()#void : {Token t;}
 {
   (
   (ArrayXAccess())
-  | Call2(){return true;}
-  | ("." ((t = <ID>{jjtThis.value = t.image;jjtThis.line = t.beginLine;}#CallName Call2(){return true;}) | (<SIZE>)#Size))?
+  | Call2(){Simple2.split = true; return true;}
+  | ("." ((t = <ID>{jjtThis.value = t.image;jjtThis.line = t.beginLine;}#CallName Call2(){Simple2.split = true;return true;}) | (<SIZE>)#Size))?
   )
-  {return false;}
+  {Simple2.split=false; return false;}
 }
 
 void Exprtest() #ConditionOP : {Token t1;}
