@@ -58,6 +58,8 @@ public class SymbolTableBuilder implements Simple2Visitor {
 				}
 			}else{
 				ErrorManager.addError(node.line,
+						"Error Assigning Var:" + typeD.getName() + " Not Initialized!");
+				ErrorManager.addError(node.line,
 						"Error Assigning Var:" + typeV.getName() + " Cannot Assign a variable to Undefined");
 				//Error! Can't assign Undefined!
 			}
@@ -93,9 +95,9 @@ public class SymbolTableBuilder implements Simple2Visitor {
 		Element valid = (Element)node.jjtGetChild(0).jjtAccept(this, true);
 		
 		if(valid == null)
-			return new Element("", Element.TYPE_ARRAY, false);
+			return new Element(valid.getName(), Element.TYPE_ARRAY, false);
 		
-		return new Element("", Element.TYPE_ARRAY, valid.isInitialized());
+		return new Element(valid.getName(), Element.TYPE_ARRAY, valid.isInitialized());
 	}
 
 	public Object visit(ASTFunction node, Object data){
@@ -170,10 +172,37 @@ public class SymbolTableBuilder implements Simple2Visitor {
 	}
 
 	public Object visit(ASTAssign node, Object data){
+		
+		
+		Element e = (Element)node.jjtGetChild(0).jjtAccept(this, data);
+		Element e2 = (Element)node.jjtGetChild(0).jjtAccept(this, data);
+		
+		if(e.getType() == Element.TYPE_UNDEFINED){
+			
+			e.setType(e2.getType());
+			
+		}
+		
+		if(!e2.isInitialized()){
+			
+		}
+		
+		e.setInitialized(e2.isInitialized());
+		
+		
 		return null;
 	}
 
 	public Object visit(ASTCalcOP node, Object data){
+		
+		Element lft = (Element)node.jjtGetChild(0).jjtAccept(this, data);
+		Element rght = (Element)node.jjtGetChild(0).jjtAccept(this, data);
+		if(lft.getType() == Element.TYPE_UNDEFINED || lft.getType() == Element.TYPE_UNDEFINED){
+			return new Element("",Element.TYPE_UNDEFINED,true);
+		}
+		if(lft.getType() == rght.getType())
+			return new Element("",lft.getType(),true);
+		
 		return null;
 	}
 
@@ -187,7 +216,7 @@ public class SymbolTableBuilder implements Simple2Visitor {
 			ErrorManager.addError(node.line,
 					"Error Var:" + node.jjtGetValue() + " Not declared!!");
 	
-			return null;
+			return new Element((String)node.jjtGetValue(), Element.TYPE_UNDEFINED);
 		}
 		
 		if(node.jjtGetNumChildren() == 1 && e.getType() != Element.TYPE_ARRAY){
@@ -202,11 +231,12 @@ public class SymbolTableBuilder implements Simple2Visitor {
 				 Element childTable = st.getElement(child.getName());
 				 if(childTable == null){
 						ErrorManager.addError(node.line,
-								"Error Var:" + child.getName() + " Variable Not Declared!");
+								"Error Var:" + child.getName() + " not Declared!");
 						return null;
 				 }else if(!childTable.isInitialized()){
 						ErrorManager.addError(node.line,
 								"Error Var:" + child.getName() + " Variable Not Initialized!");
+						return null;
 				 }
 			 }
 		}
@@ -217,11 +247,13 @@ public class SymbolTableBuilder implements Simple2Visitor {
 	}
 
 	public Object visit(ASTTerm node, Object data){
-		return null;
+		
+		return (Element)node.jjtGetChild(node.jjtGetNumChildren()-1).jjtAccept(this, data);
+		
 	}
 
 	public Object visit(ASTInteger node, Object data){
-		return null;
+		return new Element("", Element.TYPE_INT, true);
 	}
 
 	public Object visit(ASTCallName node, Object data){
@@ -243,7 +275,17 @@ public class SymbolTableBuilder implements Simple2Visitor {
 					"Left side var:" + lft.getName() + " Variable Isn't Initialized!");
 		}
 		
-		Pair<Integer, Boolean> pair = (Pair<Integer, Boolean>)node.jjtGetChild(1).jjtAccept(this, true);
+		
+		Element rght = (Element)node.jjtGetChild(1).jjtAccept(this, true);
+		
+		if(!rght.isInitialized()){
+			ErrorManager.addError(node.line,
+					"Left side var:" + lft.getName() + " Variable Isn't Initialized!");
+		}else if(rght.getType() != Element.TYPE_UNDEFINED){
+			if(lft.getType() != rght.getType())
+				ErrorManager.addError(node.line,
+						"Right side var of type" + Element.getTypeName(lft.getType()) + "Incompatible with" + Element.getTypeName(rght.getType()));
+		}
 		
 		return null;
 	}
@@ -271,13 +313,28 @@ public class SymbolTableBuilder implements Simple2Visitor {
 	}
 
 	public Object visit(ASTIf node, Object data){
+		
+		SymbolTable current = SymbolTable.getTable();
+		
+		node.jjtGetChild(0).jjtAccept(this, data);
+		
+		current.addChildTable(new SymbolTable(null));
+		
+		SymbolTable.pushTable(current.getChildTable());
+		
+		
+		node.jjtGetChild(1).jjtAccept(this, data);
+		
+		if(node.jjtGetNumChildren() == 3)
+			node.jjtGetChild(2).jjtAccept(this, data);
+		
+		SymbolTable.popTable();
+		
 		return null;
 	}
 
 	public Object visit(ASTCall node, Object data){
-		System.out.println("Call!" + node.jjtGetValue());
-		
-		return null;
+		return new Element("",Element.TYPE_UNDEFINED, true);
 	}
 
 	public Object visit(ASTArgumentList node, Object data){

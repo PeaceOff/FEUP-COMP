@@ -2,12 +2,16 @@ import java.util.LinkedList;
 
 public class Element {
 	
-	public final String[] type_name = new String[]{"Undefined","Integer","Array","Function"};
+	private static final String[] type_name = new String[]{"Undefined","Integer","Array","Function"};
 	
 	public static final int TYPE_UNDEFINED = 0;
 	public static final int TYPE_INT = 1;
 	public static final int TYPE_ARRAY = 2;
 	public static final int TYPE_FUNCTION = 3;
+	
+	public static String getTypeName(int type){
+		return type_name[type];
+	}
 	
 	private int type = 0;
 	private String name;
@@ -76,6 +80,10 @@ public class Element {
 	
 	public void setInitialized(boolean v){
 		initialized = v;
+	}
+	
+	public void setType(int type){
+		this.type = type;
 	}
 	
 	public boolean isInitialized(){
