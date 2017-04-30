@@ -15,6 +15,7 @@ public class Element {
 	 
 	private int type = 0;
 	private String name;
+	private Object value;
 	private boolean initialized = false;
 	private LinkedList<Element> arguments = null;
 	private Element _return;
@@ -33,7 +34,15 @@ public class Element {
 			arguments = new LinkedList<Element>();
 		this.initialized = inialized;
 	}
-	
+	public Element(String name, int type, boolean inialized, Object value){
+		this.name = name;
+		this.type = type;
+		if(type == Element.TYPE_FUNCTION)
+			arguments = new LinkedList<Element>();
+		this.initialized = inialized;
+		this.value = value;
+	}
+
 	public String get_type_string(){
 		
 		switch(this.type) {
@@ -97,7 +106,11 @@ public class Element {
 	public int getType(){
 		return type;
 	}
-	
+
+	public Object getValue(){ return value; }
+
+	public void setValue(Object value){ this.value = value;}
+
 	@Override
 	public String toString() {
 		
@@ -109,6 +122,8 @@ public class Element {
 		sb.append(type_name[type]);
 		sb.append("\t Status: ");
 		sb.append((initialized)? "Initialized":"Not Initialized");
+		sb.append(" Value: ");
+		sb.append((value == null)? "Null": (String)value);
 		sb.append(" ]");
 		return sb.toString();
 		

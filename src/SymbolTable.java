@@ -2,8 +2,6 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
 
-import javafx.util.Pair;
-
 public class SymbolTable{
 	
 	private static LinkedList<SymbolTable> symbolTables = new LinkedList<SymbolTable>();
@@ -43,7 +41,11 @@ public class SymbolTable{
 		parameters = new HashMap<>();
 		this._return = _return;
 	}
-	
+
+	public LinkedList<Element> getElements(){
+		return new LinkedList<>(elements.values());
+	}
+
 	public Element getElement(String name){ //Check Parent
 		if(_return != null)
 			if(_return.getName() != null)

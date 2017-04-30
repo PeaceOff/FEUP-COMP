@@ -1,9 +1,5 @@
 import java.util.LinkedList;
 
-import com.sun.glass.ui.CommonDialogs.Type;
-
-import javafx.util.Pair;
-
 public class SymbolTableBuilder implements Simple2Visitor {
 	
 	
@@ -66,19 +62,30 @@ public class SymbolTableBuilder implements Simple2Visitor {
 		}else{
 			variableType = typeV.getType();
 		}
-		
+
 		Element e = null;
 		
 		e = new Element(typeV.getName(), variableType);
 		e.setInitialized(initialized);
-		
+
+		if(typeD != null){
+			e.setValue(typeD.getValue());
+		}
 		st.addElement(e);
 		
 		return null;
 	}
 
 	public Object visit(ASTNumericDeclaration node, Object data) {
-		return new Element("", Element.TYPE_INT);
+
+	    Element last;
+		last = (Element)node.jjtGetChild(node.jjtGetNumChildren() - 1).jjtAccept(this,null);
+
+		if(node.jjtGetNumChildren() == 2) {
+			last.setValue("-" + last.getValue());
+		}
+
+		return new Element("", Element.TYPE_INT, true, last.getValue());
 		//return new Pair<Integer, Boolean>(Element.TYPE_INT,true);
 	}
 
@@ -87,7 +94,7 @@ public class SymbolTableBuilder implements Simple2Visitor {
 	}
 
 	public Object visit(ASTConstant node, Object data) {
-		return new Element("", Element.TYPE_INT, true);
+		return new Element("", Element.TYPE_INT, true, node.value);
 	}
 
 	public Object visit(ASTArrayDeclaration node, Object data){
@@ -112,7 +119,7 @@ public class SymbolTableBuilder implements Simple2Visitor {
 		function.setInitialized(true);
 
 		SymbolTable currentST = SymbolTable.getTable();
-		
+
 		currentST.addElement(function);
 		
 		currentST.addChildTable(new SymbolTable(functionName, _return));
@@ -172,8 +179,7 @@ public class SymbolTableBuilder implements Simple2Visitor {
 	}
 
 	public Object visit(ASTAssign node, Object data){
-		
-		
+
 		Element e = (Element)node.jjtGetChild(0).jjtAccept(this, data);
 		
 		if(e == null){
@@ -307,7 +313,7 @@ public class SymbolTableBuilder implements Simple2Visitor {
 	}
 
 	public Object visit(ASTInteger node, Object data){
-		return new Element("", Element.TYPE_INT, true);
+		return new Element("", Element.TYPE_INT, true, node.value);
 	}
 
 	public Object visit(ASTCallName node, Object data){

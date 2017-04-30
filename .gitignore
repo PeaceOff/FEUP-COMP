@@ -18,3 +18,7 @@ src/Simple2.java
 .classpath
 .project
 /src/Simple2TokenManager.java
+/bin/
+.idea
+FEUP-COMP.iml
+*.yasmine

@@ -7,14 +7,38 @@ import java.util.*;
  * Tabela de simbolos
  * Array? Tamanho
  *
- */options{  static = true;  LOOKAHEAD = 1;  IGNORE_CASE = true;  MULTI = true;  VISITOR = true;}PARSER_BEGIN(Simple2)
+ */
+options
+{
+  static = true;
+  LOOKAHEAD = 1;
+  IGNORE_CASE = true;
+  MULTI = true;
+  VISITOR = true;
+}
+
+PARSER_BEGIN(Simple2)
+
 import java.io.*;
 import java.util.*;
 
 public class Simple2
-{
+{
+
 	public static boolean split = false;
-	  public static void main(String args [])  {    if(args.length < 1){      System.out.println("Please Feed me with a filename.");      System.exit(1);    }     //Feed me with one file :3    try    {      Simple2 parser = new Simple2(new FileInputStream(args[0]));      SimpleNode root = parser.Start();      root.dump("");
+	
+  public static void main(String args [])
+  {
+    if(args.length < 1){
+      System.out.println("Please Feed me with a filename.");
+      System.exit(1);
+    }
+     //Feed me with one file :3
+    try
+    {
+      Simple2 parser = new Simple2(new FileInputStream(args[0]));
+      SimpleNode root = parser.Start();
+      root.dump("");
 
 	  SymbolTableBuilder stb = new SymbolTableBuilder();
 	  root.jjtAccept(stb,null);
@@ -32,7 +56,26 @@ public class Simple2
 	  AssignChecker acc = new AssignChecker();
 	  root.jjtAccept(acc,null);
 	  System.out.println(ErrorManager.getString()); 
-      System.out.println("Thank you.");    }catch (FileNotFoundException e){      System.out.println("File Error!");      e.printStackTrace();    }    catch (Exception e)    {      e.printStackTrace();      System.out.println("Oops.");      System.out.println(e.getMessage());    }  }
+
+      System.out.println("Creating jasmine file...");
+
+      CodeSampler.createCodeSampler("../dummy.yasmine");
+      CodeGenerator cgn = new CodeGenerator();
+      root.jjtAccept(cgn, null);
+      CodeSampler.getCodeSampler().close();
+
+      System.out.println("Thank you.");
+    }catch (FileNotFoundException e){
+      System.out.println("File Error!");
+      e.printStackTrace();
+    }
+    catch (Exception e)
+    {
+      e.printStackTrace();
+      System.out.println("Oops.");
+      System.out.println(e.getMessage());
+    }
+  }
 
 /*
   public void build_symbol_table(SimpleNode node) {
@@ -49,7 +92,12 @@ public class Simple2
 
 		return 0;
     }
- */}PARSER_END(Simple2)<DEFAULT> SKIP : {
+ */
+}
+
+PARSER_END(Simple2)
+
+<DEFAULT> SKIP : {
 " "
 | "\t"
 | "\n"
