@@ -31,7 +31,11 @@ public class Simple2
 	  ErrorManager.clearErrors();
 	  AssignChecker acc = new AssignChecker();
 	  root.jjtAccept(acc,null);
-	  System.out.println(ErrorManager.getString()); 
+	  System.out.println(ErrorManager.getString());
+
+	  //Code building for jasmin
+      JasminCodeBuilder jcb = new JasminCodeBuilder();
+      root.jjtAccept(jcb, null);
       System.out.println("Thank you.");    }catch (FileNotFoundException e){      System.out.println("File Error!");      e.printStackTrace();    }    catch (Exception e)    {      e.printStackTrace();      System.out.println("Oops.");      System.out.println(e.getMessage());    }  }
 
 /*
