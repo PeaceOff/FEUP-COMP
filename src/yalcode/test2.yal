@@ -12,10 +12,9 @@ module program1{
 			mx= library1.max(a,b);
 			mn= library1.min(a,b);
 		}
-		u = foo(a);
 		
 		if(M < foo()){
-		 u= i;
+		 u= potata;
 		}
 		
 	}

@@ -55,7 +55,7 @@ public class Simple2
 	  ErrorManager.clearErrors();
 	  AssignChecker acc = new AssignChecker();
 	  root.jjtAccept(acc,null);
-	  System.out.println(ErrorManager.getString()); 
+	  System.out.println(ErrorManager.getString());
 
       System.out.println("Creating jasmine file...");
 
