@@ -9,7 +9,7 @@ import java.util.LinkedList;
 public class CodeSampler {
 
     private PrintWriter fw = null;
-
+    private static int lineNumber = 0;
     private static CodeSampler cs;
 
     public static CodeSampler getCodeSampler(){
@@ -18,6 +18,7 @@ public class CodeSampler {
 
     public static CodeSampler createCodeSampler(String filename){
         cs = new CodeSampler(filename);
+        lineNumber = 0;
         return cs;
     }
 
@@ -35,9 +36,9 @@ public class CodeSampler {
     }
 
     public void writeBeginModule(String name){
-       fw.print(".class public ");
-       fw.println(name);
-       fw.println(".super java/lang/Object");
+       pr(".class public ");
+       prln(name);
+       prln(".super java/lang/Object");
     }
 
     public void writeStaticVariables(LinkedList<Element> elements){
@@ -49,15 +50,52 @@ public class CodeSampler {
     private void writeStaticField(Element e){
         if(e.getType() != Element.TYPE_INT && e.getType() != Element.TYPE_ARRAY)
             return;
-        fw.print(".field static ");
-        fw.print(e.getName());
-        fw.print(" ");
-        fw.print((e.getType() == Element.TYPE_INT)? "I" : "[I");
+        pr(".field static ");
+        pr(e.getName());
+        pr(" ");
+        pr((e.getType() == Element.TYPE_INT)? "I" : "[I");
         if(e.getType() == Element.TYPE_INT && e.getValue() != null){
-            fw.print(" = ");
-            fw.println(e.getValue());
+            pr(" = ");
+            prln((String)e.getValue());
         }else{
-            fw.print("\n");
+            pr("\n");
         }
     }
+
+    private void pr(String s){
+        fw.print(s);
+    }
+
+    private void pr(Object s){
+
+        pr(s.toString());
+
+    }
+
+    private void prln(String s){
+        lineNumber++;
+        fw.println(s);
+    }
+
+    private void prln(Object s){
+        prln(s.toString());
+    }
+
+    private void writeStackAndLocals(int stack, int locals){
+        pr(".limit stack ");
+        prln(stack + "");
+        pr(".limit locals ");
+        prln(locals + "");
+    }
+
+    private void writeStaticInit(){
+        prln(".method static public <clinit>()V");
+
+    }
+
+    private void writeStaticInitEnd(){
+        prln("return");
+        prln(".end method");
+    }
+
 }
