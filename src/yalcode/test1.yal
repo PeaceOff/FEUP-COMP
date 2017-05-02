@@ -13,6 +13,16 @@ module program1{
 			mx= library1.max(a,b);
 			mn= library1.min(a,b);
 		}
+		while(i.size>M.size){
+		}
+		while(i.size<=M.size){
+		}
+		while(i.size>=M.size){
+		}
+		while(i.size==M.size){
+		}
+		while(i.size!=M.size){
+		}
 	}
 	
 	function main(){

@@ -25,6 +25,10 @@ public class CodeGenerator implements Simple2Visitor {
 		LinkedList<Element> elements = SymbolTable.getRootTable().getElements();
 
 		cs.writeStaticVariables(elements);
+		
+		for(int i = 0; i< node.jjtGetNumChildren(); i++){  //check
+			node.jjtGetChild(i).jjtAccept(this, data);
+		}
 
 		return null;
 	}
@@ -61,7 +65,11 @@ public class CodeGenerator implements Simple2Visitor {
 
 	@Override
 	public Object visit(ASTFunction node, Object data) {
-		// TODO Auto-generated method stub
+
+		for(int i = 0; i< node.jjtGetNumChildren(); i++){  //check
+			node.jjtGetChild(i).jjtAccept(this, data);
+		}
+		
 		return null;
 	}
 
@@ -91,7 +99,10 @@ public class CodeGenerator implements Simple2Visitor {
 
 	@Override
 	public Object visit(ASTStatements node, Object data) {
-		// TODO Auto-generated method stub
+
+		for(int i = 0; i< node.jjtGetNumChildren(); i++){  //check
+			node.jjtGetChild(i).jjtAccept(this, data);
+		}
 		return null;
 	}
 
@@ -151,7 +162,16 @@ public class CodeGenerator implements Simple2Visitor {
 
 	@Override
 	public Object visit(ASTWhile node, Object data) {
-		// TODO Auto-generated method stub
+		
+		CodeSampler cs = CodeSampler.getCodeSampler();
+		
+		//Write code for condition
+		ASTConditionOP cond_node = (ASTConditionOP)node.jjtGetChild(0);
+		
+		String condition = (String)cond_node.jjtGetValue();
+		
+		//Write code for statements
+		ASTStatements stat_node = (ASTStatements)node.jjtGetChild(1);
 		return null;
 	}
 

@@ -1,16 +1,15 @@
 import java.io.BufferedOutputStream;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
+import java.util.HashMap;
 import java.util.LinkedList;
 
-/**
- * Created by joao on 4/30/17.
- */
 public class CodeSampler {
 
     private PrintWriter fw = null;
     private static int lineNumber = 0;
-    private static CodeSampler cs;
+    private static CodeSampler cs = null;
+    private static HashMap<String,String> cond_map = new HashMap<String,String>();
 
     public static CodeSampler getCodeSampler(){
         return cs;
@@ -23,12 +22,22 @@ public class CodeSampler {
     }
 
     private CodeSampler(String fileName){
+    	
+    	if(cs != null)
+    		return;
+    	
         try {
             fw = new PrintWriter(fileName);
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
-
+        
+        cond_map.put(">", "if_icmpgt");
+        cond_map.put("<", "if_icmplt");
+        cond_map.put(">=", "if_icmpge");
+        cond_map.put("<=", "if_icmple");
+        cond_map.put("==", "if_icmpeq");
+        cond_map.put("!=", "if_icmpne");
     }
 
     public void close(){
@@ -62,6 +71,31 @@ public class CodeSampler {
         }
     }
 
+    public void writeWhileLoop(String cond){
+    	
+    	switch(cond){
+    	case ">":
+    		//if_icmpgt
+    		break;
+    	case "<":
+    		//if_icmplt
+    		break;
+    	case ">=":
+    		//if_icmpge
+    		break;
+    	case "<=":
+    		//if_icmple
+    		break;
+    	case "==":
+    		//if_icmpeq
+    		break;
+    	case "!=":
+    		//if_icmpne
+    		break;
+    	}
+    	//TODO
+    }
+    
     private void pr(String s){
         fw.print(s);
     }
@@ -96,6 +130,5 @@ public class CodeSampler {
     private void writeStaticInitEnd(){
         prln("return");
         prln(".end method");
-    }
-
+    } 
 }

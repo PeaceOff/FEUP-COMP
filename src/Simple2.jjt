@@ -59,7 +59,7 @@ public class Simple2
 
       System.out.println("Creating jasmine file...");
 
-      CodeSampler.createCodeSampler("../dummy.yasmine");
+      CodeSampler.createCodeSampler("../dummy.jasmine");
       CodeGenerator cgn = new CodeGenerator();
       root.jjtAccept(cgn, null);
       CodeSampler.getCodeSampler().close();
