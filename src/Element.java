@@ -19,7 +19,8 @@ public class Element {
 	private boolean initialized = false;
 	private LinkedList<Element> arguments = null;
 	private Element _return;
-	
+	private int jasIndex = 0;
+
 	public Element(String name, int type){
 		this.name = name;
 		this.type = type;
@@ -41,6 +42,14 @@ public class Element {
 			arguments = new LinkedList<Element>();
 		this.initialized = inialized;
 		this.value = value;
+	}
+
+	public void setJasIndex(int index){
+		jasIndex = index;
+	}
+
+	public int getJasIndex(){
+		return jasIndex;
 	}
 
 	public String get_type_string(){
@@ -111,11 +120,16 @@ public class Element {
 
 	public void setValue(Object value){ this.value = value;}
 
+	public String jas_getType(){
+		return (type == Element.TYPE_ARRAY)? "[I" : (type == TYPE_INT)? "I" : "_UNKNOWNTYPE_";
+	}
+
 	@Override
 	public String toString() {
 		
 		StringBuilder sb = new StringBuilder();
-		sb.append("[ELEMENT ");
+		sb.append("[ELEMENT");
+		sb.append("{"); sb.append(jasIndex); sb.append("}");
 		sb.append("Name: ");
 		sb.append(name);
 		sb.append("\tType: ");

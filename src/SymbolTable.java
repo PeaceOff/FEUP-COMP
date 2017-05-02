@@ -46,6 +46,14 @@ public class SymbolTable{
 		return new LinkedList<>(elements.values());
 	}
 
+	public LinkedList<Element> getParameters(){
+		return new LinkedList<>(parameters.values());
+	}
+
+	public String getName(){
+		return name;
+	}
+
 	public Element getElement(String name){ //Check Parent
 		if(_return != null)
 			if(_return.getName() != null)
@@ -155,7 +163,46 @@ public class SymbolTable{
 		
 		
 	}
-	
+
+	public int startNumbering(){
+		for (SymbolTable s : children) {
+			s.startNumbering(0);
+		}
+		return 0;
+	}
+
+	public int getLevel(){
+		if(parent == null)
+			return 0;
+
+		return 1 + parent.getLevel();
+	}
+
+	public int startNumbering(int n){
+
+		if(getLevel() == 1) {
+			LinkedList<Element> arguments = SymbolTable.getRootTable().getElement(name).getArguments();
+			for (Element e : arguments) {
+				e.setJasIndex(n++);
+			}
+		}
+
+		for(Element e : elements.values()){
+			e.setJasIndex(n++);
+		}
+
+		for(SymbolTable s: children) {
+			n = s.startNumbering(n);
+		}
+		return n;
+	}
+
+	public String jas_getReturnType(){
+		if(_return == null)
+			return "V";
+		else
+			return _return.jas_getType();
+	}
 	
 	
 }

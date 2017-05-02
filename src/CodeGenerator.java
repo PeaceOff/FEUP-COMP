@@ -25,9 +25,15 @@ public class CodeGenerator implements Simple2Visitor {
 		LinkedList<Element> elements = SymbolTable.getRootTable().getElements();
 
 		cs.writeStaticVariables(elements);
-		
+
+		boolean first = true;
+
+		cs.writeStaticInit();
 		for(int i = 0; i< node.jjtGetNumChildren(); i++){  //check
-			node.jjtGetChild(i).jjtAccept(this, data);
+			if(node.jjtGetChild(i).jjtAccept(this, data) == null && first){
+				first = false;
+				cs.writeEndMethod();
+			}
 		}
 
 		return null;
@@ -35,8 +41,16 @@ public class CodeGenerator implements Simple2Visitor {
 
 	@Override
 	public Object visit(ASTDeclaration node, Object data) {
-		// TODO Auto-generated method stub
-		return null;
+
+		Element leftSide = (Element)node.jjtGetChild(0).jjtAccept(this,data);
+
+		CodeSampler cs = CodeSampler.getCodeSampler();
+
+		cs.writeStaticInit();
+
+		
+
+		return "Declaration";
 	}
 
 	@Override

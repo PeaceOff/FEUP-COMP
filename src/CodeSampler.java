@@ -21,6 +21,12 @@ public class CodeSampler {
         return cs;
     }
 
+    private String methodName;
+
+    public String getMethodName(){
+        return methodName;
+    }
+
     private CodeSampler(String fileName){
     	
     	if(cs != null)
@@ -134,21 +140,34 @@ public class CodeSampler {
         prln(locals + "");
     }
 
-    private void writeStaticInit(){
+    public void writeStaticInit(){
         prln(".method static public <clinit>()V");
 
     }
 
-	private void writeMainMethos(){
+	private void writeMainMethod(){
 		prln(".method public static main([Ljava/lang/String;)V");
 	}	
 
-	private void writeMethodBegin(SymbolTable st){
+	public void createArrayStatic(){
+
+    }
+
+	public void writeBeginMethod(SymbolTable st){
 		pr(".method public static ");
-	//Fazer!!!		
+        pr(st.getName());
+        pr("(");
+
+        LinkedList<Element> parameters = st.getParameters();
+        for(Element e : parameters){
+           pr(e.jas_getType());
+        }
+        pr(")");
+        prln(st.jas_getReturnType());
+
 	}
 
-    private void writeEndMethod(){
+    public void writeEndMethod(){
         prln("return");
         prln(".end method");
     } 

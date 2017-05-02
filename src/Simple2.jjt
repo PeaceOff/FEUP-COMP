@@ -42,6 +42,7 @@ public class Simple2
 
 	  SymbolTableBuilder stb = new SymbolTableBuilder();
 	  root.jjtAccept(stb,null);
+	  SymbolTable.getTable().startNumbering();
 	  System.out.println(SymbolTable.getTable().toString());
 	  System.out.println(ErrorManager.getString());
 	  
