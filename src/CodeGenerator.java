@@ -30,7 +30,7 @@ public class CodeGenerator implements Simple2Visitor {
 
 		if(vars > 0)
 			cs.writeStaticInit();
-		for(int i = 0; i< node.jjtGetNumChildren(); i++){  //check
+		for(int i = 0; i< node.jjtGetNumChildren(); i++){ 
 			node.jjtGetChild(i).jjtAccept(this, data);
 			if(i == vars-1){
 				cs.writeEndMethod();
@@ -64,8 +64,18 @@ public class CodeGenerator implements Simple2Visitor {
 
 	@Override
 	public Object visit(ASTSign node, Object data) {
-		// TODO Auto-generated method stub
-		return null;
+		
+		String sign = (String)node.jjtGetValue();
+		
+		CodeSampler cs = CodeSampler.getCodeSampler();
+		
+		if((Boolean)data == false){
+			cs.jas_sign(sign);
+			return null;
+		}else{
+			return sign;
+		}
+		
 	}
 
 	@Override
@@ -91,7 +101,7 @@ public class CodeGenerator implements Simple2Visitor {
 		CodeSampler cs = CodeSampler.getCodeSampler();
 		cs.writeBeginMethod(SymbolTable.getTable());
 
-		for(int i = 0; i< node.jjtGetNumChildren(); i++){  //check
+		for(int i = 0; i< node.jjtGetNumChildren(); i++){  
 			node.jjtGetChild(i).jjtAccept(this, data);
 		}
 		cs.writeEndMethod();
@@ -134,7 +144,7 @@ public class CodeGenerator implements Simple2Visitor {
 	@Override
 	public Object visit(ASTStatements node, Object data) {
 
-		for(int i = 0; i< node.jjtGetNumChildren(); i++){  //check
+		for(int i = 0; i< node.jjtGetNumChildren(); i++){  
 			node.jjtGetChild(i).jjtAccept(this, data);
 		}
 		return null;
@@ -143,12 +153,21 @@ public class CodeGenerator implements Simple2Visitor {
 	@Override
 	public Object visit(ASTAssign node, Object data) {
 		
+		CodeSampler cs = CodeSampler.getCodeSampler();
+		
+		node.jjtGetChild(0).jjtAccept(this, false);	
+		node.jjtGetChild(1).jjtAccept(this, false);
+		
+		
 		return null;
 	}
 
 	@Override
 	public Object visit(ASTCalcOP node, Object data) {
-		// TODO Auto-generated method stub
+	
+		node.jjtGetChild(0).jjtAccept(this, false);
+		node.jjtGetChild(1).jjtAccept(this, false);
+		
 		return null;
 	}
 
@@ -181,7 +200,15 @@ public class CodeGenerator implements Simple2Visitor {
 
 	@Override
 	public Object visit(ASTTerm node, Object data) {
-		// TODO Auto-generated method stub
+				
+		if(node.jjtGetNumChildren() == 2){
+			node.jjtGetChild(0).jjtAccept(this, false); // sign
+			node.jjtGetChild(1).jjtAccept(this, false);
+		}else{
+			node.jjtGetChild(0).jjtAccept(this, false);
+		}
+			
+		
 		return null;
 	}
 

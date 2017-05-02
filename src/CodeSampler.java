@@ -262,6 +262,10 @@ public class CodeSampler {
     public void jas_iastore(){
         pr("iastore ");
     }
+    
+    public void jas_sign(String sign){
+    	prln(sign_map.get(sign));
+    }
 
     public void jas_putElement(Element e){
 
