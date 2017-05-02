@@ -207,7 +207,6 @@ public class CodeSampler {
     public void writeEndMethod(){
         prln("return");
         prln(".end method");
-
     }
 
     public void jas_ldc(String s){
