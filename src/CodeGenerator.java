@@ -122,7 +122,7 @@ public class CodeGenerator implements Simple2Visitor {
 
 	@Override
 	public Object visit(ASTAssign node, Object data) {
-		// TODO Auto-generated method stub
+		
 		return null;
 	}
 

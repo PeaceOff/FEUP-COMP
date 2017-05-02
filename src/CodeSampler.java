@@ -10,6 +10,7 @@ public class CodeSampler {
     private static int lineNumber = 1;
     private static CodeSampler cs = null;
     private static HashMap<String,String> cond_map = new HashMap<String,String>();
+    private static HashMap<String,String> sign_map = new HashMap<String,String>();
 
     public static CodeSampler getCodeSampler(){
         return cs;
@@ -37,13 +38,20 @@ public class CodeSampler {
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
+
+        cond_map.put(">", "if_icmpgt");
+        cond_map.put("<", "if_icmplt");
+        cond_map.put(">=", "if_icmpge");
+        cond_map.put("<=", "if_icmple");
+        cond_map.put("==", "if_icmpeq");
+        cond_map.put("!=", "if_icmpne");
         
-        cond_map.put(">", "if_icmple");
-        cond_map.put("<", "if_icmpge");
-        cond_map.put(">=", "if_icmplt");
-        cond_map.put("<=", "if_icmpgt");
-        cond_map.put("==", "if_icmpne");
-        cond_map.put("!=", "if_icmpeq");
+        
+        sign_map.put("+", "iadd");
+        sign_map.put("-", "isub");
+        sign_map.put("*", "imul");
+        sign_map.put("/", "idiv");
+
     }
 
     public void close(){
@@ -197,4 +205,6 @@ public class CodeSampler {
         prln("return");
         prln(".end method");
     } 
+    
+
 }
