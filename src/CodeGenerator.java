@@ -1,3 +1,5 @@
+import com.sun.org.apache.xpath.internal.operations.Bool;
+
 import java.util.LinkedList;
 
 public class CodeGenerator implements Simple2Visitor {
@@ -24,14 +26,13 @@ public class CodeGenerator implements Simple2Visitor {
 
 		LinkedList<Element> elements = SymbolTable.getRootTable().getElements();
 
-		cs.writeStaticVariables(elements);
+		int vars = cs.writeStaticVariables(elements);
 
-		boolean first = true;
-
-		cs.writeStaticInit();
+		if(vars > 0)
+			cs.writeStaticInit();
 		for(int i = 0; i< node.jjtGetNumChildren(); i++){  //check
-			if(node.jjtGetChild(i).jjtAccept(this, data) == null && first){
-				first = false;
+			node.jjtGetChild(i).jjtAccept(this, data);
+			if(i == vars-1){
 				cs.writeEndMethod();
 			}
 		}
@@ -42,15 +43,17 @@ public class CodeGenerator implements Simple2Visitor {
 	@Override
 	public Object visit(ASTDeclaration node, Object data) {
 
-		Element leftSide = (Element)node.jjtGetChild(0).jjtAccept(this,data);
+		Element leftSide = (Element)node.jjtGetChild(0).jjtAccept(this,true);
+		if(leftSide.getType() != Element.TYPE_ARRAY)
+			return null;
 
 		CodeSampler cs = CodeSampler.getCodeSampler();
 
-		cs.writeStaticInit();
+		node.jjtGetChild(1).jjtAccept(this,false);
 
-		
+		cs.jas_storestatic(leftSide);
 
-		return "Declaration";
+		return null;
 	}
 
 	@Override
@@ -67,23 +70,34 @@ public class CodeGenerator implements Simple2Visitor {
 
 	@Override
 	public Object visit(ASTConstant node, Object data) {
-		// TODO Auto-generated method stub
+		CodeSampler cs = CodeSampler.getCodeSampler();
+		cs.jas_ldc((String)node.jjtGetValue());
 		return null;
 	}
 
 	@Override
 	public Object visit(ASTArrayDeclaration node, Object data) {
-		// TODO Auto-generated method stub
+		node.jjtGetChild(0).jjtAccept(this,false);
+		CodeSampler.getCodeSampler().jas_newArray();
 		return null;
 	}
 
 	@Override
 	public Object visit(ASTFunction node, Object data) {
+		SymbolTable current = SymbolTable.getTable();
+
+		SymbolTable.pushTable(current.getChildTable());
+
+		CodeSampler cs = CodeSampler.getCodeSampler();
+		cs.writeBeginMethod(SymbolTable.getTable());
 
 		for(int i = 0; i< node.jjtGetNumChildren(); i++){  //check
 			node.jjtGetChild(i).jjtAccept(this, data);
 		}
-		
+		cs.writeEndMethod();
+
+		SymbolTable.popTable();
+
 		return null;
 	}
 
@@ -101,7 +115,13 @@ public class CodeGenerator implements Simple2Visitor {
 
 	@Override
 	public Object visit(ASTVariable node, Object data) {
-		// TODO Auto-generated method stub
+		Element e  = SymbolTable.getTable().getElement((String)node.value);
+
+		if((boolean)data)
+			return e;
+
+		CodeSampler.getCodeSampler().jas_loadElement(e);
+
 		return null;
 	}
 
@@ -133,8 +153,29 @@ public class CodeGenerator implements Simple2Visitor {
 	}
 
 	@Override
-	public Object visit(ASTAccess node, Object data) {
-		// TODO Auto-generated method stub
+	public Object visit(ASTAccess node, Object data) { //Adiciona Boolean
+		SymbolTable current = SymbolTable.getTable();
+		Element e = current.getElement((String)node.value);
+
+		if((boolean)data)
+			return e;
+
+		CodeSampler cs = CodeSampler.getCodeSampler();
+
+		cs.jas_loadElement(e);
+
+		if(e.getType() != Element.TYPE_ARRAY)
+			return null;
+
+
+		Object o = node.jjtGetChild(0).jjtAccept(this, false);
+		if(o != null)
+			if(o instanceof Boolean)
+				if((Boolean)o == false)
+					return null;
+
+		cs.jas_iaload();
+
 		return null;
 	}
 
@@ -146,7 +187,8 @@ public class CodeGenerator implements Simple2Visitor {
 
 	@Override
 	public Object visit(ASTInteger node, Object data) {
-		// TODO Auto-generated method stub
+		CodeSampler cs = CodeSampler.getCodeSampler();
+		cs.jas_ldc((String)node.jjtGetValue());
 		return null;
 	}
 
@@ -164,8 +206,8 @@ public class CodeGenerator implements Simple2Visitor {
 
 	@Override
 	public Object visit(ASTSize node, Object data) {
-		// TODO Auto-generated method stub
-		return null;
+		CodeSampler.getCodeSampler().jas_arrayLength();
+		return new Boolean(false);
 	}
 
 	@Override

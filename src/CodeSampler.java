@@ -22,10 +22,10 @@ public class CodeSampler {
         return cs;
     }
 
-    private String methodName;
+    private String moduleName;
 
-    public String getMethodName(){
-        return methodName;
+    public String getModuleName(){
+        return moduleName;
     }
 
     private CodeSampler(String fileName){
@@ -60,14 +60,17 @@ public class CodeSampler {
 
     public void writeBeginModule(String name){
        pr(".class public ");
-       prln(name);
+       prln(name); moduleName = name;
        prln(".super java/lang/Object");
     }
 
-    public void writeStaticVariables(LinkedList<Element> elements){
+    public int writeStaticVariables(LinkedList<Element> elements){
+        int vars = 0;
         for(Element e : elements){
             writeStaticField(e);
+            vars += (e.getType() == Element.TYPE_ARRAY || e.getType() == Element.TYPE_INT)? 1 : 0;
         }
+        return vars;
     }
 
     private void writeStaticField(Element e){
@@ -204,7 +207,91 @@ public class CodeSampler {
     public void writeEndMethod(){
         prln("return");
         prln(".end method");
-    } 
-    
 
+    }
+
+    public void jas_ldc(String s){
+        pr("ldc ");
+        prln(s);
+    }
+
+    public void jas_iload(int pos){
+        pr("iload ");
+        prln(pos);
+    }
+
+    public void jas_getstatic(Element e){
+        pr("getstatic ");
+        pr(moduleName);
+        pr("/");
+        pr(e.getName());
+        pr(" ");
+        prln(e.jas_getType());
+    }
+
+    public void jas_storestatic(Element e){
+        pr("putstatic ");
+        pr(moduleName);
+        pr("/");
+        pr(e.getName());
+        pr(" ");
+        prln(e.jas_getType());
+    }
+
+    public void jas_iaload(){
+        prln("iaload");
+    }
+
+    public void jas_aload(int pos){
+        pr("aload ");
+        prln(pos);
+    }
+
+    public void jas_arrayLength(){
+        prln("arraylength");
+    }
+
+    public void jas_newArray(){
+        prln("newarray int");
+    }
+
+    public void jas_istore(int n){
+        pr("istore ");
+        prln(n);
+    }
+
+    public void jas_iastore(){
+        pr("iastore ");
+    }
+
+    public void jas_putElement(Element e){
+
+        if(e.getType() == Element.TYPE_INT){
+            if(e.getJasIndex() != -1){
+                jas_istore(e.getJasIndex());
+            }else
+                jas_storestatic(e);
+        }else if(e.getType() == Element.TYPE_ARRAY){
+            if(e.getJasIndex() != -1){
+                jas_iastore();
+            }else
+                jas_storestatic(e);
+        }
+
+    }
+
+    public void jas_loadElement(Element e){
+        if(e.getType() == Element.TYPE_INT) {
+            if (e.getJasIndex() != -1)
+                jas_iload(e.getJasIndex());
+            else
+                jas_getstatic(e);
+
+        }else if(e.getType() == Element.TYPE_ARRAY){
+            if (e.getJasIndex() != -1)
+                jas_aload(e.getJasIndex());
+            else
+                jas_getstatic(e);
+        }
+    }
 }

@@ -47,7 +47,7 @@ public class SymbolTable{
 	}
 
 	public LinkedList<Element> getParameters(){
-		return new LinkedList<>(parameters.values());
+		return SymbolTable.getRootTable().getElement(name).getArguments();
 	}
 
 	public String getName(){

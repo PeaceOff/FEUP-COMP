@@ -19,7 +19,7 @@ public class Element {
 	private boolean initialized = false;
 	private LinkedList<Element> arguments = null;
 	private Element _return;
-	private int jasIndex = 0;
+	private int jasIndex = -1;
 
 	public Element(String name, int type){
 		this.name = name;

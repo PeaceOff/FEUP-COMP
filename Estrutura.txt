@@ -49,7 +49,7 @@ ConditionOP
   Access
   CalcOP | Term | ArrayDeclaration
 
-ArrayDeclaration
+ArrayDeclaration []
   Access(size) | Constant
 
 Variable
@@ -63,5 +63,11 @@ Call <ID>
   CallName?
   ArgumentList
 
-Access <ID>
+Access <ID> A  A[B] A[10] A.size
   (Variable|Constant) | Size
+
+
+Array:
+aload pos > Endereco para a pilha
+CarregamentoDoInteiro
+iaload > Coloca no topo o valor
