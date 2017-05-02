@@ -8,16 +8,16 @@ module program1{
 		i=0;
 		M=d.size-1;
 		a = 1 + a;
-		while(i.size<M.size){
+		while(i<M.size){
 			a=d[i];i=i+1;b=-d[i];
 			mx= library1.max(a,b);
 			mn= library1.min(a,b);
 		}
-		while(i.size>M.size){
+		while( i > funcaoXPTO()){
 		}
-		while(i.size<=M.size){
+		while(M.size <= 2){
 		}
-		while(i.size>=M.size){
+		while(M[1]>=M.size){
 		}
 		while(i.size==M.size){
 		}

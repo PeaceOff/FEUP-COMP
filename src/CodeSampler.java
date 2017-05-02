@@ -77,28 +77,53 @@ public class CodeSampler {
         }
     }
 
-    public void writeWhileLoop(ASTConditionOP cond_node){
+    public void writeWhileVariables(ASTConditionOP cond_node){
     	
-    	//comment("WHILE");
+    	ASTAccess left_node = (ASTAccess)cond_node.jjtGetChild(0);
+    	
+    	
+    	if(left_node.jjtGetNumChildren() == 0){//Variavel ou constante
+    		
+    		
+    		
+    	} else {//Acesso a um array
+    		
+    	}
+    	
+    	SimpleNode right_node = (SimpleNode)cond_node.jjtGetChild(1);
+    	
+    }
+    
+    public void writeWhileLoop(ASTConditionOP cond_node,ASTStatements stat_node,Simple2Visitor v){
+    	
+    	SymbolTable current = SymbolTable.getTable();
+    	
+    	comment("WHILE");
     	
     	String loop_label = "ll_" + lineNumber;
     	String end_loop_label = "el_" + lineNumber;
     	
+    	//Begin do while
     	pr(loop_label);
     	prln(" :");
     	
-    	//comment("Load variables");
-    	//TODO load das constantes
+    	comment("Load variables");
+    	writeWhileVariables(cond_node);
+
+    	//Write das condicoes
     	String condition = (String)cond_node.jjtGetValue();
     	pr(cond_map.get(condition));
     	pr(" ");
     	prln(end_loop_label);
     	
-    	//TODO print dos statemenst
+    	//Print statements
+    	SymbolTable.pushTable(current.getChildTable());
+    	stat_node.jjtAccept(v,null);
+    	SymbolTable.popTable();
     	
+    	//End while loop
     	pr("goto ");
     	prln(loop_label);
-    	
     	pr(end_loop_label);
     	prln(" :");
     }
@@ -124,6 +149,7 @@ public class CodeSampler {
     
     private void comment(String s){
     	
+    	lineNumber++;
     	fw.print(';');
     	fw.println(s);
     }

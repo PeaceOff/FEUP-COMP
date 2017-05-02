@@ -179,13 +179,10 @@ public class CodeGenerator implements Simple2Visitor {
 		
 		CodeSampler cs = CodeSampler.getCodeSampler();
 		
-		//Write code for condition
 		ASTConditionOP cond_node = (ASTConditionOP)node.jjtGetChild(0);
 		ASTStatements stat_node = (ASTStatements)node.jjtGetChild(1);
 		
-		cs.writeWhileLoop(cond_node);
-		
-		//Write code for statements
+		cs.writeWhileLoop(cond_node,stat_node,this);
 		
 		return null;
 	}
