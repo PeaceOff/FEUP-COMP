@@ -167,11 +167,12 @@ public class CodeGenerator implements Simple2Visitor {
 		
 		//Write code for condition
 		ASTConditionOP cond_node = (ASTConditionOP)node.jjtGetChild(0);
+		ASTStatements stat_node = (ASTStatements)node.jjtGetChild(1);
 		
-		String condition = (String)cond_node.jjtGetValue();
+		cs.writeWhileLoop(cond_node);
 		
 		//Write code for statements
-		ASTStatements stat_node = (ASTStatements)node.jjtGetChild(1);
+		
 		return null;
 	}
 

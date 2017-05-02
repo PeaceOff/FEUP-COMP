@@ -7,7 +7,7 @@ import java.util.LinkedList;
 public class CodeSampler {
 
     private PrintWriter fw = null;
-    private static int lineNumber = 0;
+    private static int lineNumber = 1;
     private static CodeSampler cs = null;
     private static HashMap<String,String> cond_map = new HashMap<String,String>();
 
@@ -17,7 +17,7 @@ public class CodeSampler {
 
     public static CodeSampler createCodeSampler(String filename){
         cs = new CodeSampler(filename);
-        lineNumber = 0;
+        lineNumber = 1;
         return cs;
     }
 
@@ -32,12 +32,12 @@ public class CodeSampler {
             e.printStackTrace();
         }
         
-        cond_map.put(">", "if_icmpgt");
-        cond_map.put("<", "if_icmplt");
-        cond_map.put(">=", "if_icmpge");
-        cond_map.put("<=", "if_icmple");
-        cond_map.put("==", "if_icmpeq");
-        cond_map.put("!=", "if_icmpne");
+        cond_map.put(">", "if_icmple");
+        cond_map.put("<", "if_icmpge");
+        cond_map.put(">=", "if_icmplt");
+        cond_map.put("<=", "if_icmpgt");
+        cond_map.put("==", "if_icmpne");
+        cond_map.put("!=", "if_icmpeq");
     }
 
     public void close(){
@@ -67,35 +67,34 @@ public class CodeSampler {
             pr(" = ");
             prln((String)e.getValue());
         }else{
-            pr("\n");
+            prln("");
         }
     }
 
-    public void writeWhileLoop(String cond){
+    public void writeWhileLoop(ASTConditionOP cond_node){
     	
-    	comment("WHILE");
+    	//comment("WHILE");
     	
-    	switch(cond){
-    	case ">":
-    		//if_icmpgt
-    		break;
-    	case "<":
-    		//if_icmplt
-    		break;
-    	case ">=":
-    		//if_icmpge
-    		break;
-    	case "<=":
-    		//if_icmple
-    		break;
-    	case "==":
-    		//if_icmpeq
-    		break;
-    	case "!=":
-    		//if_icmpne
-    		break;
-    	}
-    	//TODO
+    	String loop_label = "ll_" + lineNumber;
+    	String end_loop_label = "el_" + lineNumber;
+    	
+    	pr(loop_label);
+    	prln(" :");
+    	
+    	//comment("Load variables");
+    	//TODO load das constantes
+    	String condition = (String)cond_node.jjtGetValue();
+    	pr(cond_map.get(condition));
+    	pr(" ");
+    	prln(end_loop_label);
+    	
+    	//TODO print dos statemenst
+    	
+    	pr("goto ");
+    	prln(loop_label);
+    	
+    	pr(end_loop_label);
+    	prln(" :");
     }
     
     private void pr(String s){
