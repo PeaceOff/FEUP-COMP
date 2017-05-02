@@ -127,7 +127,16 @@ public class CodeSampler {
 
     }
 
-    private void writeStaticInitEnd(){
+	private void writeMainMethos(){
+		prln(".method public static main([Ljava/lang/String;)V");
+	}	
+
+	private void writeMethodBegin(SymbolTable st){
+		pr(".method public static ");
+	//Fazer!!!		
+	}
+
+    private void writeEndMethod(){
         prln("return");
         prln(".end method");
     } 
