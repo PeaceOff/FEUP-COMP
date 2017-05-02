@@ -65,16 +65,7 @@ public class CodeGenerator implements Simple2Visitor {
 	@Override
 	public Object visit(ASTSign node, Object data) {
 		
-		String sign = (String)node.jjtGetValue();
-		
-		CodeSampler cs = CodeSampler.getCodeSampler();
-		
-		if((Boolean)data == false){
-			cs.jas_sign(sign);
-			return null;
-		}else{
-			return sign;
-		}
+		return (String)node.jjtGetValue();
 		
 	}
 
@@ -166,7 +157,11 @@ public class CodeGenerator implements Simple2Visitor {
 	public Object visit(ASTCalcOP node, Object data) {
 	
 		node.jjtGetChild(0).jjtAccept(this, false);
+		
 		node.jjtGetChild(1).jjtAccept(this, false);
+
+		CodeSampler cs = CodeSampler.getCodeSampler();
+		cs.jas_sign((String)node.value);
 		
 		return null;
 	}
@@ -202,13 +197,17 @@ public class CodeGenerator implements Simple2Visitor {
 	public Object visit(ASTTerm node, Object data) {
 				
 		if(node.jjtGetNumChildren() == 2){
-			node.jjtGetChild(0).jjtAccept(this, false); // sign
+			String st = (String)node.jjtGetChild(0).jjtAccept(this, true); // sign
+			
+			
+			
 			node.jjtGetChild(1).jjtAccept(this, false);
+			
 		}else{
 			node.jjtGetChild(0).jjtAccept(this, false);
 		}
 			
-		
+		System.out.println("tamanho = " + node.jjtGetNumChildren());
 		return null;
 	}
 
