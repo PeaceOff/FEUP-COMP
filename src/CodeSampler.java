@@ -73,6 +73,8 @@ public class CodeSampler {
 
     public void writeWhileLoop(String cond){
     	
+    	comment("WHILE");
+    	
     	switch(cond){
     	case ">":
     		//if_icmpgt
@@ -113,6 +115,17 @@ public class CodeSampler {
 
     private void prln(Object s){
         prln(s.toString());
+    }
+    
+    private void comment(String s){
+    	
+    	fw.print(';');
+    	fw.println(s);
+    }
+    
+	private void comment(Object s){
+	    	
+	    comment(s.toString());
     }
 
     private void writeStackAndLocals(int stack, int locals){
