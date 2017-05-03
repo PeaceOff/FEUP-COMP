@@ -26,7 +26,8 @@ public class Simple2
 {
 
 	public static boolean split = false;
-	
+    public static boolean anotherOne = false;
+
   public static void main(String args [])
   {
     if(args.length < 1){
@@ -352,13 +353,15 @@ void Call()#Call : {}
   <ID> ("." <ID>)? <LPAR> (ArgumentList())? <RPAR>
 }
 
-void Call2()#void : {}
+void Call2()#ArgumentList(anotherOne): {}
 {
+    {anotherOne = true;}
   <LPAR> (ArgumentList())? <RPAR>
 }
 
 void ArgumentList() : {}
 {
+    {anotherOne = false;}
   Argument() (<VIRG> Argument())*
 }
 

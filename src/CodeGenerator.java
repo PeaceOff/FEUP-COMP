@@ -1,3 +1,4 @@
+import java.util.ArrayList;
 import java.util.LinkedList;
 
 public class CodeGenerator implements Simple2Visitor {
@@ -24,17 +25,16 @@ public class CodeGenerator implements Simple2Visitor {
 
 		LinkedList<Element> elements = SymbolTable.getRootTable().getElements();
 
-		int vars = cs.writeStaticVariables(elements);
+		ArrayList<Integer> vars = cs.writeStaticVariables(elements);
 
-		if(vars > 0)
+		if(vars.get(0) > 0)
 			cs.writeStaticInit();
 		for(int i = 0; i< node.jjtGetNumChildren(); i++){ 
 			node.jjtGetChild(i).jjtAccept(this, data);
-			if(i == vars-1){
+			if(i == vars.get(1)-1){
 				cs.writeEndMethod();
 			}
 		}
-
 		return null;
 	}
 
@@ -90,14 +90,15 @@ public class CodeGenerator implements Simple2Visitor {
 		CodeSampler cs = CodeSampler.getCodeSampler();
 		cs.increaseIndentation();
 		cs.writeBeginMethod(SymbolTable.getTable());
-
+		cs.writeStackAndLocals(20,SymbolTable.getTable().getLocals());
 		for(int i = 0; i< node.jjtGetNumChildren(); i++){  
 			node.jjtGetChild(i).jjtAccept(this, data);
 		}
 
 		cs.decreaseIndentation();
 
-		cs.writeEndMethod();
+
+		cs.writeEndMethod(SymbolTable.getTable().getReturn());
 
 		SymbolTable.popTable();
 
@@ -138,7 +139,7 @@ public class CodeGenerator implements Simple2Visitor {
 	public Object visit(ASTStatements node, Object data) {
 
 		for(int i = 0; i< node.jjtGetNumChildren(); i++){  
-			node.jjtGetChild(i).jjtAccept(this, data);
+			node.jjtGetChild(i).jjtAccept(this, true);
 		}
 		return null;
 	}
@@ -153,11 +154,12 @@ public class CodeGenerator implements Simple2Visitor {
 		Element e1 = (Element)node.jjtGetChild(0).jjtAccept(this, true);
 
 		node.jjtGetChild(1).jjtAccept(this, false);
-		
+
 		CodeSampler cs = CodeSampler.getCodeSampler();
 
-		cs.jas_putElement(e1,storeType == 2);
-		
+		cs.jas_putElement(e1,storeType == Element.TYPE_INT);
+		storeType = -1;
+
 		return null;
 	}
 
@@ -186,12 +188,14 @@ public class CodeGenerator implements Simple2Visitor {
 			if(e.getType() == Element.TYPE_ARRAY){
 
 				if(node.jjtGetNumChildren() == 0)
-					storeType = 1;
+					storeType = Element.TYPE_ARRAY;
 				else{
 					cs.jas_loadElement(e);
 					node.jjtGetChild(0).jjtAccept(this,false);
-					storeType = 2;
+					storeType = Element.TYPE_INT;
 				}
+			}else{
+				storeType = Element.TYPE_INT;
 			}
 
 			return e;
@@ -246,19 +250,25 @@ public class CodeGenerator implements Simple2Visitor {
 	@Override
 	public Object visit(ASTCall node, Object data) {
 		CodeSampler cs = CodeSampler.getCodeSampler();
-		SymbolTable st = SymbolTable.getTable();
+		SymbolTable st = SymbolTable.getRootTable();
 
 		String types = (String)node.jjtGetChild(node.jjtGetNumChildren()-1).jjtAccept(this,false);
+		boolean pop = false;
 
 		if(node.jjtGetNumChildren()==1){
 			Element e = st.getElement((String)node.value);
 			cs.jas_invokeStatic(e);
+			pop = e.getReturn().getName() != null;
 		}else{
 			String moduleName = (String)node.value;
 			String methodName = (String)node.jjtGetChild(0).jjtAccept(this,false);
-			String _return = "V";
+			String _return = (storeType == Element.TYPE_ARRAY)? "[I" : (storeType == Element.TYPE_INT)? "I" : "V";
 
 			cs.jas_invokeStatic(moduleName,methodName,types, _return);
+		}
+
+		if(pop && (boolean)data){
+			cs.jas_pop();
 		}
 
 		return null;
@@ -354,24 +364,29 @@ public class CodeGenerator implements Simple2Visitor {
 			
 			//Write statements (if-else)
 			SymbolTable.pushTable(current.getChildTable());
-			if_node.jjtAccept(this, null);
+				if_node.jjtAccept(this, null);
+			SymbolTable.popTable();
+
 			cs.jas_goto(end_if_label);
 			cs.jas_label(else_label);
-			else_node.jjtAccept(this, null);
-			
+
+			SymbolTable.pushTable(current.getChildTable());
+				else_node.jjtAccept(this, null);
+			SymbolTable.popTable();
+
 		} else {//doest not have else
 			
 			cs.jas_cond(condition, end_if_label);
 			
 			//Write statements (if)
 			SymbolTable.pushTable(current.getChildTable());
-			if_node.jjtAccept(this, null);
-			
+				if_node.jjtAccept(this, null);
+			SymbolTable.popTable();
 		}
 		
 		//Finalize
 		cs.jas_label(end_if_label);
-		SymbolTable.popTable();
+
 		cs.comment("END_IF");
 		cs.decreaseIndentation();
 		return null;

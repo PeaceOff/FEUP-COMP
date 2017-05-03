@@ -110,7 +110,6 @@ public class SymbolTableBuilder implements Simple2Visitor {
 	public Object visit(ASTFunction node, Object data){
 		String functionName = (String)node.jjtGetValue();
 		Element _return = (Element)node.jjtGetChild(0).jjtAccept(this, data);
-		
 		LinkedList<Element> args = (LinkedList<Element>)node.jjtGetChild(1).jjtAccept(this, data);
 		
 		Element function = new Element((String)node.jjtGetValue(), Element.TYPE_FUNCTION);
@@ -189,7 +188,11 @@ public class SymbolTableBuilder implements Simple2Visitor {
 		}
 		
 		Element e2 = (Element)node.jjtGetChild(1).jjtAccept(this, data);
-		
+		if(e2 == null){
+			ErrorManager.addError(node.line,
+					"Right side var: Is Undefined!");
+			return null;
+		}
 		if(e.getType() == Element.TYPE_UNDEFINED && !e.isInitialized()){
 			
 			e.setType(e2.getType());
@@ -275,7 +278,7 @@ public class SymbolTableBuilder implements Simple2Visitor {
 		if(e == null){	
 			return new Element((String)node.jjtGetValue(), Element.TYPE_UNDEFINED);
 		}
-		
+		System.out.println(node.value);
 		if(node.jjtGetNumChildren() == 1 && e.getType() != Element.TYPE_ARRAY){
 			ErrorManager.addError(node.line,
 					"Error Var:" + node.jjtGetValue() + " Variable Isn't an array!");

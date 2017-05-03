@@ -1,5 +1,6 @@
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 
@@ -75,13 +76,21 @@ public class CodeSampler {
        prln(".super java/lang/Object");
     }
 
-    public int writeStaticVariables(LinkedList<Element> elements){
+    public ArrayList<Integer> writeStaticVariables(LinkedList<Element> elements){
         int vars = 0;
+        int max = 0;
+
         for(Element e : elements){
             writeStaticField(e);
-            vars += (e.getType() == Element.TYPE_ARRAY || e.getType() == Element.TYPE_INT)? 1 : 0;
+            vars += (e.getType() == Element.TYPE_ARRAY )? 1 : 0;
+            max += (e.getType() == Element.TYPE_ARRAY || e.getType() == Element.TYPE_INT )? 1 : 0;
         }
-        return vars;
+        ArrayList<Integer> res = new ArrayList<>();
+
+        res.add(vars);
+        res.add(max);
+
+        return res;
     }
 
     private void writeStaticField(Element e){
@@ -135,7 +144,7 @@ public class CodeSampler {
 	    comment(s.toString());
     }
 
-    private void writeStackAndLocals(int stack, int locals){
+    public void writeStackAndLocals(int stack, int locals){
         pr(".limit stack ");
         prln(stack + "");
         pr(".limit locals ");
@@ -189,8 +198,24 @@ public class CodeSampler {
 
 	}
 
-    public void writeEndMethod(){
-        prln("return");
+	public void writeEndMethod(){
+	    prln("return");
+        prln(".end method");
+    }
+
+    public void writeEndMethod(Element e){
+	    System.out.println(e + "" + e.getType() +  " "  + Element.TYPE_UNDEFINED);
+	    if(e != null && e.getName() != null && e.getType() != Element.TYPE_UNDEFINED){
+	        jas_loadElement(e);
+        }else {
+            writeEndMethod();
+            return;
+	    }
+        if(e.getType() == Element.TYPE_INT){
+	        prln("ireturn");
+        }else if (e.getType() == Element.TYPE_ARRAY){
+            prln("areturn");
+        }
         prln(".end method");
     }
 
@@ -310,5 +335,9 @@ public class CodeSampler {
             else
                 jas_getstatic(e);
         }
+    }
+
+    public void jas_pop(){
+        prln("pop");
     }
 }

@@ -1,0 +1,29 @@
+module program1{
+	banana = 20;
+	bolacha = [banana];
+
+	function ola(bolacha[], b){
+		io.println("ola");
+		a = bolacha[1];
+		if(b == 1){
+		bolacha[1] = a * 2;	
+		}else{
+		bolacha[1] = 99;
+		}
+		
+		while(b <  0){
+		b = b - 1;	
+		io.println("loop",b);
+		}
+	}
+
+	function main(){
+		bolacha[1] = 5;
+		a = 2 + banana;
+		a = a + 5;
+		ola(bolacha, 2);
+		a = bolacha[1];
+		io.println("numero ",a);
+
+	}
+}

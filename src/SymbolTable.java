@@ -185,6 +185,7 @@ public class SymbolTable{
 			for (Element e : arguments) {
 				e.setJasIndex(n++);
 			}
+			_return.setJasIndex(n++);
 		}
 
 		for(Element e : elements.values()){
@@ -203,6 +204,24 @@ public class SymbolTable{
 		else
 			return _return.jas_getType();
 	}
-	
+
+	public Element getReturn(){
+		return _return;
+	}
+
+	public int getLocals(){
+		int n = elements.size();
+		if(parameters!=null)
+			n += parameters.size();
+
+		if(getLevel() == 1)
+			n++;
+
+		for(SymbolTable st : children){
+			n += st.getLocals();
+		}
+
+		return n;
+	}
 	
 }

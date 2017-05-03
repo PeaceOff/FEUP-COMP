@@ -10,18 +10,15 @@ module program1{
 		a = 1 + a;
 		while(i<d.size){
 			a=d[i];i=i+1;b=-d[i];
-			mx= library1.max(a,b);
-			mn= library1.min(a,b);
 		}
 		if(i<d.size){
 			a=d[i];i=i+1;b=-d[i];
-			mx= library1.max(a,b);
-			mn= library1.min(a,b);
 		} else {
 			a = 1 + a;
 		}
 		c = 1;
-		
+		c = batata.podre();	
+		d = batata.podre();
 		if(a == 1){
 			a = 0;
 		}
@@ -29,8 +26,6 @@ module program1{
 	
 	function main(){
 		a = 2;
-io.println("numero",a);
-
 		
 		io.println("max:",mx);
 		io.println("min:",mn);
