@@ -144,11 +144,15 @@ public class CodeGenerator implements Simple2Visitor {
 	@Override
 	public Object visit(ASTAssign node, Object data) {
 		
-		CodeSampler cs = CodeSampler.getCodeSampler();
 		
-		node.jjtGetChild(0).jjtAccept(this, false);	
+		
+		Element e1 = (Element)node.jjtGetChild(0).jjtAccept(this, true);	
+		
 		node.jjtGetChild(1).jjtAccept(this, false);
 		
+		CodeSampler cs = CodeSampler.getCodeSampler();
+		
+		cs.jas_putElement(e1);
 		
 		return null;
 	}
@@ -207,7 +211,6 @@ public class CodeGenerator implements Simple2Visitor {
 			node.jjtGetChild(0).jjtAccept(this, false);
 		}
 			
-		System.out.println("tamanho = " + node.jjtGetNumChildren());
 		return null;
 	}
 
