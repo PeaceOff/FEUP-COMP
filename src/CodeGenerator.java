@@ -144,12 +144,13 @@ public class CodeGenerator implements Simple2Visitor {
 	@Override
 	public Object visit(ASTAssign node, Object data) {
 		
-				
-		Element e1 = (Element)node.jjtGetChild(0).jjtAccept(this, true);	
-		
 		node.jjtGetChild(1).jjtAccept(this, false);
 		
 		CodeSampler cs = CodeSampler.getCodeSampler();
+		
+		Element e1 = (Element)node.jjtGetChild(0).jjtAccept(this, true);	
+		
+		
 		
 		cs.jas_putElement(e1);
 		
