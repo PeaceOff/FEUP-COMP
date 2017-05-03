@@ -41,12 +41,12 @@ public class CodeSampler {
             e.printStackTrace();
         }
 
-        cond_map.put(">", "if_icmpgt");
-        cond_map.put("<", "if_icmplt");
-        cond_map.put(">=", "if_icmpge");
-        cond_map.put("<=", "if_icmple");
-        cond_map.put("==", "if_icmpeq");
-        cond_map.put("!=", "if_icmpne");
+        cond_map.put(">", "if_icmple");
+        cond_map.put("<", "if_icmpge");
+        cond_map.put(">=", "if_icmplt");
+        cond_map.put("<=", "if_icmpgt");
+        cond_map.put("==", "if_icmpne");
+        cond_map.put("!=", "if_icmpeq");
         
         
         sign_map.put("+", "iadd");
