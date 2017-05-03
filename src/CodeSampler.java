@@ -255,6 +255,10 @@ public class CodeSampler {
     	prln(sign_map.get(sign));
     }
 
+    public void jas_ineg(){
+    	prln("ineg");
+    }
+    
     public void jas_putElement(Element e){
 
         if(e.getType() == Element.TYPE_INT){

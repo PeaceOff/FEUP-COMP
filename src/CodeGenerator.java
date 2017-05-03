@@ -142,8 +142,7 @@ public class CodeGenerator implements Simple2Visitor {
 	@Override
 	public Object visit(ASTAssign node, Object data) {
 		
-		
-		
+				
 		Element e1 = (Element)node.jjtGetChild(0).jjtAccept(this, true);	
 		
 		node.jjtGetChild(1).jjtAccept(this, false);
@@ -200,10 +199,14 @@ public class CodeGenerator implements Simple2Visitor {
 				
 		if(node.jjtGetNumChildren() == 2){
 			String st = (String)node.jjtGetChild(0).jjtAccept(this, true); // sign
-			
-			
-			
+						
 			node.jjtGetChild(1).jjtAccept(this, false);
+			
+			if(st.equals("-")){
+				CodeSampler cs = CodeSampler.getCodeSampler();
+				
+				cs.jas_ineg();
+			}
 			
 		}else{
 			node.jjtGetChild(0).jjtAccept(this, false);
@@ -239,7 +242,8 @@ public class CodeGenerator implements Simple2Visitor {
 
 	@Override
 	public Object visit(ASTConditionOP node, Object data) {
-		// TODO Auto-generated method stub
+		
+		
 		return null;
 	}
 
