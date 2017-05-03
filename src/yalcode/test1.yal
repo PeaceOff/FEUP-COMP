@@ -13,15 +13,16 @@ module program1{
 			mx= library1.max(a,b);
 			mn= library1.min(a,b);
 		}
-		while( i > funcaoXPTO()){
+		if(i<d.size){
+			a=d[i];i=i+1;b=-d[i];
+			mx= library1.max(a,b);
+			mn= library1.min(a,b);
+		} else {
+			a = 1 + a;
 		}
-		while(M.size <= 2){
-		}
-		while(M[1]>=M.size){
-		}
-		while(i.size==M.size){
-		}
-		while(i.size!=M.size){
+		
+		if(a == 1){
+			a = 0;
 		}
 	}
 	

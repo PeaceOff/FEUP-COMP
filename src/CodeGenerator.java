@@ -1,4 +1,3 @@
-import javax.swing.text.*;
 import java.util.LinkedList;
 
 public class CodeGenerator implements Simple2Visitor {
@@ -280,7 +279,12 @@ public class CodeGenerator implements Simple2Visitor {
 	@Override
 	public Object visit(ASTConditionOP node, Object data) {
 		
-		
+		ASTAccess left_node = (ASTAccess)node.jjtGetChild(0);
+    	left_node.jjtAccept(this,false);
+    	
+    	SimpleNode right_node = (SimpleNode)node.jjtGetChild(1);
+    	right_node.jjtAccept(this,false);
+    	
 		return null;
 	}
 
@@ -288,28 +292,88 @@ public class CodeGenerator implements Simple2Visitor {
 	public Object visit(ASTWhile node, Object data) {
 		
 		CodeSampler cs = CodeSampler.getCodeSampler();
+		SymbolTable current = SymbolTable.getTable();		
+    	
 		cs.increaseIndentation();
-
-		ASTConditionOP cond_node = (ASTConditionOP)node.jjtGetChild(0);
-		ASTStatements stat_node = (ASTStatements)node.jjtGetChild(1);
-		
-		cs.writeWhileLoop(cond_node,stat_node,this);
-		cs.decreaseIndentation();
-		cs.comment("END_WHILE");
+    	cs.comment("WHILE");
+    	
+    	String loop_label = "ll_" + CodeSampler.getLineNumber();
+    	String end_loop_label = "el_" + CodeSampler.getLineNumber();
+    	
+    	//Begin do while
+    	cs.jas_label(loop_label);
+    	
+    	//Write das condicoes
+    	ASTConditionOP cond_node = (ASTConditionOP)node.jjtGetChild(0);
+		cond_node.jjtAccept(this, null);
+    	String condition = (String)cond_node.jjtGetValue();
+    	cs.jas_cond(condition, end_loop_label);
+    	
+    	//Print statements
+    	SymbolTable.pushTable(current.getChildTable());
+    	ASTStatements stat_node = (ASTStatements)node.jjtGetChild(1);
+    	stat_node.jjtAccept(this,null);
+    	SymbolTable.popTable();
+    	
+    	//End while loop
+    	cs.jas_goto(loop_label);
+    	cs.jas_label(end_loop_label);
+    	
+    	cs.comment("END WHILE");
+    	cs.decreaseIndentation();
 		return null;
 	}
 
 	@Override
 	public Object visit(ASTIf node, Object data) {
 
-
+		SymbolTable current = SymbolTable.getTable();
 		CodeSampler cs = CodeSampler.getCodeSampler();
+		Boolean has_else = (node.jjtGetNumChildren() == 3);
 		
+		cs.increaseIndentation();
+		cs.comment("IF");
+		
+		//Labels
+		String else_label = "else_" + CodeSampler.getLineNumber();
+    	String end_if_label = "ei_" + CodeSampler.getLineNumber();
+    	
+    	//Nodes
 		ASTConditionOP cond_node = (ASTConditionOP)node.jjtGetChild(0);
 		ASTStatements if_node = (ASTStatements)node.jjtGetChild(1);
-		ASTStatements else_node = (node.jjtGetNumChildren() == 3)? (ASTStatements)node.jjtGetChild(2) : null; 
 		
-		//cs.writeIf(cond_node,if_node,else_node,this);
+		//Write condition variables
+		cond_node.jjtAccept(this, null);
+		String condition = (String)cond_node.jjtGetValue();
+    	
+		if(has_else){//has else
+			
+			cs.jas_cond(condition, else_label);
+			
+			ASTStatements else_node = (ASTStatements)node.jjtGetChild(2);
+			
+			//Write statements (if-else)
+			SymbolTable.pushTable(current.getChildTable());
+			if_node.jjtAccept(this, null);
+			cs.jas_goto(end_if_label);
+			cs.jas_label(else_label);
+			else_node.jjtAccept(this, null);
+			
+		} else {//doest not have else
+			
+			cs.jas_cond(condition, end_if_label);
+			
+			//Write statements (if)
+			SymbolTable.pushTable(current.getChildTable());
+			if_node.jjtAccept(this, null);
+			
+		}
+		
+		//Finalize
+		cs.jas_label(end_if_label);
+		SymbolTable.popTable();
+		cs.comment("END_IF");
+		cs.decreaseIndentation();
 		return null;
 	}
 

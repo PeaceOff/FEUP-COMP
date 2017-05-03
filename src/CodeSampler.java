@@ -1,4 +1,3 @@
-import java.io.BufferedOutputStream;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.util.HashMap;
@@ -100,85 +99,9 @@ public class CodeSampler {
         }
     }
     
-    public void writeWhileLoop(ASTConditionOP cond_node,ASTStatements stat_node,Simple2Visitor v){
-    	
-    	SymbolTable current = SymbolTable.getTable();
-    	
-    	comment("WHILE");
-    	
-    	String loop_label = "ll_" + lineNumber;
-    	String end_loop_label = "el_" + lineNumber;
-    	
-    	//Begin do while
-    	pr(loop_label);
-    	prln(" :");
-    	
-    	comment("Load variables");
-    	
-    	writeCondNode(cond_node,v);
-
-    	//Write das condicoes
-    	String condition = (String)cond_node.jjtGetValue();
-    	pr(cond_map.get(condition));
-    	pr(" ");
-    	prln(end_loop_label);
-    	
-    	//Print statements
-    	SymbolTable.pushTable(current.getChildTable());
-    	stat_node.jjtAccept(v,null);
-    	SymbolTable.popTable();
-    	
-    	//End while loop
-    	pr("goto ");
-    	prln(loop_label);
-    	pr(end_loop_label);
-    	prln(" :");
-    }
-    
-    public void writeIf(ASTConditionOP cond_node,ASTStatements if_node, ASTStatements else_node,Simple2Visitor v) {
-    	
-    	SymbolTable current = SymbolTable.getTable();
-    	
-    	comment("IF");
-    	
-    	String loop_label = "ll_" + lineNumber;
-    	String end_loop_label = "el_" + lineNumber;
-    	
-    	//Begin do while
-    	pr(loop_label);
-    	prln(" :");
-    	
-    	comment("Load variables");
-    	
-    	writeCondNode(cond_node,v);
-
-    	//Write das condicoes
-    	String condition = (String)cond_node.jjtGetValue();
-    	pr(cond_map.get(condition));
-    	pr(" ");
-    	prln(end_loop_label);
-    	
-    	//Print statements
-    	SymbolTable.pushTable(current.getChildTable());
-    	//stat_node.jjtAccept(v,null);
-    	SymbolTable.popTable();
-    	
-    	//End while loop
-    	pr("goto ");
-    	prln(loop_label);
-    	pr(end_loop_label);
-    	prln(" :");
-    }
-    
-    private void writeCondNode(ASTConditionOP cond_node,Simple2Visitor v){
-    	
-    	ASTAccess left_node = (ASTAccess)cond_node.jjtGetChild(0);
-    	left_node.jjtAccept(v,false);
-    	
-    	SimpleNode right_node = (SimpleNode)cond_node.jjtGetChild(1);
-    	right_node.jjtAccept(v,false);
-    
-    }
+    public static int getLineNumber() {
+		return lineNumber;
+	}
     
     private void pr(String s){
         fw.print(s);
@@ -200,7 +123,7 @@ public class CodeSampler {
         prln(s.toString());
     }
     
-    private void comment(String s){
+    public void comment(String s){
     	
 
     	pr(';');
@@ -224,6 +147,22 @@ public class CodeSampler {
 
     }
 
+    public void jas_label(String label){
+    	pr(label);
+    	prln(" :");
+    }
+    
+    public void jas_cond(String condition,String label){
+    	pr(cond_map.get(condition));
+    	pr(" ");
+    	prln(label);
+    }
+    
+    public void jas_goto(String label){
+    	pr("goto ");
+    	prln(label);
+    }
+    
 	private void writeMainMethod(){
 		prln(".method public static main([Ljava/lang/String;)V");
 	}	
