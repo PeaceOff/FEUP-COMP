@@ -263,7 +263,15 @@ public class CodeGenerator implements Simple2Visitor {
 
 	@Override
 	public Object visit(ASTIf node, Object data) {
-		// TODO Auto-generated method stub
+
+
+		CodeSampler cs = CodeSampler.getCodeSampler();
+		
+		ASTConditionOP cond_node = (ASTConditionOP)node.jjtGetChild(0);
+		ASTStatements if_node = (ASTStatements)node.jjtGetChild(1);
+		ASTStatements else_node = (node.jjtGetNumChildren() == 3)? (ASTStatements)node.jjtGetChild(2) : null; 
+		
+		//cs.writeIf(cond_node,if_node,else_node,this);
 		return null;
 	}
 
