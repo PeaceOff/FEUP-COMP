@@ -198,7 +198,7 @@ public class SymbolTable{
 	}
 
 	public String jas_getReturnType(){
-		if(_return == null)
+		if(_return == null || _return.getName() == null)
 			return "V";
 		else
 			return _return.jas_getType();

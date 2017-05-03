@@ -22,6 +22,8 @@ public class CodeSampler {
         return cs;
     }
 
+    private int indentation = 0;
+
     private String moduleName;
 
     public String getModuleName(){
@@ -53,6 +55,16 @@ public class CodeSampler {
         sign_map.put("/", "idiv");
 
     }
+
+    public void increaseIndentation(){
+        indentation++;
+    }
+
+    public void decreaseIndentation(){
+        indentation--;
+    }
+
+    private String identTest = "\t\t\t\t\t\t\t\t\t\t\t\t\t\t";
 
     public void close(){
         fw.close();
@@ -148,7 +160,7 @@ public class CodeSampler {
     	
     	//Print statements
     	SymbolTable.pushTable(current.getChildTable());
-    	stat_node.jjtAccept(v,null);
+    	//stat_node.jjtAccept(v,null);
     	SymbolTable.popTable();
     	
     	//End while loop
@@ -181,6 +193,7 @@ public class CodeSampler {
     private void prln(String s){
         lineNumber++;
         fw.println(s);
+        fw.print(identTest.substring(0, indentation));
     }
 
     private void prln(Object s){
@@ -189,12 +202,12 @@ public class CodeSampler {
     
     private void comment(String s){
     	
-    	lineNumber++;
-    	fw.print(';');
-    	fw.println(s);
+
+    	pr(';');
+    	prln(s);
     }
     
-	private void comment(Object s){
+	public void comment(Object s){
 	    	
 	    comment(s.toString());
     }
@@ -220,6 +233,10 @@ public class CodeSampler {
     }
 
 	public void writeBeginMethod(SymbolTable st){
+	    if(st.getName().equals("main")){
+	        writeMainMethod();
+	        return;
+        }
 		pr(".method public static ");
         pr(st.getName());
         pr("(");
@@ -289,7 +306,7 @@ public class CodeSampler {
     }
 
     public void jas_iastore(){
-        pr("iastore ");
+        prln("iastore ");
     }
     
     public void jas_sign(String sign){
@@ -299,8 +316,13 @@ public class CodeSampler {
     public void jas_ineg(){
     	prln("ineg");
     }
-    
-    public void jas_putElement(Element e){
+
+    public void jas_astore(int n){
+        pr("astore ");
+        prln(n);
+    }
+
+    public void jas_putElement(Element e, boolean arrayIndexStore){
 
         if(e.getType() == Element.TYPE_INT){
             if(e.getJasIndex() != -1){
@@ -308,12 +330,32 @@ public class CodeSampler {
             }else
                 jas_storestatic(e);
         }else if(e.getType() == Element.TYPE_ARRAY){
-            if(e.getJasIndex() != -1){
+            if(arrayIndexStore){
                 jas_iastore();
-            }else
-                jas_storestatic(e);
+            }else{
+                if(e.getJasIndex() != -1){
+                    jas_astore(e.getJasIndex());
+                }else{
+                    jas_storestatic(e);
+                }
+            }
         }
 
+    }
+
+    public void jas_invokeStatic(String module, String elementName, String types, String _return){
+        pr("invokestatic ");
+        pr(module);
+        pr("/");
+        pr(elementName);
+        pr("(");
+        pr(types);
+        pr(")");
+        prln(_return);
+    }
+
+    public void jas_invokeStatic(Element e){
+        jas_invokeStatic(moduleName,e.getName(), e.jas_getTypes(), e.jas_getReturnType());
     }
 
     public void jas_loadElement(Element e){

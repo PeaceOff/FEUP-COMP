@@ -124,6 +124,20 @@ public class Element {
 		return (type == Element.TYPE_ARRAY)? "[I" : (type == TYPE_INT)? "I" : "_UNKNOWNTYPE_";
 	}
 
+	public String jas_getTypes(){
+		String s = "";
+		for(Element e : arguments){
+			s+=e.jas_getType();
+		}
+		return s;
+	}
+
+	public String jas_getReturnType(){
+		if(_return == null || _return.name == null){
+			return "V";
+		}
+		return _return.jas_getType();
+	}
 	@Override
 	public String toString() {
 		

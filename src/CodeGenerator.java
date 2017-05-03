@@ -1,3 +1,4 @@
+import javax.swing.text.*;
 import java.util.LinkedList;
 
 public class CodeGenerator implements Simple2Visitor {
@@ -71,7 +72,7 @@ public class CodeGenerator implements Simple2Visitor {
 	public Object visit(ASTConstant node, Object data) {
 		CodeSampler cs = CodeSampler.getCodeSampler();
 		cs.jas_ldc((String)node.jjtGetValue());
-		return null;
+		return "I";
 	}
 
 	@Override
@@ -88,11 +89,15 @@ public class CodeGenerator implements Simple2Visitor {
 		SymbolTable.pushTable(current.getChildTable());
 
 		CodeSampler cs = CodeSampler.getCodeSampler();
+		cs.increaseIndentation();
 		cs.writeBeginMethod(SymbolTable.getTable());
 
 		for(int i = 0; i< node.jjtGetNumChildren(); i++){  
 			node.jjtGetChild(i).jjtAccept(this, data);
 		}
+
+		cs.decreaseIndentation();
+
 		cs.writeEndMethod();
 
 		SymbolTable.popTable();
@@ -121,7 +126,7 @@ public class CodeGenerator implements Simple2Visitor {
 
 		CodeSampler.getCodeSampler().jas_loadElement(e);
 
-		return null;
+		return e.jas_getType();
 	}
 
 	@Override
@@ -139,18 +144,20 @@ public class CodeGenerator implements Simple2Visitor {
 		return null;
 	}
 
+	private int storeType = -1;
+
 	@Override
 	public Object visit(ASTAssign node, Object data) {
-		
+
+		storeType = -1;
+
+		Element e1 = (Element)node.jjtGetChild(0).jjtAccept(this, true);
+
 		node.jjtGetChild(1).jjtAccept(this, false);
 		
 		CodeSampler cs = CodeSampler.getCodeSampler();
-		
-		Element e1 = (Element)node.jjtGetChild(0).jjtAccept(this, true);	
-		
-		
-		
-		cs.jas_putElement(e1);
+
+		cs.jas_putElement(e1,storeType == 2);
 		
 		return null;
 	}
@@ -173,10 +180,24 @@ public class CodeGenerator implements Simple2Visitor {
 		SymbolTable current = SymbolTable.getTable();
 		Element e = current.getElement((String)node.value);
 
-		if((boolean)data)
-			return e;
-
 		CodeSampler cs = CodeSampler.getCodeSampler();
+
+		if((boolean)data) {
+
+			if(e.getType() == Element.TYPE_ARRAY){
+
+				if(node.jjtGetNumChildren() == 0)
+					storeType = 1;
+				else{
+					cs.jas_loadElement(e);
+					node.jjtGetChild(0).jjtAccept(this,false);
+					storeType = 2;
+				}
+			}
+
+			return e;
+		}
+
 
 		cs.jas_loadElement(e);
 
@@ -225,14 +246,29 @@ public class CodeGenerator implements Simple2Visitor {
 
 	@Override
 	public Object visit(ASTCall node, Object data) {
-		// TODO Auto-generated method stub
+		CodeSampler cs = CodeSampler.getCodeSampler();
+		SymbolTable st = SymbolTable.getTable();
+
+		String types = (String)node.jjtGetChild(node.jjtGetNumChildren()-1).jjtAccept(this,false);
+
+		if(node.jjtGetNumChildren()==1){
+			Element e = st.getElement((String)node.value);
+			cs.jas_invokeStatic(e);
+		}else{
+			String moduleName = (String)node.value;
+			String methodName = (String)node.jjtGetChild(0).jjtAccept(this,false);
+			String _return = "V";
+
+			cs.jas_invokeStatic(moduleName,methodName,types, _return);
+		}
+
 		return null;
 	}
 
 	@Override
 	public Object visit(ASTCallName node, Object data) {
-		// TODO Auto-generated method stub
-		return null;
+
+		return node.value;
 	}
 
 	@Override
@@ -252,12 +288,14 @@ public class CodeGenerator implements Simple2Visitor {
 	public Object visit(ASTWhile node, Object data) {
 		
 		CodeSampler cs = CodeSampler.getCodeSampler();
-		
+		cs.increaseIndentation();
+
 		ASTConditionOP cond_node = (ASTConditionOP)node.jjtGetChild(0);
 		ASTStatements stat_node = (ASTStatements)node.jjtGetChild(1);
 		
 		cs.writeWhileLoop(cond_node,stat_node,this);
-		
+		cs.decreaseIndentation();
+		cs.comment("END_WHILE");
 		return null;
 	}
 
@@ -277,14 +315,22 @@ public class CodeGenerator implements Simple2Visitor {
 
 	@Override
 	public Object visit(ASTArgumentList node, Object data) {
-		// TODO Auto-generated method stub
-		return null;
+		String s="";
+
+		for(int i =0; i < node.jjtGetNumChildren(); i++){
+			s+=node.jjtGetChild(i).jjtAccept(this,false);
+		}
+
+		return s;
 	}
 
 	@Override
 	public Object visit(ASTString node, Object data) {
-		// TODO Auto-generated method stub
-		return null;
+
+		CodeSampler cs = CodeSampler.getCodeSampler();
+		cs.jas_ldc((String)node.value);
+
+		return "Ljava/lang/String;";
 	}
 
 }

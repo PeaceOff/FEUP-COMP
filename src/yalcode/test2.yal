@@ -7,6 +7,10 @@ module program1{
 	function det(d[]){
 		i=0;
 		M=d.size-1;
+		d[i] = 2;
+		a = d[100];
+		z = [100];
+
 		while(i<M){
 			a=d[i];i=i+1;b=-d[i];
 			mx= library1.max(a,b);
