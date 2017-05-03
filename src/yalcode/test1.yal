@@ -8,7 +8,7 @@ module program1{
 		i=0;
 		M=d.size-1;
 		a = 1 + a;
-		while(i<M.size){
+		while(i<d.size){
 			a=d[i];i=i+1;b=-d[i];
 			mx= library1.max(a,b);
 			mn= library1.min(a,b);

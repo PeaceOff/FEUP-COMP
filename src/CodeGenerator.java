@@ -1,5 +1,3 @@
-import com.sun.org.apache.xpath.internal.operations.Bool;
-
 import java.util.LinkedList;
 
 public class CodeGenerator implements Simple2Visitor {

@@ -87,23 +87,6 @@ public class CodeSampler {
             prln("");
         }
     }
-
-    public void writeWhileVariables(ASTConditionOP cond_node){
-    	
-    	ASTAccess left_node = (ASTAccess)cond_node.jjtGetChild(0);
-    	
-    	
-    	if(left_node.jjtGetNumChildren() == 0){//Variavel ou constante
-    		
-    		
-    		
-    	} else {//Acesso a um array
-    		
-    	}
-    	
-    	SimpleNode right_node = (SimpleNode)cond_node.jjtGetChild(1);
-    	
-    }
     
     public void writeWhileLoop(ASTConditionOP cond_node,ASTStatements stat_node,Simple2Visitor v){
     	
@@ -119,7 +102,12 @@ public class CodeSampler {
     	prln(" :");
     	
     	comment("Load variables");
-    	writeWhileVariables(cond_node);
+    	
+    	ASTAccess left_node = (ASTAccess)cond_node.jjtGetChild(0);
+    	left_node.jjtAccept(v,false);
+    	
+    	SimpleNode right_node = (SimpleNode)cond_node.jjtGetChild(1);
+    	right_node.jjtAccept(v,false);
 
     	//Write das condicoes
     	String condition = (String)cond_node.jjtGetValue();
