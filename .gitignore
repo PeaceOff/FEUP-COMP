@@ -24,3 +24,5 @@ FEUP-COMP.iml
 *.yasmine
 *.jasmine
 jasmin.jar
+/src/run.bat
+*.class
