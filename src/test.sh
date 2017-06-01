@@ -1,8 +1,4 @@
-@echo off
-echo File?
-read FILE
-
 cd ../output
-java Simple2 ../src/yalcode/$FILE.yal
+java Simple2 ../src/yalcode/$1.yal
 cd ../src/
 

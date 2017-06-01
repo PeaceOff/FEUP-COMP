@@ -64,7 +64,19 @@ public class Simple2
       CodeSampler.createCodeSampler("../dummy.jasmine");
       CodeGenerator cgn = new CodeGenerator();
       root.jjtAccept(cgn, null);
+
+      int stackSize = 20;
+      StackAlocator alocator = new StackAlocator(SymbolTable.getTable());
+      if(!alocator.tryAlocation(stackSize)){
+        System.out.println("Could Not Allocate All Register for Stack of Size:" + 20);
+      }else{
+      CodeSampler.createCodeSampler("../dummy.jasmine");
+        root.jjtAccept(cgn,null);
+      }
+
       CodeSampler.getCodeSampler().close();
+	  System.out.println(SymbolTable.getTable().toString());
+
 
       System.out.println("Thank you.");
     }catch (FileNotFoundException e){

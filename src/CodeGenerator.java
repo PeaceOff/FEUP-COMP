@@ -1,3 +1,4 @@
+
 import java.util.ArrayList;
 import java.util.LinkedList;
 
@@ -47,6 +48,13 @@ public class CodeGenerator implements Simple2Visitor {
 
 		CodeSampler cs = CodeSampler.getCodeSampler();
 
+		if(node.arrayAssign){
+			String label = cs.jas_arrayAssignInt1(leftSide);
+			node.jjtGetChild(1).jjtAccept(this, false);
+			cs.jas_arrayAssignInt2(leftSide,label);
+			return null;
+		}
+
 		node.jjtGetChild(1).jjtAccept(this,false);
 
 		cs.jas_storestatic(leftSide);
@@ -90,7 +98,7 @@ public class CodeGenerator implements Simple2Visitor {
 		CodeSampler cs = CodeSampler.getCodeSampler();
 		cs.increaseIndentation();
 		cs.writeBeginMethod(SymbolTable.getTable());
-		cs.writeStackAndLocals(20,SymbolTable.getTable().getLocals());
+		cs.writeStackAndLocals(20, 1 + SymbolTable.getTable().getMaxJasIndexSize());
 		for(int i = 0; i< node.jjtGetNumChildren(); i++){  
 			node.jjtGetChild(i).jjtAccept(this, data);
 		}
@@ -151,11 +159,18 @@ public class CodeGenerator implements Simple2Visitor {
 
 		storeType = -1;
 
+		CodeSampler cs = CodeSampler.getCodeSampler();
 		Element e1 = (Element)node.jjtGetChild(0).jjtAccept(this, true);
 
-		node.jjtGetChild(1).jjtAccept(this, false);
+		if(node.arrayAssign){
+			String label = cs.jas_arrayAssignInt1(e1);
+			node.jjtGetChild(1).jjtAccept(this, false);
+			cs.jas_arrayAssignInt2(e1,label);
+			return null;
+		}
 
-		CodeSampler cs = CodeSampler.getCodeSampler();
+
+		node.jjtGetChild(1).jjtAccept(this, false);
 
 		cs.jas_putElement(e1,storeType == Element.TYPE_INT);
 		storeType = -1;

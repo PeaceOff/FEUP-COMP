@@ -48,6 +48,7 @@ public class SymbolTableBuilder implements Simple2Visitor {
 					initialized = true;
 				}else{
 					//ErrorManager.addError(node.line,"Error Assigning Var:" + typeV.getName() + " Type Array Incompatible with type Int");
+					node.arrayAssign = true;
 					//Error!
 					//Types Array incompatible with type int;
 				}
@@ -179,13 +180,13 @@ public class SymbolTableBuilder implements Simple2Visitor {
 	public Object visit(ASTAssign node, Object data){
 
 		Element e = (Element)node.jjtGetChild(0).jjtAccept(this, data);
-		
+
 		if(e == null){
 			ErrorManager.addError(node.line,
 					"Left side var: Is Undefined!");
 			return null;
 		}
-		
+
 		Element e2 = (Element)node.jjtGetChild(1).jjtAccept(this, data);
 		if(e2 == null){
 			ErrorManager.addError(node.line,
@@ -218,6 +219,7 @@ public class SymbolTableBuilder implements Simple2Visitor {
 			e.setInitialized(e2.isInitialized());
 		}else if(e2.getType() == Element.TYPE_INT && e.getType() == Element.TYPE_ARRAY){
 			e.setInitialized(e2.isInitialized());
+			node.arrayAssign = true;
 		}else{
 			ErrorManager.addError(node.line,
 					"Right side var of type" + Element.getTypeName(e.getType()) + " Incompatible with " + Element.getTypeName(e2.getType()));

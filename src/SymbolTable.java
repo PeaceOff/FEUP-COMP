@@ -1,3 +1,4 @@
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
@@ -193,7 +194,7 @@ public class SymbolTable{
 		}
 
 		for(SymbolTable s: children) {
-			n = s.startNumbering(n);
+			 s.startNumbering(n);
 		}
 		return n;
 	}
@@ -223,5 +224,58 @@ public class SymbolTable{
 
 		return n;
 	}
-	
+
+    public void prepareMinimum() {
+		for(SymbolTable t : children)
+			t.prepareMinimum();
+		if(parameters != null){
+			for(Element e : parameters.values()){
+				e.updateLineNumber(0);
+			}
+		}
+    }
+
+    public ArrayList<Element> getAllElements(){
+		ArrayList<Element> el= new ArrayList<>();
+		if(parameters != null)
+	    el.addAll(parameters.values());
+
+		el.addAll(elements.values());
+
+
+		if(_return != null){
+			if(_return.getType() != Element.TYPE_UNDEFINED)
+				el.add(_return);
+		}
+
+		for(SymbolTable table : children){
+			el.addAll(table.getAllElements());
+		}
+		return  el;
+
+	}
+
+	public LinkedList<SymbolTable> getAllChilds() {
+		return children;
+	}
+
+	public int getMaxJasIndexSize() {
+        int maxIndex = 0;
+    	for(SymbolTable t : children){
+    		maxIndex = t.getMaxJasIndexSize();
+		}
+
+		for(Element e : elements.values()){
+    		maxIndex = Math.max(e.getJasIndex(),maxIndex);
+		}
+		if(parameters != null)
+		for(Element e : parameters.values()){
+			maxIndex = Math.max(e.getJasIndex(),maxIndex);
+		}
+		if(_return != null)
+			if(_return.getType() != Element.TYPE_UNDEFINED)
+				maxIndex = Math.max(maxIndex, _return.getJasIndex());
+
+		return maxIndex;
+	}
 }

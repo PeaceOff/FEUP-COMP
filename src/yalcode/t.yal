@@ -6,9 +6,17 @@ module program1{
 		io.println("ola");
 		a = bolacha[1];
 		if(b == 1){
-		bolacha[1] = a * 2;	
+			bolacha[1] = a * 2;	
+			c = a;
+			io.println("c:", c);
 		}else{
-		bolacha[1] = 99;
+			bolacha[1] = 99;
+		}
+
+		if(b == 1){
+			c = [100];
+			k = c[0];
+			io.println("c:", k);
 		}
 		
 		while(b <  0){
@@ -21,9 +29,48 @@ module program1{
 		bolacha[1] = 5;
 		a = 2 + banana;
 		a = a + 5;
-		ola(bolacha, 2);
+		ola(bolacha, 1);
+		a = bolacha[1];
+		bolacha = bolacha.size;
+		a = bolacha[0];
+		io.println("numero ",a);
 		a = bolacha[1];
 		io.println("numero ",a);
-
+		a = bolacha[2];
+		io.println("numero ",a);
+		a = bolacha[3];
+		io.println("numero ",a);
+		a = bolacha[4];
+		io.println("numero ",a);
+		a = bolacha[5];
+		io.println("numero ",a);
+		a = bolacha[6];
+		io.println("numero ",a);
+		a = bolacha[7];
+		io.println("numero ",a);
+		a = bolacha[8];
+		io.println("numero ",a);
+		a = bolacha[9];
+		io.println("numero ",a);
+		a = bolacha[10];
+		io.println("numero ",a);
+		a = bolacha[11];
+		io.println("numero ",a);
+		a = bolacha[12];
+		io.println("numero ",a);
+		a = bolacha[13];
+		io.println("numero ",a);
+		a = bolacha[14];
+		io.println("numero ",a);
+		a = bolacha[15];
+		io.println("numero ",a);
+		a = bolacha[16];
+		io.println("numero ",a);
+		a = bolacha[17];
+		io.println("numero ",a);
+		a = bolacha[18];
+		io.println("numero ",a);
+		a = bolacha[19];
+		io.println("numero ",a);
 	}
 }

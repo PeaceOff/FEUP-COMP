@@ -10,6 +10,7 @@ class SimpleNode implements Node {
   protected Simple2 parser;
   
   public int line;
+  public boolean arrayAssign = false;
 
   public SimpleNode(int i) {
     id = i;

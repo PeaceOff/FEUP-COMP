@@ -20,6 +20,17 @@ public class Element {
 	private LinkedList<Element> arguments = null;
 	private Element _return;
 	private int jasIndex = -1;
+	private int minLine = Integer.MAX_VALUE;
+	private int maxLine = -1;
+
+
+	public void updateLineNumber(int number){
+		if( number < minLine)
+			minLine = number;
+
+		if(number > maxLine)
+			maxLine = number;
+	}
 
 	public Element(String name, int type){
 		this.name = name;
@@ -143,7 +154,7 @@ public class Element {
 		
 		StringBuilder sb = new StringBuilder();
 		sb.append("[ELEMENT");
-		sb.append("{"); sb.append(jasIndex); sb.append("}");
+		sb.append(":"); sb.append(jasIndex); sb.append("|");
 		sb.append("Name: ");
 		sb.append(name);
 		sb.append("\tType: ");
@@ -153,8 +164,21 @@ public class Element {
 		sb.append(" Value: ");
 		sb.append((value == null)? "Null": (String)value);
 		sb.append(" ]");
+		if(jasIndex >= 0) {
+			sb.append(" RANGE:");
+			sb.append(minLine);
+			sb.append("-");
+			sb.append(maxLine);
+		}
 		return sb.toString();
 		
 	}
-	
+
+	public int getMinLine() {
+		return minLine;
+	}
+
+	public int getMaxLine() {
+		return maxLine;
+	}
 }

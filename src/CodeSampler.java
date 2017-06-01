@@ -17,9 +17,17 @@ public class CodeSampler {
     }
 
     public static CodeSampler createCodeSampler(String filename){
+
+        if(cs !=null)
+            cs.close();
+
         cs = new CodeSampler(filename);
         lineNumber = 1;
         return cs;
+    }
+
+    public void clear(){
+        lineNumber=1;
     }
 
     private int indentation = 0;
@@ -31,10 +39,7 @@ public class CodeSampler {
     }
 
     private CodeSampler(String fileName){
-    	
-    	if(cs != null)
-    		return;
-    	
+
         try {
             fw = new PrintWriter(fileName);
         } catch (FileNotFoundException e) {
@@ -204,7 +209,7 @@ public class CodeSampler {
     }
 
     public void writeEndMethod(Element e){
-	    System.out.println(e + "" + e.getType() +  " "  + Element.TYPE_UNDEFINED);
+	    //System.out.println(e + "" + e.getType() +  " "  + Element.TYPE_UNDEFINED);
 	    if(e != null && e.getName() != null && e.getType() != Element.TYPE_UNDEFINED){
 	        jas_loadElement(e);
         }else {
@@ -272,7 +277,12 @@ public class CodeSampler {
     public void jas_iastore(){
         prln("iastore ");
     }
-    
+
+    public void jas_iconst(int n){
+        pr("iconst ");
+        prln(n);
+    }
+
     public void jas_sign(String sign){
     	prln(sign_map.get(sign));
     }
@@ -290,6 +300,7 @@ public class CodeSampler {
 
         if(e.getType() == Element.TYPE_INT){
             if(e.getJasIndex() != -1){
+                e.updateLineNumber(getLineNumber());
                 jas_istore(e.getJasIndex());
             }else
                 jas_storestatic(e);
@@ -298,6 +309,7 @@ public class CodeSampler {
                 jas_iastore();
             }else{
                 if(e.getJasIndex() != -1){
+                    e.updateLineNumber(getLineNumber());
                     jas_astore(e.getJasIndex());
                 }else{
                     jas_storestatic(e);
@@ -324,20 +336,58 @@ public class CodeSampler {
 
     public void jas_loadElement(Element e){
         if(e.getType() == Element.TYPE_INT) {
-            if (e.getJasIndex() != -1)
+            if (e.getJasIndex() != -1) {
+                e.updateLineNumber(getLineNumber());
                 jas_iload(e.getJasIndex());
-            else
+            }else
                 jas_getstatic(e);
 
         }else if(e.getType() == Element.TYPE_ARRAY){
-            if (e.getJasIndex() != -1)
+            if (e.getJasIndex() != -1) {
+                e.updateLineNumber(getLineNumber());
                 jas_aload(e.getJasIndex());
-            else
+            }else
                 jas_getstatic(e);
         }
     }
 
+
     public void jas_pop(){
         prln("pop");
+    }
+
+    public void jas_dup2(){
+        prln("dup2");
+    }
+
+    public void jas_dup(){
+        prln("dup");
+    }
+
+    public void jas_cmp(String condition, String label){
+        pr(condition);
+        pr(" ");
+        prln(label);
+    }
+
+    public String jas_arrayAssignInt1(Element array){
+        jas_iconst(0);
+        String label = "as_"+getLineNumber();
+        jas_label(label);
+        jas_loadElement(array);
+        jas_dup2();
+        jas_pop();
+
+        return label;
+    }
+
+    public void jas_arrayAssignInt2(Element array, String label){
+        jas_iastore();
+        jas_iconst(1);
+        jas_sign("+");
+        jas_dup();
+        jas_loadElement(array);
+        jas_arrayLength();
+        jas_cmp("if_icmpgt", label);
     }
 }
