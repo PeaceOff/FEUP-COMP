@@ -6,7 +6,7 @@ public class AssignChecker implements Simple2Visitor {
 
   public Object visit(ASTStart node, Object data){
 	  
-	node.jjtGetChild(0).jjtAccept(this, data);  //check
+	node.jjtGetChild(0).jjtAccept(this, data);  
 	  
     return null;
   }
@@ -14,28 +14,28 @@ public class AssignChecker implements Simple2Visitor {
   public Object visit(ASTModule node, Object data){
 	  
 	  
-	for(int i = 0; i< node.jjtGetNumChildren(); i++){  //check
+	for(int i = 0; i< node.jjtGetNumChildren(); i++){ 
 		node.jjtGetChild(i).jjtAccept(this, data);
 	}
 	  
     return null;
   }
 
-  public Object visit(ASTDeclaration node, Object data){ //check
+  public Object visit(ASTDeclaration node, Object data){ 
       
 	  return null;
   }
 
-  public Object visit(ASTNumericDeclaration node, Object data){ // check
+  public Object visit(ASTNumericDeclaration node, Object data){ 
 	  
 	  return null;
   }
 
-  public Object visit(ASTSign node, Object data){ //check
+  public Object visit(ASTSign node, Object data){ 
     return null;
   }
 
-  public Object visit(ASTConstant node, Object data){ //check
+  public Object visit(ASTConstant node, Object data){ 
    
 	  return new Element("", Element.TYPE_INT);
   }
@@ -45,7 +45,7 @@ public class AssignChecker implements Simple2Visitor {
 	  return new Element("", Element.TYPE_ARRAY);
   }
 
-  public Object visit(ASTFunction node, Object data){ //check
+  public Object visit(ASTFunction node, Object data){ 
 	  
 	SymbolTable current = SymbolTable.getTable();  
 	  
@@ -58,15 +58,15 @@ public class AssignChecker implements Simple2Visitor {
     return null;
   }
 
-  public Object visit(ASTReturn node, Object data){ //check
+  public Object visit(ASTReturn node, Object data){ 
     return null;
   }
 
-  public Object visit(ASTParameters node, Object data){ //check
+  public Object visit(ASTParameters node, Object data){ 
     return null;
   }
 
-  public Object visit(ASTVariable node, Object data){ //check
+  public Object visit(ASTVariable node, Object data){ 
 	  
 	if(node.jjtGetNumChildren() == 1){
 		ErrorManager.addError(node.line, "cannot declare an array while accessing another");
@@ -75,12 +75,12 @@ public class AssignChecker implements Simple2Visitor {
     return new Element("", Element.TYPE_INT);
   }
 
-  public Object visit(ASTElementArray node, Object data){ //check
+  public Object visit(ASTElementArray node, Object data){ 
 	  
 	 return new Element("", Element.TYPE_ARRAY);
   }
   
-  public Object visit(ASTStatements node, Object data){ // check
+  public Object visit(ASTStatements node, Object data){ 
 	  
 	for(int i = 0; i < node.jjtGetNumChildren(); i++){
 		node.jjtGetChild(i).jjtAccept(this, data);
@@ -105,6 +105,10 @@ public class AssignChecker implements Simple2Visitor {
 	  
 
 	  if(right.getType() == Element.TYPE_UNDEFINED){
+		  return null;
+	  }
+	  
+	  if(left.getType() == Element.TYPE_ARRAY && right.getType() == Element.TYPE_INT){
 		  return null;
 	  }
 	  
@@ -140,7 +144,7 @@ public class AssignChecker implements Simple2Visitor {
 	  
   }
 
-  public Object visit(ASTTerm node, Object data){ //check
+  public Object visit(ASTTerm node, Object data){ 
 	  
 	 return (Element)node.jjtGetChild(node.jjtGetNumChildren()-1).jjtAccept(this, data);
 	  
@@ -218,11 +222,11 @@ public class AssignChecker implements Simple2Visitor {
 	  return new Element("", Element.TYPE_UNDEFINED);
   }
 
-  public Object visit(ASTArgumentList node, Object data){ // check
+  public Object visit(ASTArgumentList node, Object data){ 
     return null;
   }
 
-  public Object visit(ASTString node, Object data){ //check
+  public Object visit(ASTString node, Object data){ 
     return null;
   }
 }

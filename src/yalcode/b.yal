@@ -26,7 +26,7 @@ module program1{
 	
 	function main(){
 		a = 2;
-		
+		data = 1;
 		io.println("max:",mx);
 		io.println("min:",mn);
 	}

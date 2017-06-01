@@ -47,8 +47,7 @@ public class SymbolTableBuilder implements Simple2Visitor {
 					variableType = Element.TYPE_ARRAY;
 					initialized = true;
 				}else{
-					ErrorManager.addError(node.line,
-					"Error Assigning Var:" + typeV.getName() + " Type Array Incompatible with type Int");
+					//ErrorManager.addError(node.line,"Error Assigning Var:" + typeV.getName() + " Type Array Incompatible with type Int");
 					//Error!
 					//Types Array incompatible with type int;
 				}
@@ -86,7 +85,7 @@ public class SymbolTableBuilder implements Simple2Visitor {
 		}
 
 		return new Element("", Element.TYPE_INT, true, last.getValue());
-		//return new Pair<Integer, Boolean>(Element.TYPE_INT,true);
+		
 	}
 
 	public Object visit(ASTSign node, Object data) {
@@ -204,12 +203,6 @@ public class SymbolTableBuilder implements Simple2Visitor {
 			SymbolTable.getTable().addElement(e);
 		}
 		
-		if(e2 == null){
-			ErrorManager.addError(node.line,
-					"Error Var: Cannot Assign a variable to Undefined");
-			return null;
-		}
-		
 		if(!e2.isInitialized()){
 			ErrorManager.addError(node.line,
 					"Error Var:"+ e.getName() + " Cannot Assign a variable to Undefined");
@@ -222,6 +215,8 @@ public class SymbolTableBuilder implements Simple2Visitor {
 			e.setInitialized(e2.isInitialized());
 			
 		}else if(e2.getType() == e.getType()){
+			e.setInitialized(e2.isInitialized());
+		}else if(e2.getType() == Element.TYPE_INT && e.getType() == Element.TYPE_ARRAY){
 			e.setInitialized(e2.isInitialized());
 		}else{
 			ErrorManager.addError(node.line,
