@@ -1,4 +1,4 @@
 cd ../output
-java Simple2 ../src/yalcode/$1.yal
+java Simple2 $1 ../src/yalcode/$2.yal
 cd ../src/
 

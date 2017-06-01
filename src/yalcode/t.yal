@@ -1,76 +1,274 @@
-module program1{
-	banana = 20;
-	bolacha = [banana];
-
-	function ola(bolacha[], b){
-		io.println("ola");
-		a = bolacha[1];
-		if(b == 1){
-			bolacha[1] = a * 2;	
-			c = a;
-			io.println("c:", c);
-		}else{
-			bolacha[1] = 99;
-		}
-
-		if(b == 1){
-			c = [100];
-			k = c[0];
-			io.println("c:", k);
-		}
-		
-		while(b <  0){
-		b = b - 1;	
-		io.println("loop",b);
-		}
-	}
-
-	function main(){
-		bolacha[1] = 5;
-		a = 2 + banana;
-		a = a + 5;
-		ola(bolacha, 1);
-		a = bolacha[1];
-		bolacha = bolacha.size;
-		a = bolacha[0];
-		io.println("numero ",a);
-		a = bolacha[1];
-		io.println("numero ",a);
-		a = bolacha[2];
-		io.println("numero ",a);
-		a = bolacha[3];
-		io.println("numero ",a);
-		a = bolacha[4];
-		io.println("numero ",a);
-		a = bolacha[5];
-		io.println("numero ",a);
-		a = bolacha[6];
-		io.println("numero ",a);
-		a = bolacha[7];
-		io.println("numero ",a);
-		a = bolacha[8];
-		io.println("numero ",a);
-		a = bolacha[9];
-		io.println("numero ",a);
-		a = bolacha[10];
-		io.println("numero ",a);
-		a = bolacha[11];
-		io.println("numero ",a);
-		a = bolacha[12];
-		io.println("numero ",a);
-		a = bolacha[13];
-		io.println("numero ",a);
-		a = bolacha[14];
-		io.println("numero ",a);
-		a = bolacha[15];
-		io.println("numero ",a);
-		a = bolacha[16];
-		io.println("numero ",a);
-		a = bolacha[17];
-		io.println("numero ",a);
-		a = bolacha[18];
-		io.println("numero ",a);
-		a = bolacha[19];
-		io.println("numero ",a);
-	}
-}
+.class public program1
+.super java/lang/Object
+.field static banana I = 20
+.field static bolacha [I
+.method static public <clinit>()V
+getstatic program1/banana I
+newarray int
+putstatic program1/bolacha [I
+return
+.end method
+.method public static simple([I)V
+	.limit stack 20
+	.limit locals 1
+	aload 0
+	ldc 0
+	ldc 1
+	iastore 
+	ldc 2
+	istore 0
+	return
+.end method
+.method public static ola([II)I
+	.limit stack 20
+	.limit locals 4
+	ldc "ola"
+	invokestatic io/println(Ljava/lang/String;)V
+	aload 0
+	ldc 1
+	iaload
+	istore 3
+	ldc 2
+	newarray int
+	astore 0
+	;IF
+		iload 1
+		ldc 1
+		if_icmpne else_35
+		aload 0
+		ldc 1
+		iload 3
+		ldc 2
+		imul
+		iastore 
+		iload 3
+		istore 3
+		ldc "c:"
+		iload 3
+		invokestatic io/println(Ljava/lang/String;I)V
+		goto ei_35
+		else_35 :
+		aload 0
+		ldc 1
+		ldc 99
+		iastore 
+		ei_35 :
+		;END_IF
+		ldc 5
+	istore 2
+	;IF
+		iload 1
+		ldc 1
+		if_icmpne ei_60
+		ldc 100
+		newarray int
+		astore 0
+		aload 0
+		ldc 0
+		iaload
+		istore 0
+		ldc "c:"
+		iload 0
+		invokestatic io/println(Ljava/lang/String;I)V
+		ei_60 :
+		;END_IF
+		;WHILE
+		ll_76 :
+		iload 1
+		ldc 0
+		if_icmpge el_76
+		iload 1
+		ldc 1
+		isub
+		istore 1
+		ldc "loop"
+		iload 1
+		invokestatic io/println(Ljava/lang/String;I)V
+		goto ll_76
+		el_76 :
+		;END WHILE
+		iload 2
+ireturn
+.end method
+.method public static main([Ljava/lang/String;)V
+	.limit stack 20
+	.limit locals 1
+	getstatic program1/bolacha [I
+	ldc 1
+	ldc 5
+	iastore 
+	ldc 2
+	getstatic program1/banana I
+	iadd
+	istore 0
+	iload 0
+	ldc 5
+	iadd
+	istore 0
+	getstatic program1/bolacha [I
+	invokestatic program1/simple([I)V
+	getstatic program1/bolacha [I
+	ldc 1
+	invokestatic program1/ola([II)I
+	pop
+	getstatic program1/bolacha [I
+	ldc 1
+	iaload
+	istore 0
+	iconst_0
+	as_119 :
+	getstatic program1/bolacha [I
+	dup2
+	pop
+	getstatic program1/bolacha [I
+	arraylength
+	iastore 
+	iconst_1
+	iadd
+	dup
+	getstatic program1/bolacha [I
+	arraylength
+	if_icmplt as_119
+	pop
+	getstatic program1/bolacha [I
+	ldc 0
+	iaload
+	istore 0
+	ldc "numero "
+	iload 0
+	invokestatic io/println(Ljava/lang/String;I)V
+	getstatic program1/bolacha [I
+	ldc 1
+	iaload
+	istore 0
+	ldc "numero "
+	iload 0
+	invokestatic io/println(Ljava/lang/String;I)V
+	getstatic program1/bolacha [I
+	ldc 2
+	iaload
+	istore 0
+	ldc "numero "
+	iload 0
+	invokestatic io/println(Ljava/lang/String;I)V
+	getstatic program1/bolacha [I
+	ldc 3
+	iaload
+	istore 0
+	ldc "numero "
+	iload 0
+	invokestatic io/println(Ljava/lang/String;I)V
+	getstatic program1/bolacha [I
+	ldc 4
+	iaload
+	istore 0
+	ldc "numero "
+	iload 0
+	invokestatic io/println(Ljava/lang/String;I)V
+	getstatic program1/bolacha [I
+	ldc 5
+	iaload
+	istore 0
+	ldc "numero "
+	iload 0
+	invokestatic io/println(Ljava/lang/String;I)V
+	getstatic program1/bolacha [I
+	ldc 6
+	iaload
+	istore 0
+	ldc "numero "
+	iload 0
+	invokestatic io/println(Ljava/lang/String;I)V
+	getstatic program1/bolacha [I
+	ldc 7
+	iaload
+	istore 0
+	ldc "numero "
+	iload 0
+	invokestatic io/println(Ljava/lang/String;I)V
+	getstatic program1/bolacha [I
+	ldc 8
+	iaload
+	istore 0
+	ldc "numero "
+	iload 0
+	invokestatic io/println(Ljava/lang/String;I)V
+	getstatic program1/bolacha [I
+	ldc 9
+	iaload
+	istore 0
+	ldc "numero "
+	iload 0
+	invokestatic io/println(Ljava/lang/String;I)V
+	getstatic program1/bolacha [I
+	ldc 10
+	iaload
+	istore 0
+	ldc "numero "
+	iload 0
+	invokestatic io/println(Ljava/lang/String;I)V
+	getstatic program1/bolacha [I
+	ldc 11
+	iaload
+	istore 0
+	ldc "numero "
+	iload 0
+	invokestatic io/println(Ljava/lang/String;I)V
+	getstatic program1/bolacha [I
+	ldc 12
+	iaload
+	istore 0
+	ldc "numero "
+	iload 0
+	invokestatic io/println(Ljava/lang/String;I)V
+	getstatic program1/bolacha [I
+	ldc 13
+	iaload
+	istore 0
+	ldc "numero "
+	iload 0
+	invokestatic io/println(Ljava/lang/String;I)V
+	getstatic program1/bolacha [I
+	ldc 14
+	iaload
+	istore 0
+	ldc "numero "
+	iload 0
+	invokestatic io/println(Ljava/lang/String;I)V
+	getstatic program1/bolacha [I
+	ldc 15
+	iaload
+	istore 0
+	ldc "numero "
+	iload 0
+	invokestatic io/println(Ljava/lang/String;I)V
+	getstatic program1/bolacha [I
+	ldc 16
+	iaload
+	istore 0
+	ldc "numero "
+	iload 0
+	invokestatic io/println(Ljava/lang/String;I)V
+	getstatic program1/bolacha [I
+	ldc 17
+	iaload
+	istore 0
+	ldc "numero "
+	iload 0
+	invokestatic io/println(Ljava/lang/String;I)V
+	getstatic program1/bolacha [I
+	ldc 18
+	iaload
+	istore 0
+	ldc "numero "
+	iload 0
+	invokestatic io/println(Ljava/lang/String;I)V
+	getstatic program1/bolacha [I
+	ldc 19
+	iaload
+	istore 0
+	ldc "numero "
+	iload 0
+	invokestatic io/println(Ljava/lang/String;I)V
+	return
+.end method

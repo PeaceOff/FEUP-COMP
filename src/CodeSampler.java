@@ -279,7 +279,7 @@ public class CodeSampler {
     }
 
     public void jas_iconst(int n){
-        pr("iconst ");
+        pr("iconst_");
         prln(n);
     }
 
@@ -388,6 +388,7 @@ public class CodeSampler {
         jas_dup();
         jas_loadElement(array);
         jas_arrayLength();
-        jas_cmp("if_icmpgt", label);
+        jas_cmp("if_icmplt", label);
+        jas_pop();
     }
 }

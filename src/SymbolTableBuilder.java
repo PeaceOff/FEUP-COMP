@@ -129,7 +129,11 @@ public class SymbolTableBuilder implements Simple2Visitor {
 		
 		
 		node.jjtGetChild(2).jjtAccept(this, data);
-		
+
+		if(!_return.isInitialized() && _return.getType() != Element.TYPE_UNDEFINED){
+			ErrorManager.addError(node.line, "Function " + functionName + " Must return a value!");
+		}
+
 		
 		SymbolTable.popTable();
 		return null;
@@ -275,7 +279,7 @@ public class SymbolTableBuilder implements Simple2Visitor {
 		if(e == null){	
 			return new Element((String)node.jjtGetValue(), Element.TYPE_UNDEFINED);
 		}
-		System.out.println(node.value);
+		//System.out.println(node.value);
 		if(node.jjtGetNumChildren() == 1 && e.getType() != Element.TYPE_ARRAY){
 			ErrorManager.addError(node.line,
 					"Error Var:" + node.jjtGetValue() + " Variable Isn't an array!");

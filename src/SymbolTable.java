@@ -228,6 +228,8 @@ public class SymbolTable{
     public void prepareMinimum() {
 		for(SymbolTable t : children)
 			t.prepareMinimum();
+		if(_return != null)
+			_return.updateLineNumber(0);
 		if(parameters != null){
 			for(Element e : parameters.values()){
 				e.updateLineNumber(0);
@@ -262,7 +264,7 @@ public class SymbolTable{
 	public int getMaxJasIndexSize() {
         int maxIndex = 0;
     	for(SymbolTable t : children){
-    		maxIndex = t.getMaxJasIndexSize();
+    		maxIndex = Math.max(maxIndex, t.getMaxJasIndexSize());
 		}
 
 		for(Element e : elements.values()){

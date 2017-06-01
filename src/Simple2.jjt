@@ -30,47 +30,67 @@ public class Simple2
 
   public static void main(String args [])
   {
-    if(args.length < 1){
-      System.out.println("Please Feed me with a filename.");
-      System.exit(1);
-    }
-     //Feed me with one file :3
+      int stackSize = 200;
+      boolean error = false;
+      String fileName = null ;
+      if(args.length == 1){
+        fileName = args[0];
+      }else if(args.length == 2){
+        String[] parts = args[0].split("=");
+        stackSize = Integer.parseInt(parts[1]);
+        fileName = args[1];
+        if(!parts[0].equals("-r"))
+            error = true;
+      }else{
+        error = true;
+      }
+
+      if(error){
+        System.out.println("ERROR! Usage: [-r=<num>] <input_file.yal>");
+        return;
+      }
+
     try
     {
-      Simple2 parser = new Simple2(new FileInputStream(args[0]));
+        System.out.println(fileName);
+      Simple2 parser = new Simple2(new FileInputStream(fileName));
       SimpleNode root = parser.Start();
-      root.dump("");
+        fileName = fileName.replace(".yal", ".j");
+
+        System.out.println(fileName);
 
 	  SymbolTableBuilder stb = new SymbolTableBuilder();
 	  root.jjtAccept(stb,null);
 	  SymbolTable.getTable().startNumbering();
 	  System.out.println(SymbolTable.getTable().toString());
-	  System.out.println(ErrorManager.getString());
-	  
+
 	  System.out.println("Beginning Function Call Checking!");
-	  ErrorManager.clearErrors();
 	  FunctionCallChecker fcc = new FunctionCallChecker();
 	  root.jjtAccept(fcc,null);
-	  System.out.println(ErrorManager.getString());
 
 	  System.out.println("Beginning Assign Checking!");
-	  ErrorManager.clearErrors();
 	  AssignChecker acc = new AssignChecker();
 	  root.jjtAccept(acc,null);
 	  System.out.println(ErrorManager.getString());
 
+	  if(ErrorManager.getErrorCount()!=0){
+	    System.out.println("Found Errors! Could not Proceed");
+	    return;
+	  }
+
       System.out.println("Creating jasmine file...");
 
-      CodeSampler.createCodeSampler("../dummy.jasmine");
+      CodeSampler.createCodeSampler(fileName);
       CodeGenerator cgn = new CodeGenerator();
       root.jjtAccept(cgn, null);
 
-      int stackSize = 20;
       StackAlocator alocator = new StackAlocator(SymbolTable.getTable());
       if(!alocator.tryAlocation(stackSize)){
-        System.out.println("Could Not Allocate All Register for Stack of Size:" + 20);
+        System.out.println("Could Not Allocate All Register for Stack of Size:" + stackSize );
+        CodeSampler.getCodeSampler().close();
+        return;
       }else{
-      CodeSampler.createCodeSampler("../dummy.jasmine");
+      CodeSampler.createCodeSampler(fileName);
         root.jjtAccept(cgn,null);
       }
 
