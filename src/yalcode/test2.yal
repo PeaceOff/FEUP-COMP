@@ -12,7 +12,7 @@ module program1{
 		z = [100];
 
 		while(i<M){
-			a=d[i];i=i+1;b=-d[i];
+			a=d[i];b=-d[i];i=i+1;
 			mx= library1.max(a,b);
 			mn= library1.min(a,b);
 		}
