@@ -11,9 +11,7 @@ NAME2: João Ferreira, NR2: 201404332, GRADE2: <0 to 20 value>, CONTRIBUTION2: <0
 
 NAME3: Marcelo Ferreira, NR3: 201405323, GRADE3: <0 to 20 value>, CONTRIBUTION3: <0 to 100 %>
 
-(Note that the sum of the CONTRIBUTION? values must be
-100 %)
-
+(Note that the sum of the CONTRIBUTION? values must be 100 %)
 
 ** SUMMARY: (Describe what your tool does and its main features.)
 The goal of this project was to develop a "mini compiler" which should be able to compile SIMPLE code to JVM instructions accepted by Jasmin in order to create a '.class' file with the result code. With that in mind, we had to implement the different fases that a regular compiler goes through, such as 'Lexical Analysis', 'Syntatic Analysis', 'Semantic Analysis', 'Intermidiate Represantation', 'Code Generation', 'Dataflow Analysis' and 'Register Alocation', which corresponds to the entire Compilers Course at FEUP. For that, we started by building a LL(1) grammar for the programming language SIMPLE, the basic grammar was given to us by the teachers, although with was our task to transform it into a LL(1) grammar.
@@ -38,11 +36,11 @@ To better perform the 'Semantic Analysis' and the 'Code Generation' we generated
  
 
 **CODE GENERATION: (when applicable, describe how the code generation of your tool works and identify the possible problems your tool has regarding code generation.)
-
+The Code Generation in our project makes use of two different classes. Firstly, a class that implements the 'visitor' pattern in order to visit all the nodes, and the second class, responsible for write JVM instructions to the output file. This last one represents a set of basics functions responsible to write small bits of code at a time, ie. load a variable, print a label, etc. In this part of the project we were very careful to choose low cost instructions and templates (for loops) that are optimized with a minimum number of conditional jumps. Aswell as differentiating small constants from bigger values so that we can choose either the 'bipush' or the 'iconst_' instruction.
 
 
 **OVERVIEW: (refer the approach used in your tool, the main algorithms, the third-party tools and/or packages, etc.)
-
+Left Edge Algorithm for time to live analysis. JavaCC.
  
 
 **TESTSUITE AND TEST INFRASTRUCTURE: (Describe the content of your testsuite regarding the number of examples, the approach to automate the test, etc.)
