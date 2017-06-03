@@ -79,6 +79,8 @@ public class CodeSampler {
         sign_map.put("-", "isub");
         sign_map.put("*", "imul");
         sign_map.put("/", "idiv");
+        sign_map.put(">>", "ishr");
+        sign_map.put(">>", "ishl");
 
     }
 
