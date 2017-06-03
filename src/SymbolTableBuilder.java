@@ -114,6 +114,11 @@ public class SymbolTableBuilder implements Simple2Visitor {
 		Element function = new Element((String)node.jjtGetValue(), Element.TYPE_FUNCTION);
 		function.setReturn(_return);
 		function.addArguments(args);
+		for(Element e : args){
+			if(e.getName().equals(_return.getName())){
+				_return.setInitialized(true);
+			}
+		}
 		function.setInitialized(true);
 
 		SymbolTable currentST = SymbolTable.getTable();

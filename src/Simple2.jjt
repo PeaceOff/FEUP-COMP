@@ -84,6 +84,7 @@ public class Simple2
 
       System.out.println("Creating jasmine file...");
 
+	  SymbolTable.getTable().checkReturnPosition();
       CodeSampler.createCodeSampler(fileName);
       CodeGenerator cgn = new CodeGenerator();
       root.jjtAccept(cgn, null);
@@ -94,6 +95,7 @@ public class Simple2
         CodeSampler.getCodeSampler().close();
         return;
       }else{
+	  SymbolTable.getTable().checkReturnPosition();
       CodeSampler.createCodeSampler(fileName);
         root.jjtAccept(cgn,null);
       }

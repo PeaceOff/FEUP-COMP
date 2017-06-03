@@ -28,6 +28,7 @@ public class SymbolTable{
 	private HashMap<String, Element> parameters = null;
 	private Element _return = null;
 	private SymbolTable parent = null;
+	private boolean returnShared = false;
 	
 	
 	private LinkedList<SymbolTable> children = new LinkedList<SymbolTable>();
@@ -280,4 +281,59 @@ public class SymbolTable{
 
 		return maxIndex;
 	}
+
+	public int getReturnIndex( Element e ){
+
+    	Element e2 = getElementNoReturn(e.getName());
+    	if(e2 != null && e2 != e){
+    		return e2.getJasIndex();
+		}
+
+		int r = e.getJasIndex();
+
+    	for(SymbolTable t : children){
+    		int tmp = t.getReturnIndex(e);
+    		if(tmp != r)
+    			r=tmp;
+		}
+
+		return r;
+	}
+
+
+	public void checkReturnPosition(){
+
+    	if(_return != null){
+    	    int value = getReturnIndex(_return);
+    	    if(value != _return.getJasIndex())
+    	    	returnShared = true;
+    		_return.setJasIndex(value);
+		}
+
+    	for(SymbolTable table : children){
+			table.checkReturnPosition();
+		}
+	}
+
+	public boolean returnShared() {
+
+		return returnShared;
+
+	}
+
+	public Element getElementNoReturn(String name){ //Check Parent
+
+		if(elements.containsKey(name)){
+			return elements.get(name);
+		}
+		if(function)
+			if(parameters.containsKey(name))
+				return parameters.get(name);
+
+		if(parent == null)
+			return null;
+		return parent.getElement(name);
+	}
+
+
 }
