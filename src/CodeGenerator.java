@@ -78,7 +78,8 @@ public class CodeGenerator implements Simple2Visitor {
 	@Override
 	public Object visit(ASTConstant node, Object data) {
 		CodeSampler cs = CodeSampler.getCodeSampler();
-		cs.jas_ldc((String)node.jjtGetValue());
+		String st = (String)node.jjtGetValue();
+		cs.jas_loadNumber(Integer.parseInt(st));
 		return "I";
 	}
 
