@@ -322,7 +322,9 @@ public class CodeGenerator implements Simple2Visitor {
 		SymbolTable current = SymbolTable.getTable();
 
 		cs.increaseIndentation();
-    	cs.comment("WHILE");
+
+    	//cs.comment("WHILE");
+    	cs.commentWhile();
 
     	String loop_label = "ll_" + CodeSampler.getLineNumber();
     	String end_loop_label = "el_" + CodeSampler.getLineNumber();
@@ -346,7 +348,8 @@ public class CodeGenerator implements Simple2Visitor {
     	cs.jas_goto(loop_label);
     	cs.jas_label(end_loop_label);
 
-    	cs.comment("END WHILE");
+    	//cs.comment("END WHILE");
+    	cs.commentEndWhile();
     	cs.decreaseIndentation();
 		return null;
 	}

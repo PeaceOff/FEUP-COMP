@@ -37,8 +37,12 @@ public class Simple2
         fileName = args[0];
       }else if(args.length == 2){
         String[] parts = args[0].split("=");
+        if(parts.length != 2){
+            error = true;
+        }else{
         stackSize = Integer.parseInt(parts[1]);
         fileName = args[1];
+        }
         if(!parts[0].equals("-r"))
             error = true;
       }else{

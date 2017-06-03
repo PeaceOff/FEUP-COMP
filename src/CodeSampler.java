@@ -12,6 +12,9 @@ public class CodeSampler {
     private static HashMap<String,String> cond_map = new HashMap<String,String>();
     private static HashMap<String,String> sign_map = new HashMap<String,String>();
 
+    private ArrayList<Element> elemnts = new ArrayList<>();
+    private int elementScopeNumber = -1;
+
     public static CodeSampler getCodeSampler(){
         return cs;
     }
@@ -24,6 +27,24 @@ public class CodeSampler {
         cs = new CodeSampler(filename);
         lineNumber = 1;
         return cs;
+    }
+
+    public void scopeAddElement(Element e) {
+        if (elementScopeNumber < 0)
+            return;
+
+        elemnts.add(e);
+
+    }
+
+    public void scopeUpdateMaxLimits(){
+        if(elementScopeNumber > -1)
+            return;
+
+        for(Element e : elemnts){
+            e.updateLineNumber(getLineNumber());
+        }
+        elemnts.clear();
     }
 
     public void clear(){
@@ -73,6 +94,7 @@ public class CodeSampler {
 
     public void close(){
         fw.close();
+        elemnts.clear();
     }
 
     public void writeBeginModule(String name){
@@ -135,6 +157,17 @@ public class CodeSampler {
 
     private void prln(Object s){
         prln(s.toString());
+    }
+
+    public void commentWhile(){
+        prln(";WHILE");
+        elementScopeNumber++;
+    }
+
+    public void commentEndWhile(){
+        prln(";END_WHILE");
+        elementScopeNumber--;
+        scopeUpdateMaxLimits();
     }
 
     public void comment(String s){
@@ -301,6 +334,7 @@ public class CodeSampler {
         if(e.getType() == Element.TYPE_INT){
             if(e.getJasIndex() != -1){
                 e.updateLineNumber(getLineNumber());
+                scopeAddElement(e);
                 jas_istore(e.getJasIndex());
             }else
                 jas_storestatic(e);
@@ -310,6 +344,7 @@ public class CodeSampler {
             }else{
                 if(e.getJasIndex() != -1){
                     e.updateLineNumber(getLineNumber());
+                    scopeAddElement(e);
                     jas_astore(e.getJasIndex());
                 }else{
                     jas_storestatic(e);
@@ -338,6 +373,7 @@ public class CodeSampler {
         if(e.getType() == Element.TYPE_INT) {
             if (e.getJasIndex() != -1) {
                 e.updateLineNumber(getLineNumber());
+                scopeAddElement(e);
                 jas_iload(e.getJasIndex());
             }else
                 jas_getstatic(e);
@@ -345,6 +381,7 @@ public class CodeSampler {
         }else if(e.getType() == Element.TYPE_ARRAY){
             if (e.getJasIndex() != -1) {
                 e.updateLineNumber(getLineNumber());
+                scopeAddElement(e);
                 jas_aload(e.getJasIndex());
             }else
                 jas_getstatic(e);
