@@ -21,7 +21,7 @@ public class Element {
 	private Element _return;
 	private int jasIndex = -1;
 	private int minLine = Integer.MAX_VALUE;
-	private int maxLine = -1;
+	private int maxLine = 1;
 
 
 	public void updateLineNumber(int number){
