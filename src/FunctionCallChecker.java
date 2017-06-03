@@ -82,10 +82,20 @@ public class FunctionCallChecker implements Simple2Visitor {
 
 	public Object visit(ASTAssign node, Object data) {
 
-		for(int i = 0; i < node.jjtGetNumChildren(); i++){
-			node.jjtGetChild(i).jjtAccept(this, data);
-		}
+		Element e = (Element)node.jjtGetChild(0).jjtAccept(this,data);
+		Element func = (Element)node.jjtGetChild(1).jjtAccept(this, data);
 
+		if(func != null) {
+			if (func.getReturn().getType() == Element.TYPE_UNDEFINED) {
+				ErrorManager.addError(node.line, "Cannot Assign Variable to Void!");
+				return null;
+			}
+
+			if (e.getType() == Element.TYPE_UNDEFINED){
+
+				e.setType(func.getReturn().getType());
+			}
+		}
 		return null;
 	}
 
@@ -99,16 +109,17 @@ public class FunctionCallChecker implements Simple2Visitor {
 	}
 
 	public Object visit(ASTAccess node, Object data) {
-		return null;
+
+		return SymbolTable.getTable().getElement((String)node.value);
 	}
 
 	public Object visit(ASTTerm node, Object data) {
 
-		for(int i = 0; i < node.jjtGetNumChildren(); i++){
-			node.jjtGetChild(i).jjtAccept(this, data);
-		}
 
-		return null;
+
+		return node.jjtGetChild(node.jjtGetNumChildren() - 1).jjtAccept(this, data);
+
+
 	}
 
 	public Object visit(ASTInteger node, Object data) {
@@ -232,6 +243,7 @@ public class FunctionCallChecker implements Simple2Visitor {
 							+ arguments.get(i).get_type_string() + " but got " + parameters.get(i).get_type_string() + " instead!");
  				}
 			}
+			return function;
 		}
 
 		return null;
