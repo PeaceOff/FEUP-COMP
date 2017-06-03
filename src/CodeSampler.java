@@ -52,8 +52,8 @@ public class CodeSampler {
         cond_map.put("<=", "if_icmpgt");
         cond_map.put("==", "if_icmpne");
         cond_map.put("!=", "if_icmpeq");
-        
-        
+
+
         sign_map.put("+", "iadd");
         sign_map.put("-", "isub");
         sign_map.put("*", "imul");
@@ -112,11 +112,11 @@ public class CodeSampler {
             prln("");
         }
     }
-    
+
     public static int getLineNumber() {
 		return lineNumber;
 	}
-    
+
     private void pr(String s){
         fw.print(s);
     }
@@ -136,16 +136,16 @@ public class CodeSampler {
     private void prln(Object s){
         prln(s.toString());
     }
-    
+
     public void comment(String s){
-    	
+
 
     	pr(';');
     	prln(s);
     }
-    
+
 	public void comment(Object s){
-	    	
+
 	    comment(s.toString());
     }
 
@@ -165,21 +165,21 @@ public class CodeSampler {
     	pr(label);
     	prln(" :");
     }
-    
+
     public void jas_cond(String condition,String label){
     	pr(cond_map.get(condition));
     	pr(" ");
     	prln(label);
     }
-    
+
     public void jas_goto(String label){
     	pr("goto ");
     	prln(label);
     }
-    
+
 	private void writeMainMethod(){
 		prln(".method public static main([Ljava/lang/String;)V");
-	}	
+	}
 
 	public void createArrayStatic(){
 
@@ -368,6 +368,19 @@ public class CodeSampler {
         pr(condition);
         pr(" ");
         prln(label);
+    }
+
+    public void jas_bipush(Integer number){
+      pr("bipush ");
+      prln(number);
+    }
+
+    public void jas_loadNumber(Integer number){
+      if(number >= 0  && number <= 5 ){
+        jas_iconst(number);
+      }else{
+        jas_bipush(number);
+      }
     }
 
     public String jas_arrayAssignInt1(Element array){

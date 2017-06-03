@@ -1,9 +1,7 @@
 import javax.swing.event.ListDataListener;
 import java.util.*;
 
-/**
- * Created by joao on 6/1/17.
- */
+
 public class StackAlocator {
 
     private SymbolTable table;

@@ -6,7 +6,7 @@ public class CodeGenerator implements Simple2Visitor {
 
 	@Override
 	public Object visit(SimpleNode node, Object data) {
-		// TODO Auto-generated method stub
+
 		return null;
 	}
 
@@ -30,7 +30,7 @@ public class CodeGenerator implements Simple2Visitor {
 
 		if(vars.get(0) > 0)
 			cs.writeStaticInit();
-		for(int i = 0; i< node.jjtGetNumChildren(); i++){ 
+		for(int i = 0; i< node.jjtGetNumChildren(); i++){
 			node.jjtGetChild(i).jjtAccept(this, data);
 			if(i == vars.get(1)-1){
 				cs.writeEndMethod();
@@ -64,15 +64,15 @@ public class CodeGenerator implements Simple2Visitor {
 
 	@Override
 	public Object visit(ASTNumericDeclaration node, Object data) {
-		// TODO Auto-generated method stub
+
 		return null;
 	}
 
 	@Override
 	public Object visit(ASTSign node, Object data) {
-		
+
 		return (String)node.jjtGetValue();
-		
+
 	}
 
 	@Override
@@ -99,7 +99,7 @@ public class CodeGenerator implements Simple2Visitor {
 		cs.increaseIndentation();
 		cs.writeBeginMethod(SymbolTable.getTable());
 		cs.writeStackAndLocals(20, 1 + SymbolTable.getTable().getMaxJasIndexSize());
-		for(int i = 0; i< node.jjtGetNumChildren(); i++){  
+		for(int i = 0; i< node.jjtGetNumChildren(); i++){
 			node.jjtGetChild(i).jjtAccept(this, data);
 		}
 
@@ -115,13 +115,13 @@ public class CodeGenerator implements Simple2Visitor {
 
 	@Override
 	public Object visit(ASTReturn node, Object data) {
-		// TODO Auto-generated method stub
+
 		return null;
 	}
 
 	@Override
 	public Object visit(ASTParameters node, Object data) {
-		// TODO Auto-generated method stub
+
 		return null;
 	}
 
@@ -139,14 +139,14 @@ public class CodeGenerator implements Simple2Visitor {
 
 	@Override
 	public Object visit(ASTElementArray node, Object data) {
-		// TODO Auto-generated method stub
+
 		return null;
 	}
 
 	@Override
 	public Object visit(ASTStatements node, Object data) {
 
-		for(int i = 0; i< node.jjtGetNumChildren(); i++){  
+		for(int i = 0; i< node.jjtGetNumChildren(); i++){
 			node.jjtGetChild(i).jjtAccept(this, true);
 		}
 		return null;
@@ -180,19 +180,19 @@ public class CodeGenerator implements Simple2Visitor {
 
 	@Override
 	public Object visit(ASTCalcOP node, Object data) {
-	
+
 		node.jjtGetChild(0).jjtAccept(this, false);
-		
+
 		node.jjtGetChild(1).jjtAccept(this, false);
 
 		CodeSampler cs = CodeSampler.getCodeSampler();
 		cs.jas_sign((String)node.value);
-		
+
 		return null;
 	}
 
 	@Override
-	public Object visit(ASTAccess node, Object data) { //Adiciona Boolean
+	public Object visit(ASTAccess node, Object data) {
 		SymbolTable current = SymbolTable.getTable();
 		Element e = current.getElement((String)node.value);
 
@@ -236,29 +236,30 @@ public class CodeGenerator implements Simple2Visitor {
 
 	@Override
 	public Object visit(ASTTerm node, Object data) {
-				
+
 		if(node.jjtGetNumChildren() == 2){
 			String st = (String)node.jjtGetChild(0).jjtAccept(this, true); // sign
-						
+
 			node.jjtGetChild(1).jjtAccept(this, false);
-			
+
 			if(st.equals("-")){
 				CodeSampler cs = CodeSampler.getCodeSampler();
-				
+
 				cs.jas_ineg();
 			}
-			
+
 		}else{
 			node.jjtGetChild(0).jjtAccept(this, false);
 		}
-			
+
 		return null;
 	}
 
 	@Override
 	public Object visit(ASTInteger node, Object data) {
 		CodeSampler cs = CodeSampler.getCodeSampler();
-		cs.jas_ldc((String)node.jjtGetValue());
+		String st = (String)node.jjtGetValue();
+		cs.jas_loadNumber(Integer.parseInt(st));
 		return null;
 	}
 
@@ -303,47 +304,47 @@ public class CodeGenerator implements Simple2Visitor {
 
 	@Override
 	public Object visit(ASTConditionOP node, Object data) {
-		
+
 		ASTAccess left_node = (ASTAccess)node.jjtGetChild(0);
     	left_node.jjtAccept(this,false);
-    	
+
     	SimpleNode right_node = (SimpleNode)node.jjtGetChild(1);
     	right_node.jjtAccept(this,false);
-    	
+
 		return null;
 	}
 
 	@Override
 	public Object visit(ASTWhile node, Object data) {
-		
+
 		CodeSampler cs = CodeSampler.getCodeSampler();
-		SymbolTable current = SymbolTable.getTable();		
-    	
+		SymbolTable current = SymbolTable.getTable();
+
 		cs.increaseIndentation();
     	cs.comment("WHILE");
-    	
+
     	String loop_label = "ll_" + CodeSampler.getLineNumber();
     	String end_loop_label = "el_" + CodeSampler.getLineNumber();
-    	
+
     	//Begin do while
     	cs.jas_label(loop_label);
-    	
+
     	//Write das condicoes
     	ASTConditionOP cond_node = (ASTConditionOP)node.jjtGetChild(0);
 		cond_node.jjtAccept(this, null);
     	String condition = (String)cond_node.jjtGetValue();
     	cs.jas_cond(condition, end_loop_label);
-    	
+
     	//Print statements
     	SymbolTable.pushTable(current.getChildTable());
     	ASTStatements stat_node = (ASTStatements)node.jjtGetChild(1);
     	stat_node.jjtAccept(this,null);
     	SymbolTable.popTable();
-    	
+
     	//End while loop
     	cs.jas_goto(loop_label);
     	cs.jas_label(end_loop_label);
-    	
+
     	cs.comment("END WHILE");
     	cs.decreaseIndentation();
 		return null;
@@ -355,28 +356,28 @@ public class CodeGenerator implements Simple2Visitor {
 		SymbolTable current = SymbolTable.getTable();
 		CodeSampler cs = CodeSampler.getCodeSampler();
 		Boolean has_else = (node.jjtGetNumChildren() == 3);
-		
+
 		cs.increaseIndentation();
 		cs.comment("IF");
-		
+
 		//Labels
 		String else_label = "else_" + CodeSampler.getLineNumber();
     	String end_if_label = "ei_" + CodeSampler.getLineNumber();
-    	
+
     	//Nodes
 		ASTConditionOP cond_node = (ASTConditionOP)node.jjtGetChild(0);
 		ASTStatements if_node = (ASTStatements)node.jjtGetChild(1);
-		
+
 		//Write condition variables
 		cond_node.jjtAccept(this, null);
 		String condition = (String)cond_node.jjtGetValue();
-    	
+
 		if(has_else){//has else
-			
+
 			cs.jas_cond(condition, else_label);
-			
+
 			ASTStatements else_node = (ASTStatements)node.jjtGetChild(2);
-			
+
 			//Write statements (if-else)
 			SymbolTable.pushTable(current.getChildTable());
 				if_node.jjtAccept(this, null);
@@ -390,15 +391,15 @@ public class CodeGenerator implements Simple2Visitor {
 			SymbolTable.popTable();
 
 		} else {//doest not have else
-			
+
 			cs.jas_cond(condition, end_if_label);
-			
+
 			//Write statements (if)
 			SymbolTable.pushTable(current.getChildTable());
 				if_node.jjtAccept(this, null);
 			SymbolTable.popTable();
 		}
-		
+
 		//Finalize
 		cs.jas_label(end_if_label);
 
