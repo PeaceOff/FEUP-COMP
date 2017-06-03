@@ -199,9 +199,7 @@ public class FunctionCallChecker implements Simple2Visitor {
 			//Lista de parametros que foi passada ha funcao
 			LinkedList<Element> parameters = (LinkedList<Element>)node.jjtGetChild(0).jjtAccept(this, data); // Retorna a lista de argumentos
 
-
-
-			if(arguments.size() == 0){
+			if(arguments.size() == 0 && parameters.size() != 0){
 				ErrorManager.addError(node.line,
 						"Function call on " + node.jjtGetValue() + " has illegal number of arguments! This function does not accept any argument.");
 				return null;

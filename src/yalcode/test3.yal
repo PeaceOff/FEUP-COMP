@@ -1,0 +1,57 @@
+module while_extravaganza{
+	
+	data = [100];
+	bar = [100];
+	mayo = [100];
+	
+	function foo(){
+		
+		y = 0;
+		x = 0;
+		i = 0;
+		
+		while(i < data.size){
+			data[i] = i * 2;
+			bar[i] = i * 3;
+			i = i + 1;
+		}
+		
+		//Testing double while loops
+		while(x < mayo.size){	
+			while(y < mayo.size){
+			
+				mayo[x] = mayo[x] + mayo[y];
+				y = y + 1;
+			}
+		
+			x = x + 1;
+		}
+		
+	}
+	
+	function foo2(i){
+	}
+	
+	function foo3(i,a[]){
+	}
+	
+	function main(){
+		
+		//Testing function call argument checker
+		foo();//NO ERROR
+		
+		foo2();//ERROR
+		foo2(mayo);//ERROR
+		
+		test = 1;
+		foo3(mayo,test);//ERROR
+		foo3(test,mayo);//NO ERROR
+		
+		z = 0;
+		
+		while(z < mayo.size){
+			var = mayo[z]; 
+			io.println("mayo :",var);
+		}
+	}
+}
