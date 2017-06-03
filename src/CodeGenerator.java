@@ -183,6 +183,7 @@ public class CodeGenerator implements Simple2Visitor {
 
 
 		node.jjtGetChild(1).jjtAccept(this, false);
+		System.out.println("Element" + e1);
 
 		cs.jas_putElement(e1,storeType == Element.TYPE_INT);
 		storeType = -1;
