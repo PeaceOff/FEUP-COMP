@@ -20,7 +20,8 @@ The goal of this project was to develop a "mini compiler" which should be able t
 ** EXECUTE: (indicate how to run your tool)
 To run our tool, you can specify the file which will be used to generate the bytecodes and you can also choose the number of registers(stack size) used.
 java Simple2.java [-r=#registers] file.yal
-The output should be a new file with the same name as the input file but with exstension .j eg: file.j
+The output should be a new file with the same name as the input file but with exstension .j eg: file.j.
+Until this point is what our compiler was supposed to do, now to test it, you should compile the jasmine file into a .class file, in order to do that, first you must have the jasmin.jar, second, run the command 'java -jar [jasmin.jar relative path] [file].j' this command will generate the '[file].class' which can be run with the java command, like so 'java [file]'.
 
 
 **DEALING WITH SYNTACTIC ERRORS: (Describe how the syntactic error recovery of your tool does work. Does it exit after the first error?)
@@ -40,7 +41,7 @@ The Code Generation in our project makes use of two different classes. Firstly, 
 
 
 **OVERVIEW: (refer the approach used in your tool, the main algorithms, the third-party tools and/or packages, etc.)
-Left Edge Algorithm for time to live analysis. JavaCC.
+The main tool used in this project was JavaCC for the syntatic analysis aswell as a builder for the AST, in particular with the jjtree extension. The approach used was a waterfall development module as indicated in the "Description of the yal2jvm project [English version]" file that can be found in the moodle page for the compiler's class. In terms of algorithms we used the Left Edge Algorithm presented in the theoretical classes, it was used to find a minimum number of register for the register alocation of variables.
  
 
 **TESTSUITE AND TEST INFRASTRUCTURE: (Describe the content of your testsuite regarding the number of examples, the approach to automate the test, etc.)
