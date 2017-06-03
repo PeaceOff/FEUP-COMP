@@ -100,7 +100,9 @@ public class CodeGenerator implements Simple2Visitor {
 		cs.increaseIndentation();
 		cs.writeBeginMethod(SymbolTable.getTable());
 		cs.writeStackAndLocals(20, 1 + SymbolTable.getTable().getMaxJasIndexSize());
-		if(SymbolTable.getTable().getReturn().getType() != Element.TYPE_UNDEFINED){
+
+
+		if(SymbolTable.getTable().getReturn().getType() != Element.TYPE_UNDEFINED && !SymbolTable.getTable().returnShared()){
 
 			cs.jas_loadNumber(0);
 			if(SymbolTable.getTable().getReturn().getType() == Element.TYPE_ARRAY) {
