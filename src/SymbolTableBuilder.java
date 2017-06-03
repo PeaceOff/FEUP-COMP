@@ -270,7 +270,8 @@ public class SymbolTableBuilder implements Simple2Visitor {
 		if(lft.getType() == rght.getType())
 			return new Element("",lft.getType(),true);
 
-		ErrorManager.addError(node.line,
+		if(lft.getType() != Element.TYPE_UNDEFINED && rght.getType() != Element.TYPE_UNDEFINED)
+			ErrorManager.addError(node.line,
 				"Right side var of type" + Element.getTypeName(lft.getType()) + " Incompatible with " + Element.getTypeName(rght.getType()));
 
 		return new Element("",Element.TYPE_UNDEFINED);
@@ -354,10 +355,10 @@ public class SymbolTableBuilder implements Simple2Visitor {
 		if(!rght.isInitialized()){
 			ErrorManager.addError(node.line,
 					"Right side var:" + rght.getName() + " Isn't Initialized!");
-		}else if(rght.getType() != Element.TYPE_UNDEFINED){
+		}else if(rght.getType() != Element.TYPE_UNDEFINED && lft.getType() != Element.TYPE_UNDEFINED){
 			if(lft.getType() != rght.getType())
 				ErrorManager.addError(node.line,
-						"Right side var of type" + Element.getTypeName(lft.getType()) + " Incompatible with " + Element.getTypeName(rght.getType()));
+						"Right side var of type " + Element.getTypeName(lft.getType()) + " Incompatible with " + Element.getTypeName(rght.getType()));
 		}
 
 		return null;

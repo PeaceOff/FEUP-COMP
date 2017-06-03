@@ -84,10 +84,8 @@ public class FunctionCallChecker implements Simple2Visitor {
 
 		Element e = (Element)node.jjtGetChild(0).jjtAccept(this,data);
 		Element func = (Element)node.jjtGetChild(1).jjtAccept(this, data);
-		System.out.println(func);
 		if(func != null) {
 			if(func.getReturn() != null) {
-				System.out.println("\t" + func.getReturn());
 				if (func.getReturn().getType() == Element.TYPE_UNDEFINED) {
 					ErrorManager.addError(node.line, "Cannot Assign Variable to Void!");
 					return null;
@@ -101,7 +99,6 @@ public class FunctionCallChecker implements Simple2Visitor {
 				e.setType(Element.TYPE_INT);
 			}
 		}
-		System.out.println(e);
 		return null;
 	}
 

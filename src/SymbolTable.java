@@ -248,7 +248,8 @@ public class SymbolTable{
 
 		if(_return != null){
 			if(_return.getType() != Element.TYPE_UNDEFINED)
-				el.add(_return);
+				if(!el.contains(_return))
+					el.add(_return);
 		}
 
 		for(SymbolTable table : children){
@@ -282,17 +283,17 @@ public class SymbolTable{
 		return maxIndex;
 	}
 
-	public int getReturnIndex( Element e ){
+	public Element getReturnIndex( Element e ){
 
     	Element e2 = getElementNoReturn(e.getName());
-    	if(e2 != null && e2 != e){
-    		return e2.getJasIndex();
+    	if(e2 != null && e2 != e && e2.getJasIndex() > -1){
+    		return e2;
 		}
 
-		int r = e.getJasIndex();
+		Element r = e;
 
     	for(SymbolTable t : children){
-    		int tmp = t.getReturnIndex(e);
+    		Element tmp = t.getReturnIndex(e);
     		if(tmp != r)
     			r=tmp;
 		}
@@ -304,10 +305,10 @@ public class SymbolTable{
 	public void checkReturnPosition(){
 
     	if(_return != null){
-    	    int value = getReturnIndex(_return);
-    	    if(value != _return.getJasIndex())
+    	    Element value = getReturnIndex(_return);
+    	    if(value.getJasIndex() != _return.getJasIndex())
     	    	returnShared = true;
-    		_return.setJasIndex(value);
+    		_return = value;
 		}
 
     	for(SymbolTable table : children){

@@ -94,6 +94,11 @@ public class AssignChecker implements Simple2Visitor {
 
 	  Element right = (Element)node.jjtGetChild(1).jjtAccept(this, data);
 
+	  if(right == null){
+	  	ErrorManager.addError(node.line, "Right Side Variable Not Declared in this scope!");
+	  	return null;
+	  }
+
 	  if(left.getType() == Element.TYPE_UNDEFINED){
 		  return null;
 	  }
@@ -134,7 +139,6 @@ public class AssignChecker implements Simple2Visitor {
 
   public Object visit(ASTAccess node, Object data){
 
-
 	  if(node.jjtGetNumChildren() == 0){
 		 return SymbolTable.getTable().getElement((String)node.jjtGetValue());
 	  }else{
@@ -145,7 +149,6 @@ public class AssignChecker implements Simple2Visitor {
   }
 
   public Object visit(ASTTerm node, Object data){
-
 	 return (Element)node.jjtGetChild(node.jjtGetNumChildren()-1).jjtAccept(this, data);
 
   }
@@ -214,7 +217,6 @@ public class AssignChecker implements Simple2Visitor {
 	  if(node.jjtGetNumChildren() == 1){
 
 		 Element function = SymbolTable.getRootTable().getElement((String)node.jjtGetValue());
-
 		 return function.getReturn();
 
 	  }
