@@ -56,10 +56,6 @@ public class StackAlocator {
             color++;
         }
 
-
-        for(Element e : elements){
-            System.out.println(e);
-        }
         if(color >= colors)
             return false;
         return true;
