@@ -80,7 +80,11 @@ public class CodeSampler {
         sign_map.put("*", "imul");
         sign_map.put("/", "idiv");
         sign_map.put(">>", "ishr");
-        sign_map.put(">>", "ishl");
+        sign_map.put("<<", "ishl");
+        sign_map.put("|", "ior");
+        sign_map.put("^", "ixor");
+        sign_map.put(">>>", "iushr");
+        sign_map.put("&", "iand");
 
     }
 

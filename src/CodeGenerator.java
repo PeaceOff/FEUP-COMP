@@ -199,6 +199,7 @@ public class CodeGenerator implements Simple2Visitor {
 
 		CodeSampler cs = CodeSampler.getCodeSampler();
 		cs.jas_sign((String)node.value);
+		System.out.println((String)node.value);
 
 		return null;
 	}
