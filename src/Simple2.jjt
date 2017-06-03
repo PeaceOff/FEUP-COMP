@@ -105,8 +105,8 @@ public class Simple2
     }
     catch (Exception e)
     {
-      e.printStackTrace();
-      System.out.println("Oops.");
+      //e.printStackTrace();
+      System.out.println("Syntax Error!");
       System.out.println(e.getMessage());
     }
   }
@@ -331,7 +331,7 @@ void Term() : {Token s1, t1;}
 }
 
 boolean CallArrayT(Token t1)#Call(Simple2.split) : {boolean call;}
-{	
+{
   	call = CallArray2() //ID.Size
 
   	{jjtThis.value = t1.image;jjtThis.line = t1.beginLine;}
@@ -343,7 +343,7 @@ boolean CallArrayT(Token t1)#Call(Simple2.split) : {boolean call;}
 boolean CallArray()#Access(!Simple2.split) : {Token t1; boolean call;}
 {
   t1 = <ID>
-  
+
   call = CallArrayT(t1)
   {
     jjtThis.value = t1.image;jjtThis.line = t1.beginLine;
