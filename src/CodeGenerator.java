@@ -100,6 +100,15 @@ public class CodeGenerator implements Simple2Visitor {
 		cs.increaseIndentation();
 		cs.writeBeginMethod(SymbolTable.getTable());
 		cs.writeStackAndLocals(20, 1 + SymbolTable.getTable().getMaxJasIndexSize());
+		if(SymbolTable.getTable().getReturn().getType() != Element.TYPE_UNDEFINED){
+
+			cs.jas_loadNumber(0);
+			if(SymbolTable.getTable().getReturn().getType() == Element.TYPE_ARRAY) {
+				cs.jas_newArray();
+			}
+			cs.jas_putElement(SymbolTable.getTable().getReturn(),false);
+
+		}
 		for(int i = 0; i< node.jjtGetNumChildren(); i++){
 			node.jjtGetChild(i).jjtAccept(this, data);
 		}

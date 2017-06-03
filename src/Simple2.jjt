@@ -109,7 +109,8 @@ public class Simple2
     }
     catch (Exception e)
     {
-      //e.printStackTrace();
+      e.printStackTrace();
+
       System.out.println("Syntax Error!");
       System.out.println(e.getMessage());
     }

@@ -279,7 +279,7 @@ public class SymbolTableBuilder implements Simple2Visitor {
 			return new Element((String)node.jjtGetValue(), Element.TYPE_UNDEFINED);
 		}
 
-		if(node.jjtGetNumChildren() == 1 && e.getType() != Element.TYPE_ARRAY){
+		if(node.jjtGetNumChildren() == 1 && e.getType() != Element.TYPE_ARRAY && e.getType() != Element.TYPE_UNDEFINED){
 			ErrorManager.addError(node.line,
 					"Error Var:" + node.jjtGetValue() + " Variable Isn't an array!");
 
