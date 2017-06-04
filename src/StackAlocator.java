@@ -1,4 +1,3 @@
-import javax.swing.event.ListDataListener;
 import java.util.*;
 
 
@@ -13,6 +12,9 @@ public class StackAlocator {
 
     private void prepareData(){
         table.prepareMinimum();
+        
+        //Testing unused variable warning
+        table.check_usage();
     }
 
     public boolean tryAlocation(int n){

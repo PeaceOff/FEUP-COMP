@@ -237,6 +237,22 @@ public class SymbolTable{
 			}
 		}
     }
+    
+    public void check_usage() {
+    	
+		for(SymbolTable t : children)
+			t.check_usage();
+		
+		if(parameters != null){
+			for(Element e : parameters.values()){
+				if(e.getJasIndex() != -1)
+					if(e.getType() != 3)//Not a function
+						if(e.getMaxLine() == 1)
+							System.out.println("Warning!Variable " + e.getName() + " is never used.");
+				
+			}
+		}
+    }
 
     public ArrayList<Element> getAllElements(){
 		ArrayList<Element> el= new ArrayList<>();

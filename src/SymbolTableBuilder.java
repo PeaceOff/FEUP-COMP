@@ -107,6 +107,7 @@ public class SymbolTableBuilder implements Simple2Visitor {
 	}
 
 	public Object visit(ASTFunction node, Object data){
+		
 		String functionName = (String)node.jjtGetValue();
 		Element _return = (Element)node.jjtGetChild(0).jjtAccept(this, data);
 		LinkedList<Element> args = (LinkedList<Element>)node.jjtGetChild(1).jjtAccept(this, data);
@@ -134,6 +135,7 @@ public class SymbolTableBuilder implements Simple2Visitor {
 
 		node.jjtGetChild(2).jjtAccept(this, data);
 
+		
 		if(!_return.isInitialized() && _return.getType() != Element.TYPE_UNDEFINED){
 			ErrorManager.addError(node.line, "Function " + functionName + " Must return a value!");
 		}

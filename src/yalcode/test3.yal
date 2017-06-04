@@ -30,9 +30,12 @@ module while_extravaganza{
 	}
 	
 	function foo2(i){
+		a = i + 29;//Comment for usage warning
 	}
 	
 	function foo3(i,a[]){
+	
+		b = i + a[0];//Comment for usage warning
 	}
 	
 	function main(){
@@ -40,11 +43,11 @@ module while_extravaganza{
 		//Testing function call argument checker
 		foo();//NO ERROR
 		
-		foo2();//ERROR
-		foo2(mayo);//ERROR
+		//foo2();//ERROR
+		//foo2(mayo);//ERROR
 		
 		test = 1;
-		foo3(mayo,test);//ERROR
+		//foo3(mayo,test);//ERROR
 		foo3(test,mayo);//NO ERROR
 		
 		z = 0;
@@ -52,6 +55,7 @@ module while_extravaganza{
 		while(z < mayo.size){
 			var = mayo[z]; 
 			io.println("mayo :",var);
+			z = z + 1;
 		}
 	}
 }
