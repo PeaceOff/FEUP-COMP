@@ -50,7 +50,7 @@ With the tests provided being very in depth and covering many aspects of the pro
  
 
 **TASK DISTRIBUTION: (Identify the set of tasks done by each member of the project.)
-David Azevedo : Conversion of the grammar to a LL(1) format. Contribuition to the construction of the AST. Responsible for the checking the function call parameters with the respective arguments. Responsible for the loops and if's in the code generation. Testing and debugging the project. Brainstorming for the liveness analysis implementation aswell as fixing bugging related to it.
+David Azevedo : Conversion of the grammar to a LL(1) format. Contribuition to the construction of the AST. Responsible for the checking the function call parameters with the respective arguments. Responsible for the loops and if's in the code generation. Testing and debugging the project. Brainstorming for the liveness analysis implementation aswell as fixing bugging related to it. Responsible for writing this report.
 João Ferreira :
 Marcelo Ferreira :
 
