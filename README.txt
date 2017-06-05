@@ -9,7 +9,7 @@ NAME1: David Azevedo, NR1: 201405846, GRADE1: 20, CONTRIBUTION1: 33,3%
 
 NAME2: João Ferreira, NR2: 201404332, GRADE2: 20, CONTRIBUTION2: 33,3%
 
-NAME3: Marcelo Ferreira, NR3: 201405323, GRADE3: <0 to 20 value>, CONTRIBUTION3: 33,3%
+NAME3: Marcelo Ferreira, NR3: 201405323, GRADE3: 20, CONTRIBUTION3: 33,3%
 
 (Note that the sum of the CONTRIBUTION? values must be 100 %)
 
