@@ -5,7 +5,7 @@
 (Names, numbers, self assessment, and contribution of
 the members of the group to the project according to:)
 
-NAME1: David Azevedo, NR1: 201405846, GRADE1: 18, CONTRIBUTION1: 33,3%
+NAME1: David Azevedo, NR1: 201405846, GRADE1: 20, CONTRIBUTION1: 33,3%
 
 NAME2: João Ferreira, NR2: 201404332, GRADE2: 20, CONTRIBUTION2: 33,3%
 
@@ -31,6 +31,7 @@ Until this point is what our compiler was supposed to do, now to test it, you sh
 
 **DEALING WITH SYNTACTIC ERRORS: (Describe how the syntactic error recovery of your tool does work. Does it exit after the first error?)
 JavaCC was used in our project so all of the syntactic analysis and error recovery was left by default for the JavaCC normal operation as the group felt it should focus more on building a powerfull and complete compiler, which gets the job done, the main reason being the lack of time to implement the project.
+A core reason for this is that the group was not aware of this feature as it was our understanding that not stopping at the first error was relative to the semantic analysis only, this is impression was passed to the students in the theoretical classes and all 3 of us were present during the majority of them. This particular feature was only discovered in a late stage of the implementation.
  
 
 **SEMANTIC ANALYSIS: (Refer the possible semantic rules implemented by your tool.)
