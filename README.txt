@@ -9,7 +9,7 @@ NAME1: David Azevedo, NR1: 201405846, GRADE1: <0 to 20 value>, CONTRIBUTION1: 33
 
 NAME2: João Ferreira, NR2: 201404332, GRADE2: <0 to 20 value>, CONTRIBUTION2: <0 to 100 %>
 
-NAME3: Marcelo Ferreira, NR3: 201405323, GRADE3: <0 to 20 value>, CONTRIBUTION3: <0 to 100 %>
+NAME3: Marcelo Ferreira, NR3: 201405323, GRADE3: <0 to 20 value>, CONTRIBUTION3: 33,3%
 
 (Note that the sum of the CONTRIBUTION? values must be 100 %)
 
@@ -52,7 +52,7 @@ With the tests provided being very in depth and covering many aspects of the pro
 **TASK DISTRIBUTION: (Identify the set of tasks done by each member of the project.)
 David Azevedo : Conversion of the grammar to a LL(1) format. Contribuition to the construction of the AST. Responsible for the checking the function call parameters with the respective arguments. Responsible for the loops and if's in the code generation. Testing and debugging the project. Brainstorming for the liveness analysis implementation aswell as fixing bugging related to it. Responsible for writing this report.
 João Ferreira :
-Marcelo Ferreira :
+Marcelo Ferreira : Conversion of the grammar to a LL(1) format. Helped on AST construction. Responsible for checking the assignments. Responsible for convert to machine code assignments and calc operations. Testing and debugging the project. 
 
 **PROS: (Identify the most positive aspects of your tool)
 Our tool's positive aspects include : LL(1) Grammar, a very good semantic analysis and error detection, automatic otimizations in terms of code generation, use of optimized 'templates' for conditional statements and loops, construction of a very helpful symbol table aswell as printing it for debugging, good register allocation algorithm.
