@@ -1,0 +1,25 @@
+module example1
+{
+
+function max = max1(a,b) {
+
+	max = 0;
+
+	if(a > b){
+		max = a;	
+	}else{
+		max = b;
+	}
+
+}
+
+function main(){
+	c = io.read();
+	d = io.read();
+
+	max = max1(c,d);
+	io.println("max is = ", max);
+
+}
+
+}

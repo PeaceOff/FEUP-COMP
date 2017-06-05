@@ -1,0 +1,16 @@
+module example2{
+
+
+function main(){
+
+	A = 0;
+	b = 5;
+	
+	c = a + b;
+	d = c * b;
+
+	io.println("result = ", D);
+}
+
+
+}

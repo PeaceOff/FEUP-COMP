@@ -1,0 +1,31 @@
+module example4 {
+
+
+	function main(){
+
+		N = 10;
+
+		A = [n];
+
+		A = 1;
+		
+		A[2] = 3 & 2;
+
+		A[5] = 10;
+
+		A[6] = 10 / 5;
+
+		A[7] = 5 | 4;
+
+		i = 0;
+
+		while(i < N){
+		
+		k = A[i];
+		io.println( k );
+
+		i = i + 1;
+		}
+	}
+
+}

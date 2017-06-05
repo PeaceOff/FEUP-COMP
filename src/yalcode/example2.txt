@@ -1,0 +1,1 @@
+Example to show different calc operations and also to show that the language is case insensitive. As you can see on the example, we can use "d" or "D" and result is the same. The final result should be "result = 25"

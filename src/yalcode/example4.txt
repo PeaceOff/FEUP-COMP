@@ -1,0 +1,17 @@
+
+This example show initialization of all values of an array, in  this case with the value of 1. There also show more operations as "|", "&" and "/". To show all values of the array we use a while.
+
+The result should be:  
+
+
+1
+1
+2
+1
+1
+10
+2
+5
+1
+1
+

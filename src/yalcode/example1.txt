@@ -1,0 +1,1 @@
+Simple example, using io library, for input of values, printing the max value.

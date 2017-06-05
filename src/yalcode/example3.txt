@@ -1,0 +1,4 @@
+On this example we show a small example of an error that can occur, that is assign a variable to undefined.
+
+5:Error Var:a Cannot Assign a variable to Undefined
+
