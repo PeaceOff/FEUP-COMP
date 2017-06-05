@@ -31,7 +31,7 @@ Until this point is what our compiler was supposed to do, now to test it, you sh
 
 **DEALING WITH SYNTACTIC ERRORS: (Describe how the syntactic error recovery of your tool does work. Does it exit after the first error?)
 JavaCC was used in our project so all of the syntactic analysis and error recovery was left by default for the JavaCC normal operation as the group felt it should focus more on building a powerfull and complete compiler, which gets the job done, the main reason being the lack of time to implement the project.
-A core reason for this is that the group was not aware of this feature as it was our understanding that not stopping at the first error was relative to the semantic analysis only, this is impression was passed to the students in the theoretical classes and all 3 of us were present during the majority of them. This particular feature was only discovered in a late stage of the implementation.
+A core reason for this is that the group was not aware of this feature as it was our understanding that not stopping at the first error was relative to the semantic analysis only. This particular feature was only discovered in a late stage of the implementation.
  
 
 **SEMANTIC ANALYSIS: (Refer the possible semantic rules implemented by your tool.)
