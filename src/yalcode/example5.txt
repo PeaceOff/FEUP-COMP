@@ -1,0 +1,5 @@
+
+The example5.yal code represents the way our compiler detects if the right type and number of arguments is being passed to a local function, on the main function you can find different calls to different functions within the module, this calls all have different types and number of arguments, the expected errors are commented in the code and you can comment and uncomment those lines in order to see that our compiler is doing it's job correctly.
+Another thing this example shows is the warning about the usage of arguments within the functions, as you can see in the functions 'foo2' and 'foo3' if you comment the indicated lines our compiler will warn you that you are not using this arguments inside the function.
+Finally, there is also proof that the code generation correctly generates code for nested loops.
+The result here is rather irrelevant since this is not the point with this example. This code does not have a objective as it is merely representative.
