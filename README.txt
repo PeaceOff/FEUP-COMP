@@ -5,9 +5,9 @@
 (Names, numbers, self assessment, and contribution of
 the members of the group to the project according to:)
 
-NAME1: David Azevedo, NR1: 201405846, GRADE1: <0 to 20 value>, CONTRIBUTION1: 33,3%
+NAME1: David Azevedo, NR1: 201405846, GRADE1: 20, CONTRIBUTION1: 33,3%
 
-NAME2: Jo„o Ferreira, NR2: 201404332, GRADE2: <0 to 20 value>, CONTRIBUTION2: <0 to 100 %>
+NAME2: Jo√£o Ferreira, NR2: 201404332, GRADE2: 20, CONTRIBUTION2: 33,3%
 
 NAME3: Marcelo Ferreira, NR3: 201405323, GRADE3: <0 to 20 value>, CONTRIBUTION3: 33,3%
 
@@ -18,8 +18,13 @@ The goal of this project was to develop a "mini compiler" which should be able t
  
 
 ** EXECUTE: (indicate how to run your tool)
+To compile the source code you need javacc and jjtree, and follow the sequence:
+jjtree Simple2.jjt
+javacc Simple2.jj
+javac -d ../output *.java
+or just use on of the bat/sh files in the folder src.
 To run our tool, after compiling the source code, you can specify the file which will be used to generate the bytecodes and you can also choose the number of registers(stack size) used.
-java Simple2.java [-r=#registers] file.yal
+java Simple2 [-r=#registers] file.yal
 The output should be a new file with the same name as the input file but with exstension .j eg: file.j.
 Until this point is what our compiler was supposed to do, now to test it, you should compile the jasmine file into a .class file, in order to do that, first you must have the jasmin.jar, second, run the command 'java -jar [jasmin.jar relative path] [file].j' this command will generate the '[file].class' which can be run with the java command, like so 'java [file]'.
 
@@ -30,7 +35,12 @@ JavaCC was used in our project so all of the syntactic analysis and error recove
 
 **SEMANTIC ANALYSIS: (Refer the possible semantic rules implemented by your tool.)
 Our group implemented all of the semantic rules imposed by the SIMPLE language, passed onto us by the teachers.
- 
+Our tool checks:
+  -Variable Declarations/If a variable is Initialized
+  -Match different types when assigning a variable to a value, when doing an operation/comparison.
+  -Math the types and number of arguments of a function call (of the same module)
+  -Checks if a type of a varaiable if compatible with the return of a function.
+  -Others. 
 
 **INTERMEDIATE REPRESENTATIONS (IRs): (for example, when applicable, briefly describe the HLIR (high-level IR) and the LLIR (low-level IR) used, if your tool includes an LLIR with structure different from the HLIR)
 To better perform the 'Semantic Analysis', the 'Code Generation' and the construct of the Symbol Table we generated a HLIR consisting on a AST, this intermediate representation made easy the fases explain in the begining, we also created, in parallel, a symbol table relative to the whole module. To achieve this, we opted to use the 'visitor' pattern which let's us traverse the abstract syntax tree with ease. Note : The design pattern 'visitor' was used a lot throughout our implementation due to it's ability to travel along the AST and 'visit' every node in a orderly fashion.
@@ -51,11 +61,11 @@ With the tests provided being very in depth and covering many aspects of the pro
 
 **TASK DISTRIBUTION: (Identify the set of tasks done by each member of the project.)
 David Azevedo : Conversion of the grammar to a LL(1) format. Contribuition to the construction of the AST. Responsible for the checking the function call parameters with the respective arguments. Responsible for the loops and if's in the code generation. Testing and debugging the project. Brainstorming for the liveness analysis implementation aswell as fixing bugging related to it. Responsible for writing this report.
-Jo„o Ferreira :
+Jo√£o Ferreira : Conversion of the grammar to a LL(1) format. Contribution to the construction of the AST. Responsible for creating and allocating all the data to the symboltable. Responsible for the first check of declaration and assign of variables. Responsible for the implementation of the Code generator and code sampler. Responsible for the translation to JVM of declaration of fields, functions, load and stores. Responsible for the liveness analysis implementation. Contribution to the report and bug fixing.
 Marcelo Ferreira : Conversion of the grammar to a LL(1) format. Helped on AST construction. Responsible for checking the assignments. Responsible for convert to machine code assignments and calc operations. Testing and debugging the project. 
 
 **PROS: (Identify the most positive aspects of your tool)
 Our tool's positive aspects include : LL(1) Grammar, a very good semantic analysis and error detection, automatic otimizations in terms of code generation, use of optimized 'templates' for conditional statements and loops, construction of a very helpful symbol table aswell as printing it for debugging, good register allocation algorithm.
 
 **CONS: (Identify the most negative aspects of your tool)
-Although we believe our implementation to be very good in terms of what was asked of us, it could still be better in some aspects, which the group considers as future improvements that were not implemented due to this semester's timetable being very strict, and the work load was imense from all the classes. That being said, the more negative aspects are : not stoping the syntatic analysis at the first error, not translating the language to portuguese, this idea was dropped has the teachers would not evalute this and we wanted to be in compliance with the specification first and leave secondary enhancements such as this to last (if we had the time). Finally, we believe that the code otimization could have been a little more strong than it is at the moment.
+Although we believe our implementation to be very good in terms of what was asked of us, it could still be better in some aspects, which the group considers as future improvements that were not implemented due to this semester's timetable being very strict, and the work load was imense from all the classes. That being said, the more negative aspects are : stoping the syntatic analysis at the first error, not translating the language to portuguese, this idea was dropped has the teachers would not evalute this and we wanted to be in compliance with the specification first and leave secondary enhancements such as this to last (if we had the time). Finally, we believe that the code otimization could have been a little more strong than it is at the moment.
