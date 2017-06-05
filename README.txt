@@ -1,11 +1,11 @@
-**PROJECT TITLE: SIMPLE: A compiler of Simple to Java Bytecodes
+﻿**PROJECT TITLE: SIMPLE: A compiler of Simple to Java Bytecodes
 
 **GROUP: G27
 
 (Names, numbers, self assessment, and contribution of
 the members of the group to the project according to:)
 
-NAME1: David Azevedo, NR1: 201405846, GRADE1: 20, CONTRIBUTION1: 33,3%
+NAME1: David Azevedo, NR1: 201405846, GRADE1: 18, CONTRIBUTION1: 33,3%
 
 NAME2: João Ferreira, NR2: 201404332, GRADE2: 20, CONTRIBUTION2: 33,3%
 
@@ -39,7 +39,7 @@ Our tool checks:
   -Variable Declarations/If a variable is Initialized
   -Match different types when assigning a variable to a value, when doing an operation/comparison.
   -Math the types and number of arguments of a function call (of the same module)
-  -Checks if a type of a varaiable if compatible with the return of a function.
+  -Checks if a type of a variable if compatible with the return of a function.
   -Others. 
 
 **INTERMEDIATE REPRESENTATIONS (IRs): (for example, when applicable, briefly describe the HLIR (high-level IR) and the LLIR (low-level IR) used, if your tool includes an LLIR with structure different from the HLIR)
@@ -60,9 +60,12 @@ With the tests provided being very in depth and covering many aspects of the pro
  
 
 **TASK DISTRIBUTION: (Identify the set of tasks done by each member of the project.)
+
 David Azevedo : Conversion of the grammar to a LL(1) format. Contribuition to the construction of the AST. Responsible for the checking the function call parameters with the respective arguments. Responsible for the loops and if's in the code generation. Testing and debugging the project. Brainstorming for the liveness analysis implementation aswell as fixing bugging related to it. Responsible for writing this report.
-João Ferreira : Conversion of the grammar to a LL(1) format. Contribution to the construction of the AST. Responsible for creating and allocating all the data to the symboltable. Responsible for the first check of declaration and assign of variables. Responsible for the implementation of the Code generator and code sampler. Responsible for the translation to JVM of declaration of fields, functions, load and stores. Responsible for the liveness analysis implementation. Contribution to the report and bug fixing.
-Marcelo Ferreira : Conversion of the grammar to a LL(1) format. Helped on AST construction. Responsible for checking the assignments. Responsible for convert to machine code assignments and calc operations. Testing and debugging the project. 
+
+João Ferreira : Conversion of the grammar to a LL(1) format. Contribution to the construction of the AST. Responsible for creating and allocating all the data to the symboltable. Responsible for the first check of declaration and assign of variables. Responsible for the implementation of the Code generator and code sampler base. Responsible for the translation to JVM of declaration of fields, functions, load and stores. Responsible for the liveness analysis implementation. Contribution to the report and bug fixing.
+
+Marcelo Ferreira : Conversion of the grammar to a LL(1) format. Help on AST construction. Responsible for checking the assignments. Responsible for converting to machine code assignments and calc operations. Testing and debugging the project. 
 
 **PROS: (Identify the most positive aspects of your tool)
 Our tool's positive aspects include : LL(1) Grammar, a very good semantic analysis and error detection, automatic otimizations in terms of code generation, use of optimized 'templates' for conditional statements and loops, construction of a very helpful symbol table aswell as printing it for debugging, good register allocation algorithm.
