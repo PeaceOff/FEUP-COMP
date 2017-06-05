@@ -187,7 +187,7 @@ SimpleNode Start() : { }
 void Module() : {Token t1;}
 {
   <MODULE> t1 = <ID> <LCHAVETA> (Declaration())* (Function())* <RCHAVETA>
-  {jjtThis.value = t1.image;jjtThis.line = t1.beginLine;}
+  {jjtThis.value = t1.image.toLowerCase();jjtThis.line = t1.beginLine;}
 }
 
 void Declaration(): {Token t1;} //FIRST: First(ArrayElement, ScalarElement) <ASSIGN> <PVIRG>
@@ -197,8 +197,8 @@ void Declaration(): {Token t1;} //FIRST: First(ArrayElement, ScalarElement) <ASS
 
 void NumericDeclaration() : {Token t1, sign;}
 {
-  (sign = <ADDSUB_OP>{jjtThis.value=sign.image;jjtThis.line = sign.beginLine;}#Sign)?
-  (t1 = <INTEGER> {jjtThis.value = t1.image;jjtThis.line = t1.beginLine;}#Constant)
+  (sign = <ADDSUB_OP>{jjtThis.value=sign.image.toLowerCase();jjtThis.line = sign.beginLine;}#Sign)?
+  (t1 = <INTEGER> {jjtThis.value = t1.image.toLowerCase();jjtThis.line = t1.beginLine;}#Constant)
 }
 
 void ArrayDeclaration() : {}
@@ -209,14 +209,14 @@ void ArrayDeclaration() : {}
 void Function() : {Token t1;} //Fisrt FUNCTION!
 {
   <FUNCTION> t1 = FunctionDecl() FunctionParameters() <LCHAVETA>Stmtlst()<RCHAVETA> // (ElementArray()? t1=FunctionReturn(t1))?
-  {jjtThis.value = t1.image;jjtThis.line = t1.beginLine;}
+  {jjtThis.value = t1.image.toLowerCase();jjtThis.line = t1.beginLine;}
 }
 
 Token FunctionDecl()#Return : {Token t1, t2 = null;}
 {
 t1 = <ID> ( (ElementArray() {/*Mark as array*/})? (t2 = FunctionReturn()))? //Mark as array
   {if(t2 != null){
-    jjtThis.value = t1.image;
+    jjtThis.value = t1.image.toLowerCase();
     jjtThis.line = t1.beginLine;
     return t2;
   }else{
@@ -244,7 +244,7 @@ void Varlist()#void : {}
 void Element() #Variable :{Token t1;}
 {
   t1 = <ID> (ElementArray() {/*mark as array    */})? //A ou A[]    A->ElementArray
-  {jjtThis.value = t1.image;jjtThis.line = t1.beginLine;}
+  {jjtThis.value = t1.image.toLowerCase();jjtThis.line = t1.beginLine;}
 }
 
 void ElementArray():{}
@@ -275,7 +275,7 @@ void Stmt() #void : {}
 
 void AssignOrCall()#Assign(>1) : {Token t1; boolean res;}
 {
-  res = CallArray() {if(res) return;} t1 = <ASSIGN> {jjtThis.value = t1.image; jjtThis.line=t1.beginLine;} Rhs()
+  res = CallArray() {if(res) return;} t1 = <ASSIGN> {jjtThis.value = t1.image.toLowerCase(); jjtThis.line=t1.beginLine;} Rhs()
 }
 //--------------------------------------------------------
 
@@ -285,7 +285,7 @@ boolean AssignOrCall2() : {Token t; boolean res;}
 {
   t = <ID> res = AssignOrCall3()
   {
-    jjtThis.value = t.image;
+    jjtThis.value = t.image.toLowerCase();
     return res;
   }
 }
@@ -314,7 +314,7 @@ void Rhs()#CalcOP(>1): {Token t1;}
 {
   (Term() (( (t1 = <ARITH_OP>) | (t1 = <BITWISE_OP>) | (t1 = <ADDSUB_OP>) ) Term()
             {
-              jjtThis.value = t1.image;jjtThis.line = t1.beginLine;
+              jjtThis.value = t1.image.toLowerCase();jjtThis.line = t1.beginLine;
             }
           )?)
   | ArrayDeclaration()
@@ -322,26 +322,26 @@ void Rhs()#CalcOP(>1): {Token t1;}
 
 void ArraySize()#void : {Token t1;}
 {
- ( ArraySizeAux() | (t1 = <INTEGER>{jjtThis.value = t1.image;jjtThis.line = t1.beginLine;}#Constant))
+ ( ArraySizeAux() | (t1 = <INTEGER>{jjtThis.value = t1.image.toLowerCase();jjtThis.line = t1.beginLine;}#Constant))
 
 }
 
 void ArraySizeAux()#Access : {Token t1;}
 {
-  t1 = <ID> {jjtThis.value = t1.image; jjtThis.line = t1.beginLine;}
+  t1 = <ID> {jjtThis.value = t1.image.toLowerCase(); jjtThis.line = t1.beginLine;}
   ScalarAccess2()
 }
 
 void Term() : {Token s1, t1;}
 {
-  (s1 = <ADDSUB_OP> {jjtThis.value = s1.image;jjtThis.line = s1.beginLine;} #Sign)? (t1 = <INTEGER> {jjtThis.value = t1.image;jjtThis.line = t1.beginLine;} #Integer |  CallArray()) //CallArray -> Call() | ArrayOrScalar()
+  (s1 = <ADDSUB_OP> {jjtThis.value = s1.image.toLowerCase();jjtThis.line = s1.beginLine;} #Sign)? (t1 = <INTEGER> {jjtThis.value = t1.image.toLowerCase();jjtThis.line = t1.beginLine;} #Integer |  CallArray()) //CallArray -> Call() | ArrayOrScalar()
 }
 
 boolean CallArrayT(Token t1)#Call(Simple2.split) : {boolean call;}
 {
   	call = CallArray2() //ID.Size
 
-  	{jjtThis.value = t1.image;jjtThis.line = t1.beginLine;}
+  	{jjtThis.value = t1.image.toLowerCase();jjtThis.line = t1.beginLine;}
   	{
     	return call;
   	}
@@ -353,7 +353,7 @@ boolean CallArray()#Access(!Simple2.split) : {Token t1; boolean call;}
 
   call = CallArrayT(t1)
   {
-    jjtThis.value = t1.image;jjtThis.line = t1.beginLine;
+    jjtThis.value = t1.image.toLowerCase();jjtThis.line = t1.beginLine;
     return call;
   }
 }
@@ -363,7 +363,7 @@ boolean CallArray2()#void : {Token t;}
   (
   (ArrayXAccess())
   | Call2(){Simple2.split = true; return true;}
-  | ("." ((t = <ID>{jjtThis.value = t.image;jjtThis.line = t.beginLine;}#CallName Call2(){Simple2.split = true;return true;}) | (<SIZE>)#Size))?
+  | ("." ((t = <ID>{jjtThis.value = t.image.toLowerCase();jjtThis.line = t.beginLine;}#CallName Call2(){Simple2.split = true;return true;}) | (<SIZE>)#Size))?
   )
   {Simple2.split=false; return false;}
 }
@@ -372,7 +372,7 @@ void Exprtest() #ConditionOP : {Token t1;}
 {
   <LPAR> Lhs() t1 = <RELA_OP> Rhs() <RPAR>
   {
-    jjtThis.value = t1.image;
+    jjtThis.value = t1.image.toLowerCase();
     jjtThis.line = t1.beginLine;
   }
 }
@@ -406,16 +406,16 @@ void ArgumentList() : {}
 
 void Argument()#void : {Token t1;}
 {
-  ( (t1 = <ID>{jjtThis.value = t1.image;jjtThis.line = t1.beginLine;}#Variable)
-  | (t1 = <STRING>{jjtThis.value = t1.image;jjtThis.line = t1.beginLine;}#String)
-  | (t1 = <INTEGER>{jjtThis.value = t1.image;jjtThis.line = t1.beginLine;}#Constant) )
+  ( (t1 = <ID>{jjtThis.value = t1.image.toLowerCase();jjtThis.line = t1.beginLine;}#Variable)
+  | (t1 = <STRING>{jjtThis.value = t1.image.toLowerCase();jjtThis.line = t1.beginLine;}#String)
+  | (t1 = <INTEGER>{jjtThis.value = t1.image.toLowerCase();jjtThis.line = t1.beginLine;}#Constant) )
 
 }
 
 void ArrayOrScalar()#Access : {Token t;}
 {
   t = <ID> (ArrayXAccess() | ScalarAccess2())
-  {jjtThis.value = t.image;jjtThis.line = t.beginLine;}
+  {jjtThis.value = t.image.toLowerCase();jjtThis.line = t.beginLine;}
 }
 
 void ArrayXAccess()#void: {}
@@ -436,7 +436,7 @@ void ScalarAccess() : {}
 
 void Index() #void : { Token t1;}
 {
-  (t1 = <ID>{ jjtThis.value = t1.image;jjtThis.line = t1.beginLine;}#Variable) | ( t1 = <INTEGER>{ jjtThis.value = t1.image;jjtThis.line = t1.beginLine;}#Constant)
+  (t1 = <ID>{ jjtThis.value = t1.image.toLowerCase();jjtThis.line = t1.beginLine;}#Variable) | ( t1 = <INTEGER>{ jjtThis.value = t1.image.toLowerCase();jjtThis.line = t1.beginLine;}#Constant)
 }
 
 /* Gram�tica , falta alterar algumas pequenas coisas para adaptar a portugues

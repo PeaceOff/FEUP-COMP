@@ -58,7 +58,7 @@ public class StackAlocator {
             color++;
         }
 
-        if(color >= colors)
+        if(color > colors)
             return false;
         return true;
     }
